@@ -1,0 +1,198 @@
+#technote{
+	width:530px;
+	font-size:10pt;
+	margin-left:15px;
+}
+#picsOfLoc img{
+	margin:4px;
+	border: 2px solid #DDDDDD;
+	cursor:pointer;
+	position:relative;
+	bottom:0px;
+}
+#picOfLoc{
+	height:400px;
+	width:600px;
+	display: table-cell;
+	vertical-align: middle;
+	text-align:center;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-image: url(http://api.korzhevdp.com/images/ajax-loader.gif);
+}
+
+#author{
+	height:30px;
+	background-color:#444444;
+	color:white;
+	font-size:12px;
+	top:0px;
+	margin-left:-25px;
+	text-align:right;
+	position:absolute;
+	width:100%;
+	padding-right:10px;
+	opacity:.94;
+}
+div.modal{
+	width:640px;
+	font-size:10pt;
+}
+div.modal textarea{
+	width:590px;
+	height:100px
+}
+div.YMapsID{
+	width:100%;
+	height:900px;
+	border:1px solid #D6D6D6;
+	margin:0px;
+}
+
+
+#logInWith{
+	padding:20px;
+	font-size:11pt;
+}
+#logInWith img{
+	margin-left:40px;
+}
+body {
+	margin:0px;
+	padding:0px;
+}
+small.cHead{
+	font-size: 12px;
+}
+small.cHead img{
+	width:  16px;
+	height: 16px;
+	border: none;
+}
+div.cBody{
+	margin-top:5px;
+	font-size: 12px;
+	height: 170px;
+}
+div.cFoot{
+	background-color:#D6D6D6;
+	font-size: 12px;
+}
+
+#coordPart{
+	display:none;
+}
+#desc{
+	width:505px;
+	height:100px;
+	font-size: 12px;
+}
+#photos{
+	height:46px;
+}
+#photos input[type=text]{
+	width: 97%;
+}
+
+#errors{
+	height:20px;
+	margin-bottom:5px;
+	margin-top:-33px;
+	text-align:center;
+	padding:3px;
+}
+#photoUp{
+	margin-right:15px;
+}
+div.navigator{
+	padding:   4px;
+	width:     250px;
+	z-index:   100;
+	position:  absolute;
+	top:       280px;
+	font-size: 8pt;
+	right: 8px;
+	border: 2px solid gray;
+	background-color:#EEEEEE;
+	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.7);		/* Для Firefox */
+	-webkit-box-shadow: 0 0 10px rgba(0,0,0,0.7);	/* Для Safari и Chrome */
+	box-shadow: 0 0 10px rgba(0,0,0,0.7);			/* Параметры тени */
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+div.navigator label{
+	font-size    : 8pt;
+	line-height  : 16px !important;
+	margin       : 0px;
+}
+div.navigator input[type=checkbox]{
+	margin-top   : -2px;
+	margin-right : 4px;
+}
+
+div.navigatorHead{
+	position:relative;
+	background-color:#336699;
+	margin: -4px -4px  0px -4px;
+	padding:   4px;
+	height:    26px;
+	width:     233px;
+	font-size: 10pt;
+	font-weight: bold;
+	color:#ffffcc;
+	z-index:   111;
+}
+div.navigator div.body{
+	margin-bottom:15px;
+}
+div.luft-info{
+	display:table-cell;
+	width:320px;
+	height:100px;
+}
+div.luft-info div.text{
+	display:table-cell;
+	width:320px;
+	height:80px;
+	padding:4px;
+
+}
+div.luft-info a.btn{
+	bottom:4px;
+}
+/* Leaflet */
+#leafHeader{
+	height:36px;
+	background-color: black;
+	width:100%;
+	padding-top:6px;
+}
+#inputData span.add-on{
+	width  : 65px;
+}
+#inputData input[type=text]{
+	width  : 220px;
+	height : 30px;
+}
+#inputData .objDelete{
+	margin-left:5px;
+	margin-top:10px;
+}
+#inputData .objSaver{
+	margin-left:170px;
+	margin-top:10px;
+}
+#objList div{
+	border:1px solid #E6E6FF;
+	margin: 2px;
+	padding-left: 22px;
+	min-height:22px;
+}
+#objList div.editing{
+	background-color: #FFCCCC;
+}
+#objList div img{
+	float:left;
+	margin-top: 3px;
+	margin-left: -20px;
+}

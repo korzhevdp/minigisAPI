@@ -1,0 +1,157 @@
+/*
+	99Lime.com HTML KickStart by Joshua Gatcke
+	style.css
+
+*/
+
+/*---------------------------------
+	IMPORTS
+-----------------------------------*/
+/*@import url(http://fonts.googleapis.com/css?family=Arimo:400,700);*/
+
+/*---------------------------------
+	OVERRIDES
+-----------------------------------*/
+h1,h2,h3,h4,h5,h6{
+font-family: "Verdana", arial, verdana, sans-serif;
+color:#000099;
+text-shadow:  3px 3px 3px #FFF;
+}
+
+thead th,
+tbody th{
+font-family: "Trebuchet Ms", arial, verdana, sans-serif;
+}
+
+button,
+a.btn,
+input[type="submit"],
+input[type="reset"],
+input[type="button"]{
+	font-family: "Trebuchet Ms", arial, verdana, sans-serif;
+}
+input[type="text"],
+input[type="password"]{
+	width:400px;
+}
+table{
+	margin: 0px;
+	padding: 0px;
+	width:250px;
+	border:none;
+}
+b{
+	margin:0px;
+	background: none;
+}
+ul.alt li {
+	height:36px;
+}
+ul.alt li img{
+	float:left;
+	clear:both;
+	margin:4px;
+	border-right: 2px solid #C8C8C8;
+	border-bottom: 2px solid #C8C8C8;
+}
+.itemcontainer input[type="text"],
+.itemcontainer select{
+	width:100px;
+	font-size:10pt;
+	height:18px;
+	padding: 0px;
+	margin: 0px 3px 0px 0px;
+	display:inline;
+}
+
+.menu{
+	font-family: "Trebuchet Ms", arial, verdana, sans-serif;
+}
+
+blockquote{
+font-family: "Trebuchet Ms", arial, verdana, sans-serif;
+}
+.gallery{
+	margin-top: 10px;
+}
+fieldset{
+	clear:both;
+}
+#YMapsID.tab-content{
+	padding:0px;
+}
+
+/*---------------------------------
+	LAYOUT
+-----------------------------------*/
+body{
+margin:0;
+padding:0;
+color:#000;
+/*background:#efefef url(css/img/grid.png) repeat center top;*/
+/*background:#ffffff url(/images/topBg.jpg) no-repeat;
+background-position: top left;
+font:normal 0.9em/150% 'Arimo', "Trebuchet MS", arial, verdana, sans-serif;
+*/
+text-shadow: 0px 0px 1px transparent; /* google font pixelation fix */
+}
+
+#wrap{
+width:960px;/*960*/
+background:#fff;
+margin:10px auto 10px auto;
+padding:0;
+border:1px solid #ccc;
+}
+#myheader{
+height:100px;
+/*background:#ffffff url(/images/topBg.jpg) no-repeat center top;
+ Internet Explorer */
+filter:alpha(opacity=30);
+/* CSS3 standard */
+opacity:0.5
+}
+
+.menu{
+	margin:-1px -1px 0 -1px;
+	background-color: #eeeeee;
+}
+
+
+#footer{
+	text-align:center;
+	padding:20px;
+	margin:0;
+	background:#efefef;
+	border-top:1px solid #ccc;
+	color:#999;
+	font-size:0.8em;
+	text-shadow:0px 1px 1px #fff;
+	position: relative;
+	top:0;
+	left:0;
+}
+
+#link-top{
+	position: absolute;
+	top:10px;
+	right:10px;
+	*right:25px;/*IE 7 ONLY*/
+	left:auto;
+	color:#666;
+	text-decoration:none;
+	display: inline-block;
+	padding:5px 10px;
+	background:#e5e5e5;
+	line-height:100%;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+}
+#minimap{
+	border-right: 2px solid gray;
+	border-bottom:  2px solid gray;
+}
+li.list_found{
+	overflow: hidden;
+}

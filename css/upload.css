@@ -1,0 +1,69 @@
+/* Just some base styles not needed for example to function */
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+.clearfix { display: inline-block; }
+html[xmlns] .clearfix { display: block; }
+* html .clearfix { height: 1%; }
+
+/* Drag drop upload styles */
+#img_upload{
+	width: 128px;
+	height: 128px;
+	padding: 0px;
+	text-align: center;
+	position: relative;
+	cursor: pointer;
+	background-image: url('../images/go-homebw.png')
+}
+#img_upload:before {
+	content: "";
+	color: #000000;
+	font-size: 10px;
+	position: absolute;
+	width: 90%;
+	left: 0;
+	top: 50%;
+	z-index: 1;
+}
+ul li {
+	float: left;
+	margin: 0 10px 10px 0;
+	list-style: none;
+	position: relative;
+	z-index: 2;
+}
+li a {
+	opacity: 0.5;
+}
+
+li.loaded a{
+	opacity: 1;
+}
+
+li.loaded .progressBar{
+	display: none;
+}
+li .progressBar {
+	position: absolute;
+	top:50%;
+	left: 50%;
+	margin: -10px 0 0 -100px;
+	width: 200px;
+	height: 20px;
+	border: 1px solid #000;
+	-moz-border-radius: 10px;
+	-moz-box-shadow: 1px 1px 2px #fff;
+}
+li .progressBar p {
+	width: 20px;
+	height: 20px;
+	-moz-border-radius: 10px;
+	background-color: #1E528C;
+}

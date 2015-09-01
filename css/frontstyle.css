@@ -1,0 +1,822 @@
+#SContainer{
+	padding: 0px;
+	height:340px;
+	width: 225px;
+	z-index: 100;
+	position:absolute;
+	top: 140px;
+	left: 8px;
+	border: 1px solid black;
+	background-color:#EEEEEE;
+	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.7); /* Для Firefox */
+	-webkit-box-shadow: 0 0 10px rgba(0,0,0,0.7); /* Для Safari и Chrome */
+	box-shadow: 0 0 10px rgba(0,0,0,0.7); /* Параметры тени */
+}
+.carousel_annot{
+	height:40px;
+	margin-top:-60px;
+	background-color: #222222;
+	opacity: .6;
+	color: #FFFFFF;
+}
+.carousel_annot h4{
+	margin-left:20px;
+}
+.map_name{
+	position: absolute;
+	top:98px;
+	left:360px;
+	color:#D6D6D6;
+	background-color: #222222;
+	padding:5px;
+	border: 2px solid #FFFFFF;
+	z-index: 99;
+}
+#navigator.tab-content{
+	padding: 0px;
+	height:275px;
+	overflow:auto;
+	width: 223px;
+	z-index: 101;
+}
+#navheader{
+	padding:0px;
+	height: 12px;
+}
+#navheader a{
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+#navheader.nav-tabs{
+	height: 24px;
+	width:225px;
+	font-size: 9pt;
+}
+#navheader.nav-tabs a{
+	margin:0px;
+}
+.navbar{
+	margin-left:3px;
+	margin-right:3px;
+	margin-top:3px;
+	margin-bottom:3px;
+}
+#YMHead{
+	font-size:10pt;
+	height:20px;
+	padding:0px;
+	margin:0px;
+	width: 223px;
+	color: #FFFFCC;
+	background-color:#3366CC;
+	cursor: move;
+}
+#YMHead i{
+	cursor: pointer;
+	vertical-align:-40%;
+}
+address{
+	margin-bottom:6px;
+}
+.grouplabel{
+	text-indent: 15px;
+	font-family: Tahoma;
+	font-size: 9pt;
+	height: 18px;
+	width:170px;
+	font-weight:bold;
+	border-bottom: 1px solid #999999;
+	cursor: pointer;
+}
+.groupcontainer{
+	font-family: Tahoma;
+	font-size: 8pt;
+	width: 200px;
+	display: none;
+	padding:1px;
+}
+
+.groupcontainer ul, #resultBody{
+	margin:0px;
+	padding:0px;
+}
+
+#resultBody li {
+	background-color: white;
+	font-family: Tahoma;
+	font-size: 8pt;
+	border: 1px solid gray;
+	margin-top:2px;
+	margin-left: 2px;
+	padding:2px;
+	cursor:pointer;
+}
+
+.itemcontainer{
+	border-bottom: 1px solid #DDDDDD;
+	cursor: pointer;
+	font-size: 8pt;
+	font-family: Tahoma;
+	height:20px;
+	width:199px;
+	margin-left:1px;
+}
+
+.itemcontainer img{
+	margin-left:1px;
+	margin-right:4px;
+}
+
+.prop_table_cell{
+	padding-top: 10px;
+	border-top: 1px solid #D6D6D6;
+	color: #363636;
+	font-family: Tahoma;
+	font-size: 8pt;
+	vertical-align: top;
+	height:20px;
+}
+.prop_table_cell_caption{
+	padding: 2px;
+	height: 35px;
+	width: 140px;
+	cursor:pointer;
+	background-color: #DDDDDD;
+	/*background-color: #FF9900;*/
+	border-top: 1px solid #D6D6D6;
+	color: #333399;
+	font-family: Tahoma;
+	font-size: 10pt;
+}
+.prop_table_cell .roomlink{
+	color: #363636;
+	text-decoration: none;
+	/*border-bottom: 1px dotted #363636; */
+}
+.menu_item, .gis_menu_item{
+	vertical-align: middle;
+	background-color: #EEEEFF;
+	margin-left: 2px;
+	border-bottom: 1px solid #DDDDDD;
+	font-size: 9pt;
+	height: 30px;
+	width: 140px;
+	padding-left: 5px;
+	padding-top: 5px;
+	text-align:left;
+	cursor: pointer;
+}
+.gis_menu_item a, .menu_item a{
+	color: #000000;
+	text-decoration:none;
+	cursor: pointer;
+}
+.gis_menu_item_sub .menu_item{
+	background-color: #DDDDDD;
+	border: 1px solid #CCCCCC;
+	text-indent: 5px;
+	color:#330099;
+}
+.gis_menu_item_sub{
+	display: none;
+}
+.photo_comment{
+	font-size: 8pt;
+	font-family: Tahoma;
+	width:128px;
+	text-align:center;
+}
+
+#gis_body{
+	display: block;
+}
+select,input,textarea{
+	font-size: 8pt;
+	font-family: Tahoma;
+}
+/*первая колонка с поиском*/
+.foundlist{
+	margin-left:2px;
+	font-size:8pt;
+	width:99%;
+	line-height:4px;
+	vertical-align:top;
+}
+.foundlist li{
+	background-color: #FFFFFF;
+	cursor:pointer;
+	height: 50px;
+	overflow: hidden;
+	border: 1px solid #666666;
+	margin:3px;
+	padding:2px;
+	line-height: 12px;
+}
+.foundlist li img{
+	padding:1px;
+	margin-right:3px;
+	float:left;
+	display:block;
+	vertical-align: text-top;
+}
+#YMapsID{
+	height:100%;
+	width:100%;
+	border: 1px solid #D6D6D6;/* none; /*без бордера или (при закомментированном бордере) без чего-то другого не показывает карту... видимо, проблема с блочными элементами*/
+}
+.cell_goto{
+	width:10px;
+	background-color: #FFFFFF;
+	border-left: 1px solid #EEEEEE;
+}
+.owner_entrance{
+	bottom:0px;
+	color: #FF9900;
+	margin-top:80px;
+	font-family: Tahoma;
+	font-size: 12pt;
+	font-weight:bold;
+	cursor: pointer;
+	width:140px;
+	vertical-align: middle;
+	margin-left: 2px;
+	border: 1px dotted #AAAAAA;
+	padding-left: 5px;
+	padding-top: 5px;
+	text-align:center;
+	cursor: pointer;
+}
+.location_photo{
+	float: left;
+	width: 130px;
+	margin-top:10px;
+	text-align:center;
+}
+.location_photo > img{
+	display:block;
+	border:3px solid #F5EDAF;
+}
+
+.ymaps_balloon{
+	color: #000000;
+	width: 275px;
+	padding-bottom:15px;
+	font-size: 8pt;
+	font-family: Tahoma;
+}
+ul{
+	text-indent: 0px;
+}
+li{
+	list-style: none;
+}
+.switchtabs{
+	height:25px;
+	width:100px;
+	text-align:center;
+	font-size: 8pt;
+	font-weight: bold;
+	cursor: pointer;
+	background-color: #F2F2F2;
+}
+.locations_numbers{
+	table-layout: fixed;
+	font-size: 8pt;
+	font-family: Tahoma;
+	width: 670px;
+}
+.locations_numbers tr{
+	height: 35px;
+}
+.locations_numbers td{
+	cursor: pointer;
+	padding-left: 5px;
+	border: 1px solid #D6D6D6;
+	background-color: #EEEEEE;
+	color: #000000;
+}
+.block_header{
+	margin: 10px;
+	color: #666666;
+	font-family: Tahoma;
+	font-size: 10pt;
+}
+.map_header{
+	margin-left:10px;
+	margin-bottom:10px;
+	color: #333333;
+	font-family: Tahoma;
+	font-size: 14pt;
+}
+.doc_header{
+	color: #AEAEAE;
+	font-size: 18pt;
+	text-indent: 35px;
+	margin-top: 15px;
+	margin-bottom: 20px;
+}
+.doc_text{
+	margin-left: 10px;
+	margin-right: 10px;
+	color: #000000;
+	font-size:9pt;
+	text-align: justify;
+}
+.doc_text table{
+	border-collapse: collapse;
+	border-spacing: 0px;
+	border: 1px solid #D6D6D6;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 9pt;
+}
+.doc_text td{
+	border: 1px solid #D6D6D6;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 9pt;
+	padding: 2px;
+	text-align: left;
+}
+.doc_text th{
+	border: 1px solid #999999;
+	font-weight: bold;
+	text-decoration: none;
+	font-size: 9pt;
+	padding: 2px;
+	text-align: center;
+}
+.doc_text h2{
+	font-size: 14pt;
+	text-align: left;
+	color: #000099;
+}
+.doc_date{
+	position:relative;
+	right:20px;
+	text-align:right;
+	color: #AEAEAE;
+	font-size:9pt;
+	margin-right: 20px;
+}
+.doc_traverse{
+	position:relative;
+	left:5px;
+	text-align:left;
+	color: #AEAEFF;
+	font-size:9pt;
+}
+.doc_traverse a{
+	color: #6E6EFF;
+	text-decoration: none;
+}
+.main_page_header{
+	height: 30px;
+	background-color: #3E3E3E;
+	text-align: center;
+	color:#A5A5FF;
+	font-size:8pt;
+	width: 100%;
+	position:relative;
+}
+.main_page_body{
+	border-spacing:0px;
+	padding:0px;
+	height:600px;;
+	width:100%;
+	margin-top:0px;
+	margin-bottom:0px;
+}
+.page_footer{
+	height: 90px;
+	/*background-image: url("/images/lowerbackground.png");
+	background-repeat: repeat-x;*/
+	background-color: #DDDDDD;
+	text-align: center;
+	color:#ffffcc;
+	font-size:8pt;
+	width: 100%;
+	position:relative;
+	bottom:0;
+	margin-top:0px;
+}
+.page_footer a{
+	color:#A5A5FF;
+	font-size:8pt;
+}
+
+.info_column{
+	width:240px;
+	font-size: 9pt;
+	height:80%;
+	vertical-align:top;
+	border-left: 1px solid #DDDDDD;
+	background-color: #F6F6F6;
+}
+.aggregation{
+	float:left;
+	width:396px;
+	height:160px;
+}
+.aggregation .cell{
+	float:left;
+	font-size:8pt;
+	text-align:center;
+	border: 1px solid #D6D6D6;
+	margin:1px;
+	width: 128px;
+	height:159px;
+	cursor:pointer;
+	display:none;
+}
+.aggregation .image{
+	background-color: #E5E5E5;
+	width:128px;
+	height:128px;
+}
+.aggregation .text{
+	overflow:hidden;
+	position:relative;
+	color: red;
+	bottom:0px;
+}
+.arrow{
+	float:left;
+	background-color: #BBBBBB;
+	text-align:center;
+	border: 1px solid #D6D6D6;
+	width: 24px;
+	height:160px;
+	cursor:pointer;
+	text-align:center;
+}
+.gallery_table{
+	font-size:9pt;
+	width:90%;
+	border:1px solid #999999;
+	border-spacing:0px;
+	border-collapse:collapse;
+	margin-left:10px;
+	margin-bottom:20px;
+}
+.gallery_table td{
+	border: 1px solid #999999;
+}
+.gallery_table > img{
+	margin-left:5px;
+	margin-right:5px;
+	vertical-align: middle;
+}
+.gallery_table .header{
+	height:30px;
+}
+.gallery_table a{
+	color:#003399;
+	text-decoration: none;
+}
+.gallery_table .footer{
+	height:35px;
+	color:#000000;
+}
+.gallery_table .body{
+	height:100px;
+	color:#000000;
+}
+.gallery_table .a_prefix{
+	margin-left:20px;
+	font-weight: bold;
+}
+.gallery_table .name_col{
+	font-weight: bolder;
+	color:#003399;
+	font-size:9pt;
+	width:200px;
+	height:35px;
+	border:none;
+	border-bottom:1px solid #999999;
+	padding-left:5px;
+}
+.gallery_header{
+	margin-left:20px;
+	color:#808080;
+	font-size:14pt;
+	margin-bottom: 20px;
+}
+/* notepad */
+.notepad{
+	width:100%;
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+.notepad_text{
+	width:170px;
+	font-size:8pt;
+	color: #000066;
+	font-weight:bold;
+	cursor:pointer;
+	border-bottom:1px solid #DDDDDD;
+}
+.notepad_field{
+
+}
+.notepad_spacer{
+	width:10px;
+	background-color:#E6E6E6;
+}
+.notepad_link{
+	cursor:pointer;
+	width:40px;
+	border-bottom: 1px solid #DDDDDD;
+}
+
+.fp_section_header{
+	text-indent:5px;
+	width:260px;
+	font-size:12pt;
+	margin-left:27px;
+	color: #003300;
+	border:1px solid #D6D6D6;
+	background-color: #E6E6E6;
+}
+#to_notes{
+	cursor:pointer;
+}
+#form_to_notes{
+	margin:0px;
+	padding:0px;
+}
+.notepad_note{
+	margin-top:10px;
+	margin-bottom:20px;
+	clear:both;
+}
+.notepad_chapter{
+	float:left;
+	width:25px;
+	border: 1px solid #DDDDDD;
+	text-align:center;
+	font-size:9pt;
+	cursor:pointer;
+	margin-left:3px;
+}
+#chapter_0{
+	background-color: #D6D6D6;
+}
+#notepad_index{
+	margin-left:10px;
+	margin-bottom:10px;
+}
+
+
+
+
+
+/*gis_page styles*/
+.gis_info_table{
+	border-collapse:collapse;
+	width:100%;
+	border:none;
+}
+.gis_info_table .body{
+	font-size:9pt;
+	padding-left:5px;
+	height:130px;
+	vertical-align:top;
+	width:100%
+}
+.gis_info_table .images{
+	width:132px;
+	vertical-align:top;
+	padding-top:12px;
+	border-left:1px solid #D6D6D6;
+	border-right:1px solid #D6D6D6;
+}
+.gis_info_inner_table{
+	border-collapse: collapse;
+	width:100%;
+	border:none;
+}
+.gis_sum{
+	float:left;
+	border:0px;
+	width:400px;
+}
+.gis_sum label{
+	height:17px;
+	float:left;
+	width:150px;
+	display:block;
+	vertical-align:middle;
+	margin-bottom:4px;
+	font-weight:bold;
+	cursor:pointer;
+}
+.gis_sum input{
+	vertical-align:middle;
+	margin-bottom:4px;
+}
+#upload_form{
+	background-color: #FFFFCC;
+	display:none;
+	width:540px;
+	border: 1px solid #CACACA;
+	padding-left:15px;
+	margin-left:10px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+#dataload{
+	margin-left:20px;
+	display:none;
+	color:black;
+	font-size:8pt;
+}
+/*end of gis_page styles**/
+
+/*begin of comments_chunk styles**/
+.comments_header{
+	margin-top:20px;
+	background-color: #EEEEFF;
+	border:1px solid #CCCCFF;
+	padding:3px;
+	width:660px;
+	height:25px;
+	font-size:12pt;
+	color:#0000FF;
+}
+.comment{
+	margin-top:3px;
+	border:1px solid #CCCCFF;
+	padding:3px;
+	width:660px;
+	font-size:9pt;
+	color:#000000;
+}
+.comment .text{
+	margin-left:5px;
+	color:#6699FF;
+}
+.comment .contact_info{
+	margin-left:5px;
+	color:#797979;
+	font-weight: bold;
+}
+.comment .content{
+	margin:5px;
+	color:#797979;
+	border:none;
+}
+.comment .other_info{
+	margin:10px;
+	color:#797979;
+	font-size:7pt;
+}
+.comment .control > img{
+	vertical-align: middle;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+.comment .control span{
+	margin-left:10px;
+	padding:6px;
+	cursor:pointer;
+}
+.comment .control span a{
+	color:#000000;
+}
+.comment_form .hint{
+	color:#999999;
+	font-size:8pt;
+	margin-left:150px;
+}
+.comment_form{
+	margin-top:10px;
+}
+.comment_form input{
+	width:450px;
+	margin-bottom:5px;
+	background-color: #F8F8F8;
+	border: 1px solid #00CCFF;
+}
+.comment_form .submit{
+	width:650px;
+	margin-top:10px;
+	font-size:10pt;
+}
+.comment_form label{
+	display:block;
+	float:left;
+	width:150px;
+	font-size:10pt;
+}
+.comment_form textarea{
+	width:660px;
+	height: 100px;
+	background-color: #F8F8F8;
+	border: 1px solid #00CCFF;
+	display:block;
+}
+.comment .control{
+	margin-left:20px;
+}
+.comment .hidden{
+	display:none;
+}
+.comment .shown{
+	display:inline;
+}
+.disabled{
+	background-color: #CCCCCC;
+	border: 1px dashed #FFFFFF;
+	color:#333333;
+}
+/*end of comments_chunk styles**/
+
+/*begin of unified styles**/
+.imgstripe{
+	display:block;
+	margin-top:14px;
+	clear:both;
+}
+table .unified{
+	border-collapse:collapse;
+	width:670px;
+	border:none;
+}
+table .unified .col1{
+	padding-left:5px;
+	height:130px;
+	vertical-align:top;
+	border-bottom:1px solid #D6D6D6;
+}
+table .unified .col2{
+	text-align: center;
+	background-color: #D4D4D4;
+	width:132px;
+	vertical-align:top;
+	padding-top:0px;
+	border-left:1px solid #D6D6D6;
+}
+table .unified .col1 .header_container{
+	padding:5px;
+	vertical-align:top;
+	width:380px;
+	float:left;
+	height:130px;
+	font-size:8pt;
+}
+table .unified .col1 .header_container .selfname{
+	color:#7474C4;
+	font-weight:bold;
+	font-size:14pt;
+}
+
+table .unified .col1 .header_container .c_info{
+	border-collapse:collapse;
+	font-size:10pt;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+table .unified .col1 .header_container .c_info .headers{
+	width:100px;
+}
+table.prices_table{
+	width:100%;
+	font-family: Tahoma;
+	font-size:9pt;
+	height:150px;
+}
+table.prices_table td.first{
+	width:100px;
+}
+table.prices_table td.second{
+	width:100%
+}
+.unified_mt{
+	border-collapse:collapse;
+	font-size:10pt;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+/*end of unified styles**/
+
+/*begin of catalog styles**/
+.cat_entry{
+	font-size: 12pt;
+	color: #333399;
+	width: 95%;
+	border: none;
+	margin-left:20px;
+	margin-top: 25px;
+}
+.cat_entry a{
+	color: #333399;
+	text-decoration: none;
+}
+
+/*end of catalog styles**/
+div.item{
+	display:table-cell;
+	vertical-align:middle;
+	text-align:center;
+}

@@ -1,0 +1,83 @@
+body{
+	margin:0px;
+	padding:0px;
+	font-size: 9pt;
+	font-family: Tahoma;
+}
+.pseudolink{
+	color: #0000FF;
+	text-decoration: underline;
+	cursor: pointer;
+}
+label{
+	display:block;
+	float:left;
+	width:150px;
+	text-align:left;
+	font-size: 9pt;
+	margin-bottom:5px;
+}
+input{
+	display:block;
+	clear:right;
+	width:150px;
+	font-size: 9pt;
+	margin-bottom:5px;
+}
+.form_container{
+	width:100%;
+	vertical-align:middle;
+	border: 1px solid #000000;
+	text-align: center;
+}
+legend{
+	padding:5px;
+}
+fieldset{
+	margin-left: 30px;
+	width:350px;
+	padding:5px;
+}
+.relink{
+	width:100%;
+	width:400px;
+	font-size: 9pt;
+	font-family: Tahoma;
+	margin-top:5px;
+	margin-bottom:5px;
+	border-bottom: 1px solid #D6D6D6;
+	padding:3px;
+}
+.errorlist_header{
+	font-size: 9pt;
+	font-family: Tahoma;
+	color:black;
+	width:600px;
+	margin-left:50px;
+}
+.errorlist{
+	font-size: 9pt;
+	font-family: Tahoma;
+	color:red;
+	text-align: justify;
+	border: 1px solid #D6D6D6;
+	background-color: #F6F6F6;
+	padding: 3px;
+ }
+.fcontainer{
+	float:left;
+	margin:5px;
+	width:450px;
+}
+p{
+	font-size: 9pt;
+	font-family: Tahoma;
+	margin-top: 10px;
+	margin-right: 10px;
+	text-align: justify;
+}
+.header{
+	color: #A6A6A6;
+	font-weight:bold;
+	margin-top:15px;
+}

@@ -1,0 +1,2 @@
+SetOutputFilter DEFLATE
+Header append Vary User-Agent
