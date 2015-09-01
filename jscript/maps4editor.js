@@ -55,7 +55,9 @@ function init() {
 	//###################################################################################
 	function styleAddToStorage(src){
 		for (var a in src){
-			ymaps.option.presetStorage.add(a, src[a]);
+			if (src.hasOwnProperty(a)) {
+				ymaps.option.presetStorage.add(a, src[a]);
+			}
 		}
 	}
 
@@ -74,7 +76,7 @@ function init() {
 		}
 		localstyles["1"].push('</optgroup>');
 		localstyles["1"].push('<optgroup label="Маркеры">');
-		for (var a in yandex_markers){
+		for (a in yandex_markers){
 			if (yandex_markers.hasOwnProperty(a)) {
 				localstyles["1"].push(yandex_markers[a]);
 			}
@@ -82,7 +84,7 @@ function init() {
 		localstyles["1"].push('</optgroup>');
 
 		localstyles["1"].push('<optgroup class="points" label="Пользовательские">');
-		for (var a in style_src){
+		for (a in style_src){
 			if (style_src.hasOwnProperty(a)) {
 				localstyles["1"].push('<option value="' + style_src[a][2] +'">' + style_src[a][3] + '</option>');
 			}
@@ -91,7 +93,7 @@ function init() {
 
 		localstyles["2"] = [];
 		localstyles["2"].push('<optgroup label="Стили ломаных">');
-		for (var a in style_paths){
+		for (a in style_paths){
 			if (style_paths.hasOwnProperty(a)) {
 				localstyles["2"].push('<option value="' + style_paths[a][2] +'">' + style_paths[a][4] + '</option>');
 			}
@@ -100,7 +102,7 @@ function init() {
 
 		localstyles["3"] = [];
 		localstyles["3"].push('<optgroup label="Стили полигона">');
-		for (var a in style_polygons){
+		for (a in style_polygons){
 			if (style_polygons.hasOwnProperty(a)) {
 				localstyles["3"].push('<option value="' + style_polygons[a][5] +'">' + style_polygons[a][7] + '</option>');
 			}
@@ -109,7 +111,7 @@ function init() {
 
 		localstyles["4"] = [];
 		localstyles["4"].push('<optgroup id="s_circles" label="Стили круга">');
-		for (var a in style_circles){
+		for (a in style_circles){
 			if (style_circles.hasOwnProperty(a)) {
 				localstyles["4"].push('<option value="' + style_circles[a][7] +'">' + style_circles[a][9] + '</option>');
 			}
@@ -183,12 +185,12 @@ function init() {
 	map.geoObjects.add(v_objects);
 
 	map.events.add('typechange', function (action){
-		v = action.get('newType')
+		v = action.get('newType');
 		objlayer = revLayerTypes[v];
 	});
 
 	map.events.add('click', function (click){
-		if(createType == 0 || editing == 1){
+		if(!createType || editing){
 			return false;
 		}
 		var v = click.get('coordPosition'),
@@ -213,7 +215,7 @@ function init() {
 		}
 		var geometry   = cds,
 			properties = { },
-			options    = ($("#cstyle").val() != null && $("#cstyle").val() != "0" ) ? ymaps.option.presetStorage.get($("#cstyle").val()) : { iconImageHref: 'http://api.korzhevdp.com/images/marker.png', iconImageSize: [16, 16], iconImageOffset: [-8, -16] },
+			options    = ($("#cstyle").val() !== null && $("#cstyle").val() != "0" ) ? ymaps.option.presetStorage.get($("#cstyle").val()) : { iconImageHref: 'http://api.korzhevdp.com/images/marker.png', iconImageSize: [16, 16], iconImageOffset: [-8, -16] },
 			object     = new ymaps.Placemark(geometry, properties, options);
 		p_objects.add(object);
 		if(editor){
@@ -226,7 +228,7 @@ function init() {
 	});
 
 	map.events.add("contextmenu", function(rclick){
-		if(p_objects.getLength == 0){
+		if(!p_objects.getLength){
 			return false;
 		}
 		var start      = p_objects.get(0).geometry.getCoordinates(),
@@ -284,29 +286,27 @@ function init() {
 				vec = $(this).attr("vec");
 			p_objects.removeAll();
 			v_objects.removeAll();
-			// анимация
+
 			$("#uploadConf").addClass("hide");
 			$("#mainTab *").removeClass("active");
 			$("#mainTab a[href=#ephotos]").parent().addClass("active");
 			$("#ephotos").addClass("active").removeClass("hide");
 			$("#eobjects").addClass("hide").removeClass("active");
-			// свойства
-			//alert($(this).attr("ref"))
 
 			$("#vector").val(vec);
 			$("#imageZ").prop("src", $(this).attr("ref"));
 			$("#coords, #refcoord").val($(this).attr("cf"));
 			$("#reffn").val($(this).attr("fn"));
 			$("#desc").val($(this).attr("desc"));
-			$("#active").prop("checked", (($(this).attr("act") == "1") ? true : false));
-			// размещаем фотографию
+			$("#active").prop("checked", (($(this).attr("act") === "1") ? true : false));
+
 			geometry   = { type: "Point", coordinates: [parseFloat(coords[0]), parseFloat(coords[1])] };
 			properties = { };
 			options    = { iconImageHref: 'http://api.korzhevdp.com/images/marker.png', iconImageSize: [16, 16], iconImageOffset: [-8, -16] };
 			object     = new ymaps.Placemark(geometry, properties, options);
 			map.setCenter([parseFloat(coords[0]), parseFloat(coords[1])]);
 			p_objects.add(object);
-			// размещаем вектор, если он ненулевой длины
+
 			if(vec.length){
 				geometry   = ymaps.geometry.LineString.fromEncodedCoordinates(vec);
 				properties = { };
@@ -326,8 +326,8 @@ function init() {
 		$("#groups").val("0");
 	}
 }
-//######################################### конец процессора карты #######################################################
-//######################################################################################################################
+
+
 
 function unpack_config(){
 	$("#mapObjects, #grlist, #partlist, #groups, #partition").empty();
@@ -336,14 +336,16 @@ function unpack_config(){
 	$("input").val("");
 	$("select").val("0");
 	$("#cct").change();
-	if(typeof groups == 'undefined'){
+	if(typeof groups === 'undefined'){
 		return false;
 	}
-	for(a in groups){
-		opt = '<option value= "' + a + '">' + groups[a].g + '</value>';
-		li4ed = '<li ref="' + a + '">' + groups[a].g + '</li>';
-		$("#groups, #cgroups").append(opt);
-		$("#grlist").append(li4ed);
+	for(var a in groups){
+		if (groups.hasOwnProperty(а)) {
+			opt   = '<option value= "' + a + '">' + groups[a].g + '</value>';
+			li4ed = '<li ref="' + a + '">' + groups[a].g + '</li>';
+			$("#groups, #cgroups").append(opt);
+			$("#grlist").append(li4ed);
+		}
 	}
 
 	if(typeof sights == 'undefined'){
@@ -351,45 +353,53 @@ function unpack_config(){
 	}
 
 	for (a in sights){
-		label = sights[a].label;
-		proxy = sights[a].content;
-		opt   = '<option value= "' + a + '">' + sights[a].label + '</value>';
-		li4ed = '<li ref="' + a + '">' + sights[a].label + '</li>';
-		subh  = '<li style="font-size:13px;"><strong>' + sights[a].label + '</strong></li>';
-		$("#mapObjects").append(subh + "\n");
-		$("#partition, #cpartition").append(opt);
-		$("#partlist").append(li4ed);
-		for ( b in proxy ){
-			img = (proxy[b].a == "1") ? '<img src="http://api.korzhevdp.com/images/bullet_blue.png" alt="">' : '<img src="http://api.korzhevdp.com/images/bullet_delete.png" alt="">' ;
-			switch(proxy[b].ct){
-				case 1:
-					navitem = '<li class="odata" packet="' + a + '" ref="' + b + '">' + img + '<span>' + proxy[b].d + '</span></li>';
-				break;
-				case 2:
-					navitem = '<li class="odata" packet="' + a + '" ref="' + b + '">' + img + '<span>' + proxy[b].d + '</span></li>';
-				break;
-				case 3:
-					navitem = '<li class="odata" packet="' + a + '" ref="' + b + '">' + img + '<span>' + proxy[b].d + '</span></li>';
-				break;
-				case 4:
-					navitem = '<li class="odata" packet="' + a + '" ref="' + b + '">' + img + '<span>' + proxy[b].d + '</span></li>';
-				break;
+		if (sights.hasOwnProperty(а)) {
+			label = sights[a].label;
+			proxy = sights[a].content;
+			opt   = '<option value= "' + a + '">' + sights[a].label + '</value>';
+			li4ed = '<li ref="' + a + '">' + sights[a].label + '</li>';
+			subh  = '<li style="font-size:13px;"><strong>' + sights[a].label + '</strong></li>';
+			$("#mapObjects").append(subh + "\n");
+			$("#partition, #cpartition").append(opt);
+			$("#partlist").append(li4ed);
+			for ( b in proxy ){
+				if (proxy.hasOwnProperty(b)) {
+					img = (proxy[b].a === "1") 
+						? '<img src="http://api.korzhevdp.com/images/bullet_blue.png" alt="">' 
+						: '<img src="http://api.korzhevdp.com/images/bullet_delete.png" alt="">' ;
+					switch(proxy[b].ct){
+						case 1:
+							navitem = '<li class="odata" packet="' + a + '" ref="' + b + '">' + img + '<span>' + proxy[b].d + '</span></li>';
+						break;
+						case 2:
+							navitem = '<li class="odata" packet="' + a + '" ref="' + b + '">' + img + '<span>' + proxy[b].d + '</span></li>';
+						break;
+						case 3:
+							navitem = '<li class="odata" packet="' + a + '" ref="' + b + '">' + img + '<span>' + proxy[b].d + '</span></li>';
+						break;
+						case 4:
+							navitem = '<li class="odata" packet="' + a + '" ref="' + b + '">' + img + '<span>' + proxy[b].d + '</span></li>';
+						break;
+					}
+					$("#mapObjects").append(navitem + "\n");
+					proxylist[b] = proxy[b].d;
+				}
 			}
-			$("#mapObjects").append(navitem + "\n");
-			proxylist[b] = proxy[b].d;
 		}
 	}
 
 	activate_obj();
 
-	if(typeof clusters == 'undefined'){
+	if(typeof clusters === 'undefined'){
 		return false;
 	}
 
 	$("#clusterSelector").empty().append('<option value="0">Выберите кластер</option>');
-	for(a in clusters){
-		li4ed = '<option value="' + a + '">' + clusters[a].label + '</option>';
-		$("#clusterSelector").append(li4ed + "\n");
+	for(var a in clusters){
+		if (clusters.hasOwnProperty(a)) {
+			li4ed = '<option value="' + a + '">' + clusters[a].label + '</option>';
+			$("#clusterSelector").append(li4ed + "\n");
+		}
 	}
 	// удаление кластера
 	$("#delCluster").click(function(){
