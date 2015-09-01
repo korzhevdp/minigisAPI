@@ -401,10 +401,9 @@ function unpack_config(){
 			$("#clusterSelector").append(li4ed + "\n");
 		}
 	}
-	// удаление кластера
+
 	$("#delCluster").click(function(){
 		ref = parseInt($("#clusterSelector").val());
-		//console.log(ref);
 		if(!ref){
 			return false;
 		}
@@ -412,19 +411,20 @@ function unpack_config(){
 		$("#cluster").val("");
 		$("#clusterSelector option[value=" + ref + "]").remove();
 		$("#clusterList").empty();
-		//console.log(clusters.toSource());
 	});
+
 	// ДОБАВЛЕНИЕ кластера
 	$("#addCluster").unbind().click(function(){
 		name = $("#cluster").val();
 		if(!name.length){
-			//console.log("no name given");
 			return false;
 		}
 		m = 0;
-		for (a in clusters){
-			if(parseInt(a) > m){
-				m = parseInt(a);
+		for (var a in clusters){
+			if (clusters.hasOwnProperty(a)) {
+				if(parseInt(a) > m){
+					m = parseInt(a);
+				}
 			}
 		}
 
@@ -433,7 +433,6 @@ function unpack_config(){
 			content: []
 		}
 
-		//console.log((m + 1));
 		$("#clusterSelector").append('<option value="' + (m + 1) + '">' + $("#cluster").val() + '</option>');
 
 		$("#clusterSelector").unbind().change(function(){
