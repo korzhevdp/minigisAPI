@@ -39,67 +39,80 @@ function init() {
 		lc            = 0,
 		uploadPics    = [];
 	// сброс карты (это, типа, такой костыль ещё от старых карт - на всякий случай)
-	(typeof map != "undefined") ? map.destroy() : "";
+	//(typeof map !== "undefined") ? map.destroy() : "";
 
 	// слои карты.
-	for(a in layerTypes){
+	for(var a in layerTypes){
 		ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
 		ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
 			layerTypes[a].name, layerTypes[a].layers
 		));
 		//typeSelector.addMapType(config.layerTypes[a].label, a);
-		$("#wlayer").append('<option value="' + layerTypes[a].label + '">' + layerTypes[a].name + '</option>')
+		$("#wlayer").append('<option value="' + layerTypes[a].label + '">' + layerTypes[a].name + '</option>');
 		revLayerTypes[layerTypes[a].label] = layerTypes[a].localLayerID;
 	}
 	//#################### поддержка основных стилей Minigis.NET ########################
 	//###################################################################################
 	function styleAddToStorage(src){
-		for (a in src){
+		for (var a in src){
 			ymaps.option.presetStorage.add(a, src[a]);
 		}
 	}
 
 	styleAddToStorage(userstyles);
 	list_marker_styles();
+
 	function list_marker_styles(){
 		//alert(1)
 		$("#ostyle, #cstyle").append('<option value="0">Выберите стиль</option>');
 		localstyles["1"] = [];
 		localstyles["1"].push('<optgroup label="Объекты">');
-		for (a in yandex_styles){
-			localstyles["1"].push(yandex_styles[a]);
+		for (var a in yandex_styles){
+			if (yandex_styles.hasOwnProperty(a)) {
+				localstyles["1"].push(yandex_styles[a]);
+			}
 		}
 		localstyles["1"].push('</optgroup>');
 		localstyles["1"].push('<optgroup label="Маркеры">');
-		for (a in yandex_markers){
-			localstyles["1"].push(yandex_markers[a]);
+		for (var a in yandex_markers){
+			if (yandex_markers.hasOwnProperty(a)) {
+				localstyles["1"].push(yandex_markers[a]);
+			}
 		}
 		localstyles["1"].push('</optgroup>');
 
 		localstyles["1"].push('<optgroup class="points" label="Пользовательские">');
-		for (a in style_src){
-			localstyles["1"].push('<option value="' + style_src[a][2] +'">' + style_src[a][3] + '</option>');
+		for (var a in style_src){
+			if (style_src.hasOwnProperty(a)) {
+				localstyles["1"].push('<option value="' + style_src[a][2] +'">' + style_src[a][3] + '</option>');
+			}
 		}
 		localstyles["1"].push('</optgroup>');
 
 		localstyles["2"] = [];
 		localstyles["2"].push('<optgroup label="Стили ломаных">');
-		for (a in style_paths){
-			localstyles["2"].push('<option value="' + style_paths[a][2] +'">' + style_paths[a][4] + '</option>');
+		for (var a in style_paths){
+			if (style_paths.hasOwnProperty(a)) {
+				localstyles["2"].push('<option value="' + style_paths[a][2] +'">' + style_paths[a][4] + '</option>');
+			}
 		}
 		localstyles["2"].push('</optgroup>');
 
 		localstyles["3"] = [];
 		localstyles["3"].push('<optgroup label="Стили полигона">');
-		for (a in style_polygons){
-			localstyles["3"].push('<option value="' + style_polygons[a][5] +'">' + style_polygons[a][7] + '</option>');
+		for (var a in style_polygons){
+			if (style_polygons.hasOwnProperty(a)) {
+				localstyles["3"].push('<option value="' + style_polygons[a][5] +'">' + style_polygons[a][7] + '</option>');
+			}
 		}
 		localstyles["3"].push('</optgroup>');
 
 		localstyles["4"] = [];
 		localstyles["4"].push('<optgroup id="s_circles" label="Стили круга">');
-		for (a in style_circles){
-			localstyles["4"].push('<option value="' + style_circles[a][7] +'">' + style_circles[a][9] + '</option>');
+		for (var a in style_circles){
+			if (style_circles.hasOwnProperty(a)) {
+				localstyles["4"].push('<option value="' + style_circles[a][7] +'">' + style_circles[a][9] + '</option>');
+			}
 		}
 		localstyles["4"].push('</optgroup>');
 	}
@@ -124,7 +137,7 @@ function init() {
 	$("#wlayer").change(function(){
 		map.setType($(this).val());
 	});
-	/* установка параметров коллекции */
+
 	p_objects = new ymaps.GeoObjectArray();
 	p_objects.options.set({
 		hasBalloon: 0,
@@ -133,7 +146,7 @@ function init() {
 		draggable: 1
 	});
 	p_objects.events.add(['geometrychange', 'add'], function (action){
-		if(action.get('type') == 'add'){
+		if(action.get('type') === 'add'){
 			v = action.get('child').geometry;
 		}else{
 			v = action.get('target').geometry;
@@ -159,11 +172,10 @@ function init() {
 			break;
 			case "Circle":
 				//console.log(v.getCenter())
-				circoords = [v.getCenter()[0], v.getCenter()[1], v.getRadius()].join(", ")
+				circoords = [v.getCenter()[0], v.getCenter()[1], v.getRadius()].join(", ");
 				$("#coords, #ocoords, #ccoords").val(circoords);
 			break;
 		}
-		//$("#coords, #ocoords").val([v.getCoordinates()[0].toPrecision(8), v.getCoordinates()[1].toPrecision(8)].join(",")); // сохраняем в поле новое значение масштаба карты
 	});
 	map.geoObjects.add(p_objects);
 
@@ -173,7 +185,6 @@ function init() {
 	map.events.add('typechange', function (action){
 		v = action.get('newType')
 		objlayer = revLayerTypes[v];
-		//alert(objlayer)
 	});
 
 	map.events.add('click', function (click){
@@ -342,9 +353,9 @@ function unpack_config(){
 	for (a in sights){
 		label = sights[a].label;
 		proxy = sights[a].content;
-		opt = '<option value= "' + a + '">' + sights[a].label + '</value>';
+		opt   = '<option value= "' + a + '">' + sights[a].label + '</value>';
 		li4ed = '<li ref="' + a + '">' + sights[a].label + '</li>';
-		subh = '<li style="font-size:13px;"><strong>' + sights[a].label + '</strong></li>';
+		subh  = '<li style="font-size:13px;"><strong>' + sights[a].label + '</strong></li>';
 		$("#mapObjects").append(subh + "\n");
 		$("#partition, #cpartition").append(opt);
 		$("#partlist").append(li4ed);
