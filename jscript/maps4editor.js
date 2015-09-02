@@ -1,22 +1,18 @@
-//######################################### ��������� ����� #########################################################
 ymaps.ready(init);
 
 var sights,
 	groups,
 	clusters,
-	imported = {},
-	createType = 0,
-	editing = 0,
+	imported    = {},
+	createType  = 0,
+	editing     = 0,
 	folder,
-	objlayer = 0,
+	objlayer    = 0,
 	localstyles = {},
-	vectoropts = { strokeColor: 'FF220099', strokeWidth: 2, strokeStyle: { style: 'solid' } },
-	proxylist = {};
+	vectoropts  = { strokeColor: 'FF220099', strokeWidth: 2, strokeStyle: { style: 'solid' } },
+	proxylist   = {};
 
 function init() {
-
-	// определения
-	// начальная конфигурация
 	config = {
 			// tech-info
 			mcenter       : [40.537471, 64.543004],
@@ -25,31 +21,26 @@ function init() {
 			initZoom      : 13,
 			proj          : ymaps.projection.sphericalMercator,
 			// tech-info end
-			url           : '',				// корень каталог с тайлами карты
-			hasAtlas      : 1,				// наличие подготовленного атласа карт
+			url           : '',
+			hasAtlas      : 1,
 			hasNav        : 1
 		};
 	// конец начальной конфигурации
 	var dX = [],
 		searchControl = new ymaps.control.SearchControl({ provider: 'yandex#publicMap', boundedBy: [[40, 65], [42, 64]], strictBounds: 1 }),
-		//typeSelector  = new ymaps.control.TypeSelector(),
-		//layerTypes    = config.layerTypes,
-		revLayerTypes = {},
 		cMapType      = 0,
 		lc            = 0,
 		uploadPics    = [];
-	// сброс карты (это, типа, такой костыль ещё от старых карт - на всякий случай)
-	//(typeof map !== "undefined") ? map.destroy() : "";
 
-	// слои карты.
 	for(var a in layerTypes){
-		ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
-		ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
-			layerTypes[a].name, layerTypes[a].layers
-		));
-		//typeSelector.addMapType(config.layerTypes[a].label, a);
-		$("#wlayer").append('<option value="' + layerTypes[a].label + '">' + layerTypes[a].name + '</option>');
-		revLayerTypes[layerTypes[a].label] = layerTypes[a].localLayerID;
+		if (layerTypes.hasOwnProperty(a)) {
+			ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
+			ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
+				layerTypes[a].name, layerTypes[a].layers
+			));
+			$("#wlayer").append('<option value="' + layerTypes[a].label + '">' + layerTypes[a].name + '</option>');
+			revLayerTypes[layerTypes[a].label] = layerTypes[a].localLayerID;
+		}
 	}
 	//#################### поддержка основных стилей Minigis.NET ########################
 	//###################################################################################
@@ -118,9 +109,6 @@ function init() {
 		}
 		localstyles["4"].push('</optgroup>');
 	}
-	//###################################################################################
-	//###################################################################################
-
 
 	//###################################################################################
 	// Процессор карты
@@ -154,7 +142,6 @@ function init() {
 			v = action.get('target').geometry;
 			if(v_objects.getLength()){
 				v_objects.get(0).geometry.setCoordinates([p_objects.get(0).geometry.getCoordinates(), v_objects.get(0).geometry.getCoordinates()[1]]);
-				//alert(ymaps.geometry.LineString.toEncodedCoordinates(v_objects.get(0).geometry));
 				$("#vector").val(ymaps.geometry.LineString.toEncodedCoordinates(v_objects.get(0).geometry));
 			}
 		}

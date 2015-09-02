@@ -270,7 +270,6 @@ function init() {
 		cursor: 'pointer'
 	});
 
-	//place_objects(objects);//натравим функцию на полученный массив схожих объектов
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(e_objects);
 	map.geoObjects.add(nePolygons);
@@ -288,7 +287,9 @@ function init() {
 
 	function styleAddToStorage(src){
 		for (var a in src){
-			ymaps.option.presetStorage.add(a,src[a]);
+			if(src.hasOwnProperty(a)){
+				ymaps.option.presetStorage.add(a, src[a]);
+			}
 		}
 	}
 
@@ -424,126 +425,119 @@ function init() {
 	}
 
 	function place_object(){
-		if (typeof prop == 'undefined'){
+		if (typeof prop === 'undefined'){
 			console.log('Отсутствует блок данных');
 			return false;
 		}else{
-			prop.attr = (prop.attr.split("#")[0] == 'default') ? ['twirl', prop.attr.split("#")[1] ].join("#")  : prop.attr;
+			var geometry,
+				object;
 			$(".panels").addClass('hide');
 			$("#cpanel" + prop.pr).removeClass('hide');
+			$('#type option[value="' + prop.otype+ '"]').attr('selected', 'selected');
+			prop.attr = (prop.attr.split("#")[0] === 'default') ? ['twirl', prop.attr.split("#")[1] ].join("#") : prop.attr;
+			options   = ymaps.option.presetStorage.get(prop.attr);
+
 			if(prop.coords.length > 3){
-				if(prop.pr == 1){ // точка
-					var geometry = prop.coords.split(","), // создаём объект геометрии (или, если достаточно по условиям, - массив)
-						options  = ymaps.option.presetStorage.get(prop.attr), //назначаем опции из существующих пресетов или из созданных нами вручную
-						object   = new ymaps.Placemark(geometry, prop, options); // генерируем оверлей
-					e_objects.add(object);
-					map.setCenter(prop.coords.split(",")); // центруем адекватным образом карту
-					update_point_data(object);
+				if(prop.pr === 1){
+					geometry = prop.coords.split(",");
+					object   = new ymaps.Placemark(geometry, prop, options);
 				}
 
-				if(prop.pr == 2){ //ломаная
-					var geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(prop.coords),
-						options  = ymaps.option.presetStorage.get(prop.attr),
-						object   = new ymaps.Polyline(geometry, prop, options);
-					e_objects.add(object);
-					e_objects.get(0).editor.startEditing();
-					map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+				if(prop.pr === 2){
+					geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(prop.coords);
+					object   = new ymaps.Polyline(geometry, prop, options);
 				}
 
-				if(prop.pr == 3){ // полигон
-					var geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(prop.coords),
-						options  = ymaps.option.presetStorage.get(prop.attr),
-						object   = new ymaps.Polygon(geometry, prop, options);
-					e_objects.add(object);
-					e_objects.get(0).editor.startEditing();
-					map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
-					perimeter_calc(geometry);
+				if(prop.pr === 3){
+					geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(prop.coords),
+					object   = new ymaps.Polygon(geometry, prop, options);
 				}
 
-				if(prop.pr == 4){ // круг
-					var geometry = new ymaps.geometry.Circle([parseFloat(prop.coords.split(",")[0]), parseFloat(prop.coords.split(",")[1])], parseFloat(prop.coords.split(",")[2])),
-						options  = ymaps.option.presetStorage.get(prop.attr),
-						object   = new ymaps.Circle(geometry, prop, options);
-					e_objects.add(object);
-					//координаты вспомогательных точек UI - точка центра и точка маркера радиуса
-					place_aux_circle_points();
-					map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+				if(prop.pr === 4){
+					geometry = new ymaps.geometry.Circle([parseFloat(prop.coords.split(",")[0]), parseFloat(prop.coords.split(",")[1])], parseFloat(prop.coords.split(",")[2]));
+					object   = new ymaps.Circle(geometry, prop, options);
 				}
 
-				if(prop.pr == 5){ // прямоугольник
-					var geometry = new ymaps.geometry.Rectangle([
-							[parseFloat(prop.coords.split(",")[0]), parseFloat(prop.coords.split(",")[1])],
-							[parseFloat(prop.coords.split(",")[2]), parseFloat(prop.coords.split(",")[3])]
-						]),
-						options  = ymaps.option.presetStorage.get(prop.attr),
-						object   = new ymaps.Rectangle(geometry, prop, options);
-					e_objects.add(object);
-					place_aux_rct_points();
-					map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+				if(prop.pr === 5){
+					geometry = new ymaps.geometry.Rectangle([
+						[parseFloat(prop.coords.split(",")[0]), parseFloat(prop.coords.split(",")[1])],
+						[parseFloat(prop.coords.split(",")[2]), parseFloat(prop.coords.split(",")[3])]
+					]);
+					object   = new ymaps.Rectangle(geometry, prop, options);
 				}
 			}
-			$('#type option[value="' + prop.otype+ '"]').attr('selected', 'selected');
+			e_objects.add(object);
+
+			if(prop.pr === 3 || prop.pr === 2){
+				e_objects.get(0).editor.startEditing();
+				perimeter_calc(geometry);
+			}
+			if(prop.pr !== 1){
+				map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+			}else{
+				map.setCenter(prop.coords.split(","));
+				update_point_data(object);
+			}
+			if(prop.pr === 4){
+				place_aux_circle_points();
+			}
+			if(prop.pr === 5){
+				place_aux_rct_points();
+			}
 		}
 		return true;
 	}
 
 	function place_objects(source){
-		//console.log('run place');
+		var geometry;
 		for (var a in source){
-			var blob = source[a],
-				coords = blob.coords,
-				pr = parseInt(blob.pr),
-				attr = (blob.attributes.split("#")[0] == "default") ? ["twirl", blob.attributes.split("#")[1]].join("#") : blob.attributes,			// атрибуты - стиль объекта на карте
-				properties = {					// свойства  у всех фигур одинаковые - семантика из базы данных и предвычисляемые службные поля
-					hasBalloon: 0,				// балун нет
-					name: blob.loc_name,
-					hintContent: blob.description, // текст подсказки
-					description: blob.description, // поле "описание"
-					ttl: a // индекс объекта в базе - для справки на будущее
-				};
+			if(source.hasOwnProperty(a)){
+				if(source[a].coords.length <= 3){
+					continue;
+				}
+				coords     = source[a].coords;
+				pr         = parseInt(source[a].pr);
+				attr       = (source[a].attributes.split("#")[0] === "default") ? ["twirl", source[a].attributes.split("#")[1]].join("#") : source[a].attributes;
+				properties = {
+					hasBalloon  : 0,
+					name        : source[a].loc_name,
+					hintContent : source[a].description,
+					description : source[a].description,
+					ttl         : a
+				},
+				options    = ymaps.option.presetStorage.get(attr);
 
-			if(coords.length > 3){
-				if(pr == 1){ // точка
-					//console.log(attr);
-					var geometry = geometry = { type: 'Point', coordinates: coords.split(",") }, // создаём объект геометрии (или, если достаточно по условиям, - массив)
-						options = ymaps.option.presetStorage.get(attr), //назначаем опции из существующих пресетов или из созданных нами вручную
-						object = new ymaps.Placemark(geometry, properties, options); // генерируем оверлей
-					v_objects.add(object);
+				if(pr === 1){
+					geometry = { type: 'Point', coordinates: coords.split(",") };
+					object = new ymaps.Placemark(geometry, properties, options);
 				}
 
-				if(pr == 2){ //ломаная
-					var geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(coords),
-						options = ymaps.option.presetStorage.get(attr),
-						object = new ymaps.Polyline(geometry, properties, options);
-					v_objects.add(object);
+				if(pr === 2){
+					geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(coords);
+					object = new ymaps.Polyline(geometry, properties, options);
 				}
 
-				if(pr == 3){ // полигон
-					var geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(coords),
-						options = ymaps.option.presetStorage.get(attr),
-						object = new ymaps.Polygon(geometry, properties, options);
-					v_objects.add(object);
+				if(pr === 3){
+					geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(coords);
+					object = new ymaps.Polygon(geometry, properties, options);
 				}
 
-				if(pr == 4){ // круг
-					var geometry = new ymaps.geometry.Circle([parseFloat(coords.split(",")[0]), parseFloat(coords.split(",")[1])], parseFloat(coords.split(",")[2])),
-						options = ymaps.option.presetStorage.get(attr),
-						object = new ymaps.Circle(geometry, properties, options);
-					v_objects.add(object);
+				if(pr === 4){
+					geometry = new ymaps.geometry.Circle([parseFloat(coords.split(",")[0]), parseFloat(coords.split(",")[1])], parseFloat(coords.split(",")[2]));
+					object = new ymaps.Circle(geometry, properties, options);
 				}
 
-				if(pr == 5){ // прямоугольник
+				if(pr === 5){
 					var geometry = new ymaps.geometry.Rectangle([
 						[parseFloat(coords.split(",")[0]), parseFloat(coords.split(",")[1])],
 						[parseFloat(coords.split(",")[2]), parseFloat(coords.split(",")[3])]
-					]),
-						options = ymaps.option.presetStorage.get(attr),
-						object = new ymaps.Rectangle(geometry, properties, options);
-					v_objects.add(object);
+					]);
+					object = new ymaps.Rectangle(geometry, properties, options);
 				}
+				v_objects.add(object);
 			}
+
 		}
-		//return false;
 	}
 
 	function place_aux_rct_points(){
@@ -568,50 +562,54 @@ function init() {
 	}
 
 	function draw_object_by_type(click){
-		var properties    = { hasBalloon: 1, hasHint: 1, hintContent: prop.description, attr: prop.attr},//, iconContent: prop.description },
-			options       = ymaps.option.presetStorage.get(prop.attr); // ---слегка бредово - двойное обращение
+		var properties    = { hasBalloon: 1, hasHint: 1, hintContent: prop.description, attr: prop.attr},
+			options = ymaps.option.presetStorage.get(prop.attr),
+			geometry,
+			defaults ={
+				1: 'twirl#redDotIcon',
+				2: 'routes#default',
+				3: 'area#default',
+				4: 'circle#default',
+				5: 'rct#default'
+			};
+		if(options == null){
+			options   = ymaps.option.presetStorage.get(defaults[prop.pr]);
+			prop.attr = defaults[prop.pr]
+		}
 		if(!e_objects.getLength()){
 			switch (prop.pr){
 				case 1 :
-					var geometry = { type: 'Point', coordinates: click.get('coordPosition') },
-						options  = (!options) ? ymaps.option.presetStorage.get('twirl#redDotIcon') : options,
-						object   = new ymaps.Placemark(geometry, prop, options);
+					geometry = { type: 'Point', coordinates: click.get('coordPosition') };
+					object   = new ymaps.Placemark(geometry, prop, options);
 					object.options.set( {draggable: 1} );
-					e_objects.add(object);
 				break;
 				case 2 :
-					var geometry = new ymaps.geometry.LineString([click.get('coordPosition')]),
-						options  = (!options) ? ymaps.option.presetStorage.get('routes#default') : options,
-						object   = new ymaps.Polyline(geometry, prop, options);
-					prop.attr    = 'routes#default';
-					e_objects.add(object);
-					e_objects.get(0).editor.startDrawing();
+					geometry = new ymaps.geometry.LineString([click.get('coordPosition')]);
+					object   = new ymaps.Polyline(geometry, prop, options);
 				break;
 				case 3 :
-					var geometry = { type: 'Polygon', coordinates: [[click.get('coordPosition')]] },
-						options  = (!options) ? ymaps.option.presetStorage.get('area#default') : options,
-						object   = new ymaps.Polygon(geometry, prop, options);
-					prop.attr    = 'area#default';
-					e_objects.add(object);
-					e_objects.get(0).editor.startDrawing();
+					geometry = { type: 'Polygon', coordinates: [[click.get('coordPosition')]] };
+					object   = new ymaps.Polygon(geometry, prop, options);
 				break;
 				case 4 :
-					var geometry = [ click.get('coordPosition'), parseFloat($("#cir_radius").val()) ],
-						options  = (!options) ? ymaps.option.presetStorage.get('circle#default') : options,
-						object   = new ymaps.Circle(geometry, prop, options);
-					prop.attr    = 'circle#default';
-					e_objects.add(object);
-					place_aux_circle_points();
+					geometry = [ click.get('coordPosition'), parseFloat($("#cir_radius").val()) ];
+					object   = new ymaps.Circle(geometry, prop, options);
 				break;
 				case 5 :
-					var basic_coords = click.get('coordPosition'),
-						geometry     = [ [basic_coords[0] - .01,basic_coords[1] - .01], [basic_coords[0] + .01,basic_coords[1] + .01] ],
-						options      = (!options) ? ymaps.option.presetStorage.get('rct#default') : options,
-						object       = new ymaps.Rectangle(geometry, prop, options);
-					prop.attr        = 'rct#default';
-					e_objects.add(object);
-					place_aux_rct_points();
+					basic_coords = click.get('coordPosition'),
+					geometry     = [ [basic_coords[0] - .01, basic_coords[1] - .01], [basic_coords[0] + .01, basic_coords[1] + .01] ];
+					object       = new ymaps.Rectangle(geometry, prop, options);
 				break;
+			}
+			e_objects.add(object);
+			if(prop.pr === 2 || prop.pr === 3){
+				e_objects.get(0).editor.startDrawing();
+			}
+			if(prop.pr === 4 ){
+				place_aux_circle_points();
+			}
+			if(prop.pr === 5 ){
+				place_aux_rct_points();
 			}
 		}
 	}
