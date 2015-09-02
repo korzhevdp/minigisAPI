@@ -139,62 +139,56 @@ function init() {
 
 	v_objects.events.add('click', function(item){
 		var gtype,
-			b = 0,
-			object = item.get('target'),
+			geometry,
+			options   = ymaps.option.presetStorage.get(prop.attr),
+			b         = 0,
+			object    = item.get('target'),
 			currindex = parseInt(object.properties.get('ttl')),					// индекс щёлкнутого объекта в хранилище
 			currpoint = object.geometry.getCoordinates();						// координата щёлкнутого объекта
 			currpoint = [ parseFloat(currpoint[0]), parseFloat(currpoint[1]) ];	// непонятно почему, но нужна такая конвертация
-		// если объекту не сопоставлен заполненный объект геометрии (объёкт ещё не нарисован) - создаём ему геометрию по типу
+
 		if(!e_objects.getLength()){
 			switch (prop.pr){
 				case 1 :
-					var geometry = { type: "Point", coordinates: currpoint},
-						options = ymaps.option.presetStorage.get(prop.attr),
-						object = new ymaps.Placemark(geometry, prop, options);
-					e_objects.add(object);
-					bas_path.push(currpoint);
+					geometry = { type: "Point", coordinates: currpoint};
+					object   = new ymaps.Placemark(geometry, prop, options);
 				break;
 				case 2 :
-					var geometry = new ymaps.geometry.LineString([currpoint]),
-						options = ymaps.option.presetStorage.get(prop.attr),
-						object = new ymaps.Polyline(geometry, prop, options);
-					e_objects.add(object);
-					bas_path.push(currpoint);
-					e_objects.get(0).editor.startEditing();
+					geometry = new ymaps.geometry.LineString([currpoint]),
+					object   = new ymaps.Polyline(geometry, prop, options);
+					
 				break;
 				case 3 :
-					var geometry = new ymaps.geometry.Polygon([[currpoint]]),
-						options = ymaps.option.presetStorage.get(prop.attr),
-						object = new ymaps.Polygon(geometry, prop, options);
-					e_objects.add(object);
-					bas_path.push(currpoint);
-					e_objects.get(0).editor.startEditing();
+					geometry = new ymaps.geometry.Polygon([[currpoint]]),
+					object   = new ymaps.Polygon(geometry, prop, options);
 				break;
 				case 4 :
-					var geometry = new ymaps.geometry.Circle([parseFloat(currpoint[0]), parseFloat(currpoint[1])], parseFloat($("#cir_radius").val())),
-						options = ymaps.option.presetStorage.get(prop.attr),
-						object = new ymaps.Circle(geometry, prop, options);
-					e_objects.add(object);
-					place_aux_circle_points();
-					bas_path.push(currpoint);
+					geometry = new ymaps.geometry.Circle([parseFloat(currpoint[0]), parseFloat(currpoint[1])], parseFloat($("#cir_radius").val())),
+					object   = new ymaps.Circle(geometry, prop, options);
 				break;
-				/*
-				// тут несколько непонятно, но пусть пока остаётся
 				case 5 :
-					var geometry = new ymaps.geometry.Rectangle([ [parseFloat(currpoint[0]), parseFloat(currpoint[1])], [parseFloat(currpoint[2]), parseFloat(currpoint[3])] ]),
-						options = ymaps.option.presetStorage.get(prop.attr),
-						object = new ymaps.Circle(geometry, prop, options);
-					e_objects.add(object);
-					place_aux_rectangle_points();
-					bas_path.push(currpoint);
+					geometry = new ymaps.geometry.Rectangle([ 
+						[parseFloat(currpoint[0]), parseFloat(currpoint[1])],
+						[parseFloat(currpoint[2]), parseFloat(currpoint[3])]
+					]);
+					object = new ymaps.Circle(geometry, prop, options);
 				break;
-				*/
+			}
+			e_objects.add(object);
+			bas_path.push(currpoint);
+			if(prop.pr === 2 || prop.pr === 3){
+				e_objects.get(0).editor.startEditing();
+			}
+			if(prop.pr === 4){
+				place_aux_circle_points();
+			}
+			if(prop.pr === 5){
+				place_aux_rectangle_points();
 			}
 		}
 
 		// операционная геометрия
 		tgeometry = e_objects.get(0).geometry;
-
 		gtype     = tgeometry.getType();
 
 		for(var a in bas_path){ // проверка массива координат по циклу:
@@ -215,13 +209,8 @@ function init() {
 			}
 			if(gtype == "Polygon"){
 				m= tgeometry.getCoordinates()[0];
-				//m = g[0];
-				//alert( m.toSource() + "---" + currpoint.toSource())
-				//g[0] = g[0].splice(0, 1)
 				m[m.length - 1] = currpoint;
-				//alert( m.toSource())
 				e_objects.get(0).geometry.setCoordinates([m]);
-
 				perimeter_calc();
 			}
 			if(gtype == "Circle"){
@@ -237,9 +226,6 @@ function init() {
 				}
 			}
 		}
-		//alert(bas_path.toSource())
-		//console.log(bas_index_array);
-		//console.log(bas_path);
 		$("#l_coord_y_array").val(bas_path.join(","));
 		$("#l_coord_y_aux").val(bas_index_array.join(","));
 	});
