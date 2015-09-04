@@ -2,8 +2,7 @@ height = $(window).height();
 $("#main_table").css("height", (height - 95) + "px");
 
 $('.grouplabel').click(function() {
-	var id = this.id.split('_')[1];
-	$('#gc_' + id).slideToggle('slow', function() {});
+	$('#gc_' + this.id.split('_')[1]).slideToggle('slow', function() {});
 });
 
 $(function() {
@@ -40,7 +39,6 @@ $('#navdown').click(function() {
 });
 
 $('#SContainer').mouseleave(function(){ $(this).delay(10000).animate({opacity: 0.3}, 2000, 'swing', function(){}); });
-
 
 $('#SContainer').mouseenter(function(){ $(this).dequeue().stop().animate({opacity: 1},200);});
 
