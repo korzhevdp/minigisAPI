@@ -2,7 +2,8 @@
 function init() {
 	"use strict";
 	//(typeof map != "undefined") ? map.destroy() : "";
-	var map,
+	var cursor,
+		map,
 		//ac,
 		//bg,
 		maptypes = {
@@ -38,6 +39,9 @@ function init() {
 
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(b_objects);
+
+	cursor = map.cursors.push('crosshair', 'arrow');
+	cursor.setKey('arrow');
 
 	//назначаем опции оверлеев в коллекции (в данном случае - балун)
 	a_objects.options.set({
@@ -194,10 +198,10 @@ function init() {
 
 
 		function filter_collections(data) {
-			var arr = data.split(","),
-				h;
+			var arr = data.split(",");
 			$("#resultBody").empty();
 			a_objects.each(function (item) {
+				var h;
 				item.options.set({ visible: 0 });
 				for (h in arr) {
 					if (arr.hasOwnProperty(h)) {
@@ -306,13 +310,13 @@ function init() {
 
 		$('.itemcontainer').unbind().click(function () {
 			var o = parseInt($(this).attr("obj"), 10);
-			if(switches[o].fieldtype === 'checkbox'){
+			if (switches[o].fieldtype === 'checkbox') {
 				switches[o].value = (switches[o].value) ? 0 : 1;
 			}
-			if(switches[o].fieldtype === 'text'){
+			if (switches[o].fieldtype === 'text') {
 				switches[o].value = $(this).val(); //<-------|
 			}
-			if(switches[o].fieldtype === 'select'){
+			if (switches[o].fieldtype === 'select') {
 				switches[o].value = $(this).val(); //<-------|
 			}
 			mark_choices();

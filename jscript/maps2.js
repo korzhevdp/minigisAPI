@@ -269,7 +269,7 @@ function init() {
 
 	function place_object() {
 		var geometry,
-			options   = ymaps.option.presetStorage.get(prop.attr),
+			options,
 			object;
 
 		if (prop === 'undefined') { // JSLint ругается, требует сравнивать напрямую со строкой
@@ -280,6 +280,7 @@ function init() {
 		$("#cpanel" + prop.pr).removeClass('hide');
 		$('#type option[value="' + prop.otype + '"]').attr('selected', 'selected');
 		prop.attr = (prop.attr.split("#")[0] === 'default') ? ['twirl', prop.attr.split("#")[1] ].join("#") : prop.attr;
+		options   = ymaps.option.presetStorage.get(prop.attr);
 
 		if (prop.coords.length > 3) {
 			if (prop.pr === 1) {
@@ -877,10 +878,6 @@ function init() {
 		$("#nodeExport").modal("show");
 	});
 
-
-
-
-
 	//# собственно код
 
 	styleAddToStorage(userstyles);
@@ -893,7 +890,7 @@ function init() {
 		center:    [lon, lat],		// Центр карты
 		zoom:      current_zoom,	// Коэффициент масштабирования
 		type:      current_type,	// Тип карты
-		behaviors: ["scrollZoom", "drag"]
+		behaviors: ["default"]
 	});
 
 	cursor = map.cursors.push('crosshair', 'arrow');
