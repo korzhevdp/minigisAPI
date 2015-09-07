@@ -55,6 +55,7 @@ style_paths = [
 	['C6C6C6EE', '3', 'routes#default',    'solid',    'Стиль по умолчанию'],		//Набор: Mk. 2;
 	['FF7700EE', '3', 'routes#eventroute', 'dashdot',  'Маршрут события'],			//Набор: Mk. 2;
 	['FF0033EE', '3', 'routes#current',    'solid',    'Текущий маршрут'],			//Набор: Mk. 2;
+	['FF3333EE', '3', 'routes#metro',      'solid',    'Сферическое метро'],		//Набор: Mk. 2;
 	['656565FF', '3', 'metro#grey',        'solid',    'Метро. Серая линия'],		//Набор: Mk. 2;
 	['FF8200FF', '3', 'metro#orange',      'solid',    'Метро. Оранжевая линия'],	//Набор: Mk. 2;
 	['DF1707FF', '3', 'metro#red',         'solid',    'Метро. Красная линия'],		//Набор: Mk. 2;
