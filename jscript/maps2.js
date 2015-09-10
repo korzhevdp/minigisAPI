@@ -133,9 +133,13 @@ function init() {
 				}
 			);
 			address = (names[0] !== "undefined") ? [names[0]].join(', ') : "Нет адреса";
-			map.balloon.open(coords, {
-				contentBody: '<div class="ymaps_balloon"><input type="text" value="' + [ parseFloat(coords[0]).toFixed(8), parseFloat(coords[1]).toFixed(8) ].join(', ') + '"><br>' + address + '</div>'
-			});
+			if(map.balloon.isOpen() && $("#f_address") !== undefined){
+				$("#f_address").val(address);
+			} else {
+				map.balloon.open(coords, {
+					contentBody: '<div class="ymaps_balloon"><input type="text" value="' + [ parseFloat(coords[0]).toFixed(8), parseFloat(coords[1]).toFixed(8) ].join(', ') + '"><br>' + address + '</div>'
+				});
+			}
 		});
 	}
 
@@ -591,7 +595,7 @@ function init() {
 			var page = $(this).attr("ref").split("/");
 			$.ajax({
 				url      : "/editor/get_property_page",
-				data     : { 
+				data     : {
 					group : page[0],
 					loc   : prop.ttl,
 					page  : page[2]
