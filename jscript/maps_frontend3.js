@@ -207,7 +207,7 @@ function init() {
 			});
 		}
 
-		function add_search () {
+		function add_search() {
 			$("#resultBody li").unbind().click(function () {
 				$("#resultBody li").removeClass("active");
 				$(this).addClass("active");
@@ -249,6 +249,7 @@ function init() {
 					place_objects(ac, 'a');
 					place_objects(bg, 'b');
 					$("#iSearch").tab("show");
+					add_search();
 				},
 				error: function (data, stat, err) {
 					console.log([data, stat, err].join("<br>"));

@@ -21,6 +21,7 @@ style_src = [
 	[api_domain + '/images/userstyles/fire.png',          [32,32],'alert#btu','Теплоснабжение',[-16,-32]],
 	[api_domain + '/images/nodal.life/b737N.png',         [32,32],'nodal#b737','Боинг-737-500',[-16,-16]],
 
+	[api_domain + '/images/userstyles/fire.png',          [32,32],'user#fire','Огонь',[-16,-32]],
 	[api_domain + '/images/luftmaps/anchor.png',          [21,28],'user#anchor','Пристань',[-11,-28]],
 	[api_domain + '/images/luftmaps/church.png',          [21,28],'user#church','Церковь',[-11,-28]],
 	[api_domain + '/images/luftmaps/jew.png',             [21,28],'user#jews','Евреи',[-11,-28]],
