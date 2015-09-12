@@ -1,5 +1,5 @@
-height = $(window).height();
-$("#main_table").css("height", (height - 50) + "px");
+$("#main_table").css("height", ($(window).height() - 50) + "px");
+$("#main_table").css("width", $(window).width() + "px");
 
 $('.grouplabel').click(function() {
 	$('#gc_' + this.id.split('_')[1]).slideToggle('slow', function() {});

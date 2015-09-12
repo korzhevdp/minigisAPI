@@ -53,9 +53,6 @@ function init() {
 		hasHint: 1,
 		hasBalloon: 1,
 		draggable: 0,
-		zIndex: 520,
-		zIndexHover: 600,
-		cursor: 'Pointer'
 	});
 
 	b_objects.options.set({
@@ -64,10 +61,7 @@ function init() {
 		balloonMinWidth: 400,
 		hasHint: 1,
 		hasBalloon: 1,
-		draggable: 0,
-		zIndex: 10,
-		zIndexHover: 10,
-		cursor: 'Pointer'
+		draggable: 0
 	});
 	map.controls.add('mapTools').add(searchControl);
 	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
@@ -123,18 +117,22 @@ function init() {
 				if (src.pr === 1) { // точка
 					geometry = src.coord.split(","); // создаём объект геометрии (или, если достаточно по условиям, - массив)
 					object   = new ymaps.Placemark(geometry, properties, options); // генерируем оверлей
+					object.options.set('zIndex', 100);
 				}
 				if (src.pr === 2) { //ломаная
 					geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.coord);
 					object   = new ymaps.Polyline(geometry, properties, options);
+					object.options.set('zIndex', 110);
 				}
 				if (src.pr === 3) { // полигон
 					geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.coord);
 					object   = new ymaps.Polygon(geometry, properties, options);
+					object.options.set('zIndex', 10);
 				}
 				if (src.pr === 4) { // круг
 					geometry = new ymaps.geometry.Circle([parseFloat(src.coord.split(",")[0]), parseFloat(src.coord.split(",")[1])], parseFloat(src.coord.split(",")[2]));
 					object   = new ymaps.Circle(geometry, properties, options);
+					object.options.set('zIndex', 20);
 				}
 				if (src.pr === 5) { // прямоугольник
 					geometry = new ymaps.geometry.Rectangle([
@@ -142,6 +140,7 @@ function init() {
 						[parseFloat(src.coord.split(",")[2]), parseFloat(src.coord.split(",")[3])]
 					]);
 					object   = new ymaps.Rectangle(geometry, properties, options);
+					object.options.set('zIndex', 30);
 				}
 				if (layer === 'a') {
 					a_objects.add(object);
