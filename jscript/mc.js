@@ -1,11 +1,13 @@
+var a;
 $('#operation-menu li a').each(function(){
 	//alert(window.location.toString() + '   ' + $(this).attr('href'));
 	if(window.location.toString() == '' + ($(this).attr('href'))) {
-		$(this).parent().addClass('active');
+		$(this).parent().parent().addClass('active');
 	}else{
 		//alert('no');
 	}
-})
+});
+
 $(".collapse").collapse();
 $(".ogp_table > tr").mouseenter(function() {
 	$(this).css('background-color','#F8F8F8');
@@ -14,43 +16,107 @@ $(".ogp_table > tr").mouseleave(function() {
 	$(this).css('background-color','#FFFFFF');
 });
 
-function trace_afl(a){
-	var id = $(a).attr('id').split("_")[1];
-	$('div[id^="btab"] input:checkbox').removeAttr('disabled');
-	if(id != 0){
-		$('div[id^="atab"] input:radio').attr('disabled','disabled').removeAttr('checked');
-		$('#btab'+ id + ' input:checkbox').attr('disabled','disabled').removeAttr('checked');
-		$("#afl2").fadeOut(100,function(){});
-	}else{
-		$('div[id^="atab"] input:radio').removeAttr('disabled');
-		$('#btab'+ id + ' input:checkbox').attr('disabled','disabled').removeAttr('checked');
-		$("#afl2").fadeIn(600,function(){});
+
+//$(".bfl").addClass("hide");
+
+$("#a_layer0").click(function() {
+	$(".atab :checkbox").prop("checked", false).prop("disabled", false);
+	$(".btab :checkbox").prop("checked", false).prop("disabled", false);
+	if ($("#a_layer0").prop("checked")) {
+		$(".a_layers").prop("checked", false);
+		//$("#afl2").removeClass("hide");
+	} else {
+		//$("#afl2").addClass("hide");
+	}
+});
+
+$(".a_layers").click(function() {
+	$("#a_layer0").prop("checked", false);
+	//$("#afl2").addClass("hide");
+	trace_layers();
+});
+
+$(".a_types").click(function() {
+	//$("#a_layer0").prop("checked", false);
+	//$("#afl2").addClass("hide");
+	trace_types($(this));
+});
+
+function disable_layers() {
+	for (a in disabled_layers){
+		if (disabled_layers.hasOwnProperty(a)) {
+			$("#a_layer" + disabled_layers[a] +", #b_layer" + disabled_layers[a]).prop("checked", false).prop("disabled", true).parent().parent().addClass('inactive');
+		}
 	}
 }
 
-$("#bflSwitcher").click(function(){
-	$(".bfl").fadeToggle(50,function(){
-		if($("#bfl").css("display")!== 'none'){
-			$("#bflSwitcher").empty().html("Объекты заднего плана не нужны");
-		}else{
-			$("#bflSwitcher").empty().html("Подключить объекты заднего плана");
-			$(".bfl input:checkbox").removeAttr('checked');
+function trace_layers(){
+	$(".b_layers").prop("checked", false).prop("disabled", false).parent().parent().removeClass('inactive');
+	$(".b_types").prop("checked", false).prop("disabled", false).parent().parent().removeClass('inactive');
+	$(".a_layers").each(function () {
+		var ref = $(this).attr("ref");
+		if ($(this).prop("checked")) {
+			$("#b_layer" + ref).prop("checked", false).prop("disabled", true).parent().parent().addClass('inactive');
+			$("#atab" + ref + " :checkbox").prop("checked", true).prop("disabled", true);
+			$("#atab" + ref).addClass('inactive');
+			$("#btab" + ref + " :checkbox").prop("checked", false).prop("disabled", true);
+			$("#btab" + ref).addClass('inactive');
+		} else {
+			$("#atab" + ref + " :checkbox").prop("checked", false).prop("disabled", false);
+			$("#atab" + ref).removeClass('inactive');
+			$("#btab" + ref + " :checkbox").prop("checked", false).prop("disabled", false);
+			$("#atab" + ref).removeClass('inactive');
 		}
+		disable_layers();
 	});
-})
+}
 
-$(".bfl").css("display","none");
+function trace_types(item){
+	var ref = item.attr("ref");
+	if (item.prop("checked")) {
+		$("#btype" + ref).prop("checked", false).prop("disabled", true);
+	} else {
+		$("#btype" + ref).prop("checked", false).prop("disabled", false);
+	}
+	disable_layers();
+}
 
-$("#afl input:radio").click(function(){
-	trace_afl(this);
-});
+/*
+		a_types   = [64],
+		b_layers  = [0],
+		b_types   = [63],
+*/
 
 
-trace_afl($("#afl input:radio:checked"));
+for (a in a_layers){
+	if (a_layers.hasOwnProperty(a)) {
+		$("#a_layer" + a_layers[a]).prop("checked", true).prop("disabled", false);
+	}
+}
 
-$("#bfl input:checkbox").click(function(){
-	var id = $(this).attr('id').split("_")[2];
-	($(this).attr('checked'))
-	? $('#btab'+ id + ' input:checkbox').attr('disabled','disabled').attr('checked','checked')
-	: $('#btab'+ id + ' input:checkbox').removeAttr('disabled').removeAttr('checked');
-});
+trace_layers();
+
+for (a in b_layers){
+	if (b_layers.hasOwnProperty(a)) {
+		$("#blayer" + b_layers[a]).prop("checked", true).prop("disabled", false);
+	}
+}
+
+for (a in b_types){
+	if (b_types.hasOwnProperty(a)) {
+		$("#btype" + b_types[a]).prop("checked", true).prop("disabled", false);
+	}
+}
+
+for (a in a_types){
+	if (a_types.hasOwnProperty(a)) {
+		$("#atype" + a_types[a]).prop("checked", true).prop("disabled", false);
+		trace_types($("#atype" + a_types[a]));
+	}
+}
+
+
+
+
+
+disable_layers();

@@ -1,6 +1,6 @@
 /*
-функции для работы редактора картинок
-требуют подключения JQuery
+С„СѓРЅРєС†РёРё РґР»СЏ СЂР°Р±РѕС‚С‹ СЂРµРґР°РєС‚РѕСЂР° РєР°СЂС‚РёРЅРѕРє
+С‚СЂРµР±СѓСЋС‚ РїРѕРґРєР»СЋС‡РµРЅРёСЏ JQuery
 */
 function rotateImg(id, mode){
 	$.ajax({
@@ -68,7 +68,7 @@ function prepare_pic(a){
 	var dims128 = imgs[a].d128.split(","),
 		dims32  = imgs[a].d32.split(","),
 		dims800 = imgs[a].d800.split(","),
-		dims    = "Иконка: " + dims32[0] + "x" + dims32[1] + " px; Малое: " + dims128[0] + "x" + dims128[1] + " px; Большое: " + dims800[0] + "x" + dims800[1] + " px.";
+		dims    = "РРєРѕРЅРєР°: " + dims32[0] + "x" + dims32[1] + " px; РњР°Р»РѕРµ: " + dims128[0] + "x" + dims128[1] + " px; Р‘РѕР»СЊС€РѕРµ: " + dims800[0] + "x" + dims800[1] + " px.";
 
 	$('#current_picture').attr('src',"/userimages/128/" + imgs[a].file).css('width', dims128[0]).css('height', dims128[1]);
 	$('#pic_name').val(imgs[a].file);

@@ -202,7 +202,7 @@ function init() {
 	function update_line_data() { // передаётся объект целиком
 		var src         = e_objects.get(0).geometry,
 			coords      = ymaps.geometry.LineString.toEncodedCoordinates(src),
-			coordarray  = src.getCoordinates()
+			coordarray  = src.getCoordinates(),
 			coordstring = [],
 			a;
 		prop.coords = coords;
