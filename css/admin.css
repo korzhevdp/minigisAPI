@@ -73,3 +73,38 @@ label.add-on{
 	width:32px;
 	height:32px;
 }
+.control-group{
+	display:block;
+}
+.control-group textarea{
+	width: 349px;
+	height: 50px;
+}
+.pre-label{
+	width:200px !important;
+}
+
+option.lang_ru{
+	background-image  : url(http://api.korzhevdp.com/images/flag_russia.png);
+	background-repeat : no-repeat;
+	height: 32px;
+	text-indent: 40px;
+}
+option.lang_de{
+	background-image:url(http://api.korzhevdp.com/images/flag_germany.png);
+	background-repeat : no-repeat;
+	height: 32px;
+	text-indent: 40px;
+}
+option.lang_en{
+	background-image:url(http://api.korzhevdp.com/images/flag_great_britain.png);
+	background-repeat : no-repeat;
+	height: 32px;
+	text-indent: 40px;
+}
+option.lang_es{
+	background-image:url(http://api.korzhevdp.com/images/flag_spain.png);
+	background-repeat : no-repeat;
+	height: 32px;
+	text-indent: 40px;
+}

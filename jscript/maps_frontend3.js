@@ -36,7 +36,7 @@ function init() {
 		center:    mp.center,
 		zoom:      mp.zoom,
 		type:      maptypes[mp.type],
-		behaviors: ['default']
+		behaviors: ['default', 'scrollZoom']
 	}, { /*autoFitToViewport: "always", restrictMapArea: true*/ });
 
 	map.geoObjects.add(a_objects);
@@ -176,12 +176,12 @@ function init() {
 						break;
 					case 'LineString':
 						item.options.set(ymaps.option.presetStorage.get('routes#current'));
-						map.setBounds(item.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: "20px"});
+						map.setBounds(item.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
 						item.balloon.open(item.geometry.getCoordinates()[0]);
 						break;
 					case 'Polygon':
 						item.options.set(ymaps.option.presetStorage.get('area#current'));
-						map.setBounds(item.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: "20px"});
+						map.setBounds(item.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
 						item.balloon.open(item.geometry.getCoordinates()[0]);
 						break;
 					case 'Circle':
@@ -191,7 +191,7 @@ function init() {
 						break;
 					case 'Rectangle':
 						item.options.set(ymaps.option.presetStorage.get('rct#current'));
-						map.setBounds(item.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: "20px"});
+						map.setBounds(item.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
 						cr = item.geometry.getCoordinates();
 						item.balloon.open([ (cr[0][0] + cr[1][0]) / 2, (cr[0][1] + cr[1][1]) / 2 ]);
 						break;
@@ -235,7 +235,7 @@ function init() {
 				}
 				add_search ();
 			});
-
+			map.setBounds(a_objects.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
 		}
 
 		if (mapset) {
@@ -265,7 +265,7 @@ function init() {
 					dataType: "script",
 					success: function () {
 						place_objects(data, 'a');
-						map.setBounds(a_objects.getBounds());
+						map.setBounds(a_objects.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
 						add_search();
 						$("#iFound").tab("show");
 					},

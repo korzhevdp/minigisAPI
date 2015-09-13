@@ -889,7 +889,7 @@ function init() {
 		center:    [lon, lat],		// Центр карты
 		zoom:      current_zoom,	// Коэффициент масштабирования
 		type:      current_type,	// Тип карты
-		behaviors: ["default"]
+		behaviors: ["default", "scrollZoom"]
 	});
 
 	cursor = map.cursors.push('crosshair', 'arrow');
