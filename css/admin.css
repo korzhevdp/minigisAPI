@@ -36,21 +36,22 @@ label.add-on{
 	margin-bottom:2px;
 
 }
-.input-prepend{
+.input-prepend {
 	margin-bottom:0px;
 	line-height:16px;
 }
 .input-prepend input[type=checkbox]{
-	margin-top: 9px;
-	margin-left:20px;
+	margin-top : 9px;
+	margin-left: 20px;
 }
-.input-prepend input[type=text]{
-	font-size:12px !important;
-	height:26px;
-	width: 345px;
-	padding:1px 8px;
+.input-prepend input[type=text],
+.input-prepend input[type=password] {
+	font-size : 12px !important;
+	height    : 26px;
+	width     : 346px;
+	padding   : 1px 8px;
 }
-.input-prepend select{
+.input-prepend select {
 	font-size:12px !important;
 	line-height:16px;
 	width: 364px;
@@ -85,26 +86,30 @@ label.add-on{
 }
 
 option.lang_ru{
-	background-image  : url(http://api.korzhevdp.com/images/flag_russia.png);
+	background-image  : url(http://api.korzhevdp.com/images/flag_ru.png);
 	background-repeat : no-repeat;
 	height: 32px;
 	text-indent: 40px;
 }
 option.lang_de{
-	background-image:url(http://api.korzhevdp.com/images/flag_germany.png);
+	background-image:url(http://api.korzhevdp.com/images/flag_de.png);
 	background-repeat : no-repeat;
 	height: 32px;
 	text-indent: 40px;
 }
 option.lang_en{
-	background-image:url(http://api.korzhevdp.com/images/flag_great_britain.png);
+	background-image:url(http://api.korzhevdp.com/images/flag_en.png);
 	background-repeat : no-repeat;
 	height: 32px;
 	text-indent: 40px;
 }
 option.lang_es{
-	background-image:url(http://api.korzhevdp.com/images/flag_spain.png);
+	background-image:url(http://api.korzhevdp.com/images/flag_es.png);
 	background-repeat : no-repeat;
 	height: 32px;
 	text-indent: 40px;
+}
+
+#userTable input[type=text]{
+	width : 70px !important;
 }

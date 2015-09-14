@@ -1,19 +1,19 @@
 function init() {
 	'use strict';
 	var map,
-		maptypes        = { 1: 'yandex#map', 2: 'yandex#satellite' },
+		maptypes        = { 1: 'yandex#map', 2: 'yandex#satellite', 3: 'google#map', 4: 'osm#map' },
 		map_center      = prop.map_center,
 		current         = 0,
 		//current         = (typeof current !== 'undefined') ? current : prop.ttl,
-		current_zoom    = (prop.current_zoom.length) ? prop.current_zoom : 15,
-		current_type    = (prop.current_type.length) ? maptypes[prop.current_type] : 'yandex#satellite',
+		current_zoom    = (prop.current_zoom !== undefined) ? prop.current_zoom : 15,
+		current_type    = (maptypes[prop.current_type] !== undefined) ? maptypes[prop.current_type] : 'yandex#satellite',
 		//v_counter       = 0, // счётчик кликов на опорных объектах
 		g2              = [], // заготовка переменной для геометрии фигур рисуемых по ВО
 		//count           = 0,
 		bas_path        = [],
 		bas_index_array = [],
-		lon             = map_center.split(",")[0],
-		lat             = map_center.split(",")[1],
+		lon             = map_center[0],
+		lat             = map_center[1],
 		a_objects       = new ymaps.GeoObjectArray(),  // Вспомогательная коллекция (точки управления фигурами - прямоугольник, круг)
 		e_objects       = new ymaps.GeoObjectArray(),  // Вспомогательная коллекция (редактируемые объекты)
 		v_objects       = new ymaps.GeoObjectArray(),  // Вспомогательная коллекция (опорные точки и объекты)
@@ -335,26 +335,26 @@ function init() {
 				]);
 				object   = new ymaps.Rectangle(geometry, prop, options);
 			}
-		}
-		e_objects.add(object);
 
-		if (prop.pr === 3 || prop.pr === 2) {
-			e_objects.get(0).editor.startEditing();
-			perimeter_calc(geometry);
-		}
-		if (prop.pr !== 1) {
-			map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
-		} else {
-			map.setCenter(prop.coords.split(","));
-			update_point_data(object);
-		}
-		if (prop.pr === 4) {
-			place_aux_circle_points();
-		}
-		if (prop.pr === 5) {
-			place_aux_rct_points();
-		}
+			e_objects.add(object);
 
+			if (prop.pr === 3 || prop.pr === 2) {
+				e_objects.get(0).editor.startEditing();
+				perimeter_calc(geometry);
+			}
+			if (prop.pr !== 1) {
+				map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+			} else {
+				map.setCenter(prop.coords.split(","));
+				update_point_data(object);
+			}
+			if (prop.pr === 4) {
+				place_aux_circle_points();
+			}
+			if (prop.pr === 5) {
+				place_aux_rct_points();
+			}
+		}
 		return true;
 	}
 
