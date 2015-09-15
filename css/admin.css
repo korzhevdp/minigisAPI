@@ -113,3 +113,24 @@ option.lang_es{
 #userTable input[type=text]{
 	width : 70px !important;
 }
+ul.accessgroups {
+	margin-left          : 0px;
+	display: block;
+	clear: both;
+}
+ul.accessgroups li {
+	list-style-type : none; 
+	display         : block;
+	float           : left;
+	width           : 200px;
+	border          : 1px solid #eee;
+	margin-right    : 8px;
+	margin-bottom      : 8px;
+}
+ul.accessgroups li label{
+	padding : 8px;
+}
+ul.accessgroups li label input[type=checkbox]{
+	margin-left  : 2px;
+	margin-right : 4px;
+}
