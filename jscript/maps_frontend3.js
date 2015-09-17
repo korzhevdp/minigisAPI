@@ -240,7 +240,7 @@ function init() {
 
 		if (mapset) {
 			$.ajax({
-				url: "/ajax/get_map_content",
+				url: "/map/get_map_content",
 				data: { mapset: mapset },
 				type: "POST",
 				dataType: "script",
@@ -257,7 +257,7 @@ function init() {
 		} else {
 			if (mp.otype) {
 				$.ajax({
-					url: "/ajax/msearch",
+					url: "/foxhound/msearch",
 					data: {
 						type: parseInt(mp.otype, 10)
 					},
@@ -278,7 +278,7 @@ function init() {
 
 		function perform_search(string) {
 			$.ajax({
-				url: "/ajax/search",
+				url: "/foxhound/search",
 				data: {
 					sc: string,
 					mapset: mp.mapset
