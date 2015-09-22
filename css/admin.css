@@ -15,18 +15,28 @@ a.brand img{
 	border:none;
 }
 td.menu_col{
-	width:190px;
 	vertical-align:top;
+	width:218px;
 }
 #operations_menu li{
+	width: 170px;
 	margin-left:0px;
 	font-size:12px;
 	line-height:16px;
 }
-td.content{
-	vertical-align:top;
-	padding-left:30px;
+
+td.content h1,
+td.content h2,
+td.content h3,
+td.content h4,
+td.content h5,
+td.content h6 {
+	padding-left:30px !important;
 }
+td.content {
+	vertical-align:top;
+}
+
 label.add-on{
 	font-size:12px !important;
 	display:inline-block !important;
@@ -34,8 +44,8 @@ label.add-on{
 	text-align:left !important;
 	text-indent:5px;
 	margin-bottom:2px;
-
 }
+
 .input-prepend {
 	margin-bottom:0px;
 	line-height:16px;
@@ -57,23 +67,35 @@ label.add-on{
 	width: 364px;
 	padding: 1px 8px;
 }
+
+
 .libraryitem {
+	float:left;
 	margin-left:5px;
+	margin-bottom:5px;
 	overflow:hidden;
 	width:320px;
 	height:40px;
 	display:block;
 	border: 1px solid #DDDDDD;
 	vertical-align:middle;
-	padding-top: 15px;
+}
+.libraryitem:hover {
+	background-color:#eee;
 }
 .libraryitem img{
 	margin-right: 10px;
-	margin-top: -4px;
+	margin-top: 4px;
 	float:left;
 	width:32px;
 	height:32px;
 }
+.libraryitem a{
+	padding-top:10px;
+	padding-bottom:20px;
+	display:block;
+}
+
 .control-group{
 	display:block;
 }
@@ -133,4 +155,19 @@ ul.accessgroups li label{
 ul.accessgroups li label input[type=checkbox]{
 	margin-left  : 2px;
 	margin-right : 4px;
+}
+
+.langMark {
+	width:32px;
+	height:32px;
+	border:0px;
+	margin-top:8px;
+	cursor:pointer;
+}
+#gis_edit_form div {
+	display:block;
+	clear:both;
+}
+#gis_edit_form div label{
+	width: 250px !important;
 }

@@ -2,6 +2,11 @@ function init() {
 	"use strict";
 	var cursor,
 		map,
+		foreground,
+		background,
+		found = {},
+		showCount = 0,
+		showMode = 'direct',
 		maptypes = {
 			1: 'yandex#map',
 			2: 'yandex#satellite',
@@ -23,7 +28,7 @@ function init() {
 				'<div class="well" id="l_photo" data-toggle="modal" data-target="#modal_pics" loc=$[properties.ttl|0] style="float:left;margin:3px;cursor:pointer;padding:2px;background-color:#DDDDDD;">' +
 					'<img src="http://api.korzhevdp.com/images/$[properties.img|nophoto.gif]" alt="мини" id="sm_src_pic">' +
 				'</div>' +
-				'<b>Название:</b> $[properties.name|без имени]<br>' +
+				'<b>$[properties.type|тип не указан]:</b> $[properties.name|без имени]<br>' +
 				'<b>Адрес:</b> $[properties.description|не указан]<br>' +
 				'<b>Контакты:</b> $[properties.contact|контактное лицо]<br><br>' +
 				'<a href="$[properties.link|ссылка]" style="margin-bottom:10px;">Подробности здесь</a>' +
@@ -82,9 +87,51 @@ function init() {
 	});
 	*/
 
-	function place_objects(source, layer) {
+	function place_objectsWF(source, layer, found) {
+		//console.log(source.toSource(), found);
 		var b,
 			c,
+			object;
+		$("#resultBody").empty();
+		for (b in source) {
+			if (source.hasOwnProperty(b)) {
+				c = parseInt(b, 10);
+				if (found[c] !== undefined){
+					object = makeObject(source[b], c);
+					if (layer === 'a') {
+						a_objects.add(object);
+					}
+					if (layer === 'b') {
+						b_objects.add(object);
+					}
+					$("#resultBody").append("<li ref=" + object.properties.get('ttl') + "><img src=" + typeicons[object.properties.get("pr")] + ">" + object.properties.get('name') + "</li>");
+				}
+			}
+		}
+	}
+
+	function place_objects(source, layer) {
+		//console.log(source.toSource(), found);
+		var b,
+			c,
+			object;
+		$("#resultBody").empty();
+		for (b in source) {
+			if (source.hasOwnProperty(b)) {
+				object = makeObject(source[b], c);
+				if (layer === 'a') {
+					a_objects.add(object);
+				}
+				if (layer === 'b') {
+					b_objects.add(object);
+				}
+				$("#resultBody").append("<li ref=" + object.properties.get('ttl') + "><img src=" + typeicons[object.properties.get("pr")] + ">" + object.properties.get('name') + "</li>");
+			}
+		}
+	}
+	
+	function makeObject(src, id){
+		var b,
 			geometry,
 			options,
 			properties,
@@ -92,70 +139,55 @@ function init() {
 			src,
 			newattr,
 			count = 0;
-		for (b in source) {
-			if (source.hasOwnProperty(b)) {
-				c            = parseInt(b, 10);
-				src          = source[b];	// alias на длинный путь в большом массиве
-				options      = ymaps.option.presetStorage.get(src.attr); //назначаем опции из существующих пресетов или из созданных нами вручную
-				if (src.attr.split('#')[0] === 'default') {
-					newattr  = [ 'twirl', src.attr.split('#')[1] ].join('#');
-					options  = ymaps.option.presetStorage.get(newattr);
-					src.attr = newattr
-				}
-				properties = {		// свойства  у всех фигур одинаковые - семантика из базы данных и предвычисляемые службные поля
-					attr		: src.attr,
-					contact		: src.contact,
-					description	: src.description,
-					hintContent	: src.name,
-					img			: src.img,
-					link		: src.link,
-					name		: src.name,
-					pr			: src.pr,
-					ttl			: c
-				};
-				//console.log(c);
-				if (src.pr === 1) { // точка
-					geometry = src.coord.split(","); // создаём объект геометрии (или, если достаточно по условиям, - массив)
-					object   = new ymaps.Placemark(geometry, properties, options); // генерируем оверлей
-					object.options.set('zIndex', 100);
-				}
-				if (src.pr === 2) { //ломаная
-					geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.coord);
-					object   = new ymaps.Polyline(geometry, properties, options);
-					object.options.set('zIndex', 110);
-				}
-				if (src.pr === 3) { // полигон
-					geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.coord);
-					object   = new ymaps.Polygon(geometry, properties, options);
-					object.options.set('zIndex', 10);
-				}
-				if (src.pr === 4) { // круг
-					geometry = new ymaps.geometry.Circle([parseFloat(src.coord.split(",")[0]), parseFloat(src.coord.split(",")[1])], parseFloat(src.coord.split(",")[2]));
-					object   = new ymaps.Circle(geometry, properties, options);
-					object.options.set('zIndex', 20);
-				}
-				if (src.pr === 5) { // прямоугольник
-					geometry = new ymaps.geometry.Rectangle([
-						[parseFloat(src.coord.split(",")[0]), parseFloat(src.coord.split(",")[1])],
-						[parseFloat(src.coord.split(",")[2]), parseFloat(src.coord.split(",")[3])]
-					]);
-					object   = new ymaps.Rectangle(geometry, properties, options);
-					object.options.set('zIndex', 30);
-				}
-				if (layer === 'a') {
-					a_objects.add(object);
-				}
-				if (layer === 'b') {
-					b_objects.add(object);
-				}
-				//console.log(source.length);
-				//if ( count < 200 ) {
-				$("#resultBody").append("<li ref=" + object.properties.get('ttl') + "><img src=" + typeicons[object.properties.get("pr")] + ">" + object.properties.get('name') + "</li>");
-				//} else {
-				//	$("#resultBody").empty();
-				//}
-			}
+		options      = ymaps.option.presetStorage.get(src.attr); //назначаем опции из существующих пресетов или из созданных нами вручную
+		if (src.attr.split('#')[0] === 'default') {
+			newattr  = [ 'twirl', src.attr.split('#')[1] ].join('#');
+			options  = ymaps.option.presetStorage.get(newattr);
+			src.attr = newattr
 		}
+		properties = {		// свойства  у всех фигур одинаковые - семантика из базы данных и предвычисляемые службные поля
+			attr		: src.attr,
+			type		: src.type,
+			contact		: src.contact,
+			description	: src.description,
+			hintContent	: src.name,
+			img			: src.img,
+			link		: src.link,
+			name		: src.name,
+			pr			: src.pr,
+			ttl			: id
+		};
+		//console.log(c);
+		if (src.pr === 1) { // точка
+			geometry = src.coord.split(","); // создаём объект геометрии (или, если достаточно по условиям, - массив)
+			object   = new ymaps.Placemark(geometry, properties, options); // генерируем оверлей
+			object.options.set('zIndex', 100);
+		}
+		if (src.pr === 2) { //ломаная
+			geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.coord);
+			object   = new ymaps.Polyline(geometry, properties, options);
+			object.options.set('zIndex', 110);
+		}
+		if (src.pr === 3) { // полигон
+			geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.coord);
+			object   = new ymaps.Polygon(geometry, properties, options);
+			object.options.set('zIndex', 10);
+		}
+		if (src.pr === 4) { // круг
+			geometry = new ymaps.geometry.Circle([parseFloat(src.coord.split(",")[0]), parseFloat(src.coord.split(",")[1])], parseFloat(src.coord.split(",")[2]));
+			object   = new ymaps.Circle(geometry, properties, options);
+			object.options.set('zIndex', 20);
+		}
+		if (src.pr === 5) { // прямоугольник
+			geometry = new ymaps.geometry.Rectangle([
+				[parseFloat(src.coord.split(",")[0]), parseFloat(src.coord.split(",")[1])],
+				[parseFloat(src.coord.split(",")[2]), parseFloat(src.coord.split(",")[3])]
+			]);
+			object   = new ymaps.Rectangle(geometry, properties, options);
+			object.options.set('zIndex', 30);
+		}
+		return object;
+		//object.options.set('visible', ((showMode === 'direct') ? 0 : 1));
 	}
 
 	function load_mapset(mapset) {
@@ -170,7 +202,7 @@ function init() {
 					//console.log("Found");
 					switch (item.geometry.getType()) {
 					case 'Point':
-						item.options.set(ymaps.option.presetStorage.get('user#here'));
+						//item.options.set(ymaps.option.presetStorage.get('user#here'));
 						map.setCenter(item.geometry.getCoordinates());
 						item.balloon.open(item.geometry.getCoordinates());
 						break;
@@ -202,7 +234,7 @@ function init() {
 
 		function unfilter_collections(data) {
 			a_objects.each(function (item) {
-				item.options.set({ visible: 1 });
+				item.options.set({ visible: ((showMode === 'direct') ? 0 : 0) });
 			});
 		}
 
@@ -217,25 +249,27 @@ function init() {
 		function filter_collections(data) {
 			var arr = data.split(",");
 			map.balloon.close();
-			$("#resultBody").empty();
-			a_objects.each(function (item) {
-				var h;
-				if (ymaps.option.presetStorage.get(item.properties.get('attr')) === undefined) {
-					console.log("Undefined style occured: " + item.properties.get('attr'));
-				}
-				item.options.set(ymaps.option.presetStorage.get(item.properties.get('attr')));
-				item.options.set({ visible: 0 });
-				for (h in arr) {
-					if (arr.hasOwnProperty(h)) {
-						if (parseInt(item.properties.get('ttl'), 10) === parseInt(arr[h], 10)) {
-							item.options.set({ visible: 1 });
-							$("#resultBody").append("<li ref=" + item.properties.get('ttl') + "><img src=" + typeicons[item.properties.get("pr")] + ">" + item.properties.get('name') + "</li>")
+			if (a_objects.getLength()){
+				$("#resultBody").empty();
+				a_objects.each(function (item) {
+					var h;
+					if (ymaps.option.presetStorage.get(item.properties.get('attr')) === undefined) {
+						console.log("Undefined style occured: " + item.properties.get('attr'));
+					}
+					item.options.set(ymaps.option.presetStorage.get(item.properties.get('attr')));
+					item.options.set({ visible: ((showMode === 'direct') ? 0 : 1) });
+					for (h in arr) {
+						if (arr.hasOwnProperty(h)) {
+							if (parseInt(item.properties.get('ttl'), 10) === parseInt(arr[h], 10)) {
+								item.options.set({ visible: ((showMode === 'direct') ? 1 : 0) });
+								$("#resultBody").append("<li ref=" + item.properties.get('ttl') + "><img src=" + typeicons[item.properties.get("pr")] + ">" + item.properties.get('name') + "</li>")
+							}
 						}
 					}
-				}
-				add_search ();
-			});
-			map.setBounds(a_objects.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+					add_search();
+				});
+				map.setBounds(a_objects.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+			}
 		}
 
 		if (mapset) {
@@ -245,8 +279,12 @@ function init() {
 				type: "POST",
 				dataType: "script",
 				success: function () {
-					place_objects(ac, 'a');
-					place_objects(bg, 'b');
+					a_objects.removeAll();
+					showMode = 'direct';
+					foreground = ac;
+					background = bg;
+					//place_objects(foreground, 'a');
+					place_objects(background, 'b');
 					$("#iSearch").tab("show");
 					add_search();
 				},
@@ -264,8 +302,10 @@ function init() {
 					type: "POST",
 					dataType: "script",
 					success: function () {
-						place_objects(data, 'a');
-						map.setBounds(a_objects.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+						a_objects.removeAll();
+						foreground = data;
+						place_objects(foreground, 'a');
+						map.setBounds(a_objects.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 50});
 						add_search();
 						$("#iFound").tab("show");
 					},
@@ -286,7 +326,18 @@ function init() {
 				type: "POST",
 				dataType: "text",
 				success: function (data) {
-					filter_collections(data);
+					var a,
+						arr = data.split(",");
+					showCount = arr.length;
+					found = {};
+					for (a in arr) {
+						if(arr.hasOwnProperty(a)){
+							found[parseInt(arr[a], 10)] = 1;
+						}
+					}
+					a_objects.removeAll();
+					place_objectsWF(foreground, 'a', found);
+					map.setBounds(a_objects.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
 				},
 				error: function (data, stat, err) {
 					console.log([data, stat, err].join("<br>"));

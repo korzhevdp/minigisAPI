@@ -61,7 +61,11 @@ $("#objfilter").keyup(function () {
 	}
 });
 
-$('#modal_pics').modal({ show: 0 });
+$('#modal_pics, #langSelector').modal({ show: 0 });
+
+$(".langMark").click(function(){
+	$("#langSelector").modal('show');
+});
 
 $('#modal_pics').on('shown', function(){
 	$.ajax({

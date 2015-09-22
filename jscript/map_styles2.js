@@ -215,6 +215,7 @@ for (var i in style_src){
 		iconImageHref:   style_src[i][0],
 		iconImageSize:   style_src[i][1],
 		iconImageOffset: style_src[i][4],
+		name: style_src[i][3],
 		type: 1
 	};
 }
@@ -224,6 +225,7 @@ for (var i in style_system){
 		iconImageHref:   style_system[i][0],
 		iconImageSize:   style_system[i][1],
 		iconImageOffset: style_system[i][4],
+		name: style_system[i][3],
 		type: 1
 	};
 }
@@ -235,6 +237,7 @@ for (var i in style_paths){
 		strokeStyle: {
 			style: style_paths[i][3]
 		},
+		name: style_paths[i][4],
 		type: 2
 	};
 }
@@ -249,6 +252,7 @@ for (var i in style_polygons){
 		strokeStyle: {
 			style:   style_polygons[i][6]
 		},
+		name: style_polygons[i][7],
 		type: 3
 	};
 }
@@ -265,6 +269,7 @@ for (var i in style_circles){
 		strokeStyle: {
 			style:   style_circles[i][8]
 		},
+		name: style_circles[i][9],
 		type: 4
 	};
 }
@@ -279,6 +284,15 @@ for (var i in style_rectangles){
 		strokeStyle: {
 			style:   style_rectangles[i][6]
 		},
+		name: style_rectangles[i][7],
 		type: 5
 	};
 }
+
+/*
+navigator.geolocation.getCurrentPosition(
+    function(position) {
+	    alert('Последний раз вас засекали здесь: ' +
+		    position.coords.latitude + ", " + position.coords.longitude);
+	}
+);*/
