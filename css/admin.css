@@ -141,7 +141,7 @@ ul.accessgroups {
 	clear: both;
 }
 ul.accessgroups li {
-	list-style-type : none; 
+	list-style-type : none;
 	display         : block;
 	float           : left;
 	width           : 200px;
@@ -164,10 +164,65 @@ ul.accessgroups li label input[type=checkbox]{
 	margin-top:8px;
 	cursor:pointer;
 }
+
 #gis_edit_form div {
 	display:block;
 	clear:both;
 }
 #gis_edit_form div label{
 	width: 250px !important;
+}
+
+div.semanticsManager {
+	margin-top:25px;
+	padding-left:30px;
+	clear:both;
+}
+
+div.semanticsManager h1,
+div.semanticsManager h2,
+div.semanticsManager h3,
+div.semanticsManager h4,
+div.semanticsManager h5,
+div.semanticsManager h6 {
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+#tabs1, #tabs2, #tabs3 {
+	height: 320px;
+	overflow:auto;
+}
+
+div.semanticsManager input.short {
+	width: 100px;
+}
+
+div.semanticControls{
+	display:block;
+	clear:both;
+}
+
+.groupBindings {
+	list-style-type: none;
+	display:block;
+	clear:both;
+	width:550px;
+	margin:0px;
+}
+.groupBindings li {
+	float  : left;
+	width  : 230px;
+	padding-left: 8px;
+	border : 1px solid #eee;
+	margin : 5px;
+}
+.groupBindings li:hover {
+	background-color: #eee;
+}
+
+.groupBindings li label {
+	margin:0px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }

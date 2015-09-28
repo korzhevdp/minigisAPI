@@ -134,8 +134,9 @@
 	cursor: pointer;
 	overflow: hidden;
 	font-size: .8rem;
+	padding-top:4px;
 	font-family: Tahoma;
-	height:22px;
+	height:32px;
 	width:199px;
 	margin-left:1px;
 }
@@ -144,6 +145,11 @@
 	margin-left:3px;
 	margin-right:4px;
 }
+
+.itemcontainer select{
+	width: 190px;
+}
+
 
 .itemcontainer:hover{
 	text-decoration:underline;
@@ -157,15 +163,15 @@
 	width: 223px;
 	z-index: 101;
 }
-#navheader{
+#navheader {
 	margin-bottom:5px;
 }
 
-#resultBody li.active{
+#resultBody li.active {
 	border: 1px solid red;
 	color: red;
 }
-.altSelector{
+.altSelector {
 	margin:5px;
 	font-size: 1.5rem;
 }
@@ -176,4 +182,49 @@
 	border:0px;
 	margin-top:8px;
 	cursor:pointer;
+}
+
+h3.stdView {
+	margin-left:20px;
+}
+
+h3.stdView small {
+	margin-left:40px;
+}
+
+h3.stdView i,
+div.stdView i {
+	margin-right:10px;
+}
+
+div.stdView {
+	height:128px;
+	overflow: hidden;
+}
+div.stdView span.coord1{
+	margin-left:0px;
+}
+div.stdView span.coord2{
+	margin-left:24px;
+}
+div.stdView img {
+	width: 128px;
+	height: 128px;
+	border: none;
+	float:left;
+	margin-left:20px;
+	margin-right:20px;
+	display: block;
+}
+div.stdViewContent {
+	max-width:724px;
+	padding-left: 20px;
+}
+div.stdViewContent h1,
+div.stdViewContent h2,
+div.stdViewContent h3,
+div.stdViewContent h4,
+div.stdViewContent h5,
+div.stdViewContent h6 {
+	color: #999;
 }

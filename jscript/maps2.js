@@ -616,13 +616,14 @@ function init() {
 		$("#updDataBtn").click(function () {
 			var cb = [],
 				te = {},
+				se = {},
 				ta = {},
 				senddata;
 			prop.address     = $("#f_address").val();
 			prop.name        = $("#f_name").val();
 			prop.attr        = $("#f_style").val();
 			prop.contact     = $("#f_cont").val();
-			$("#propPage input:checked").each(function () {
+			$("#propPage input[type=checkbox]:checked").each(function () {
 				cb.push($(this).val());
 			});
 			$("#propPage input:text").each(function () {
@@ -631,10 +632,14 @@ function init() {
 			$("#propPage textarea").each(function () {
 				ta[$(this).attr("ref")] = $(this).val();
 			});
+			$("#propPage select").each(function () {
+				se[$(this).attr("ref")] = $(this).val();
+			});
 			senddata = prop;
 			senddata.check = cb;
 			senddata.ta    = ta;
 			senddata.te    = te;
+			senddata.se    = se;
 			$.ajax({
 				url: "/editor/saveprops",
 				type: "POST",
