@@ -1,3 +1,4 @@
+/* jshint -W100 */
 var map,
 	a_objects,
 	e_objects,
