@@ -149,11 +149,13 @@ function display_locations(){
 
 	// создаём слои наложения для карты
 	for(a in layerTypes){
-		ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
-		ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
-			layerTypes[a].name, layerTypes[a].layers
-		));
-		typeSelector.addMapType(layerTypes[a].label, a);
+		if(layerTypes.hasOwnProperty(a)){
+			ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
+			ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
+				layerTypes[a].name, layerTypes[a].layers
+			));
+			typeSelector.addMapType(layerTypes[a].label, a);
+		}
 	}
 
 	map = new ymaps.Map("YMapsID", {
@@ -172,11 +174,11 @@ function display_locations(){
 
 	/* ViewPort data fields */
 	viewPort = {
-		frame: 1,
-		c_c: [ map.getCenter()[0].toFixed(8), map.getCenter()[1].toFixed(8) ],
-		zoom: 13,
-		c_Type: 'yandex#satellite'
-	}
+		frame  : 1,
+		c_c    : [ map.getCenter()[0].toFixed(8), map.getCenter()[1].toFixed(8) ],
+		zoom   : 13,
+		c_Type : 'yandex#satellite'
+	};
 
 	$("#vp_frame").val(1);
 	$("#vp_lon").val(map.getCenter()[0].toFixed(8));
@@ -304,7 +306,7 @@ function display_locations(){
 			res.geoObjects.each(function (obj) {
 				names.push(obj.properties.get('name'));
 			});
-			valtz = (names[0] != "undefined") ? [names[0]].join(', ') : "Нет адреса"; [names[0]].join(', ');
+			valtz = (names[0] !== undefined) ? [names[0]].join(', ') : "Нет адреса"; [names[0]].join(', ');
 			map.balloon.open(coords, {
 				contentBody: '<div class="ymaps_balloon row-fluid"><input type="text" value="' + [ coords[0].toPrecision(8), coords[1].toPrecision(8)].join(', ') + '"><br>' + valtz + '</div>'});
 		});
@@ -316,7 +318,7 @@ function display_locations(){
 	});
 
 	a_objects.events.add('contextmenu', function(e){
-		if(mp !== undefined && mp.id !== undefined && mp.id == 'void'){
+		if(mp !== undefined && mp.id !== undefined && mp.id === 'void'){
 			return false;
 		}
 		object = e.get('target');
@@ -326,7 +328,7 @@ function display_locations(){
 	});
 
 	e_objects.events.add('contextmenu', function(e){
-		if(mp !== undefined && mp.id !== undefined && mp.id == 'void'){
+		if(mp !== undefined && mp.id !== undefined && mp.id === 'void'){
 			return false;
 		}
 		object = e.get('target');
@@ -351,7 +353,7 @@ function display_locations(){
 			map.balloon.close();
 		});
 
-		if(mp !== undefined && typeof mp.id !== undefined && mp.id == 'void'){
+		if(mp !== undefined && typeof mp.id !== undefined && mp.id === 'void'){
 			$(".sw-edit").addClass("hide");
 			return false;
 		}
@@ -422,9 +424,9 @@ function display_locations(){
 
 	function apply_preset(src){
 		e_objects.each(function(item){
-			if (item.geometry.getType() == $("#current_obj_type").val()){
+			if (item.geometry.getType() === parseInt($("#current_obj_type").val(), 10)) {
 				item.options.set( ymaps.option.presetStorage.get(src) );	// назначение стиля в опции.
-				item.properties.set( { attr: src } );			// параллельная запись определения в свойства.
+				item.properties.set( { attr: src } );						// параллельная запись определения в свойства.
 				sendObject(item);
 			}
 		});
@@ -472,14 +474,14 @@ function display_locations(){
 		});
 
 		$(".mg-btn-list").click(function(){
-			ttl = $(this).attr("ttl");
+			ttl = parseInt($(this).attr("ttl"), 10);
 			a_objects.each(function(item){
-				if(item.properties.get("ttl") == ttl){
+				if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 					item.balloon.open(item.geometry.getCoordinates());
 				}
 			});
 			e_objects.each(function(item){
-				if(item.properties.get("ttl") == ttl){
+				if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 					item.balloon.open( item.geometry.getCoordinates() );
 					openEditPane( item.geometry.getType() );
 				}
@@ -489,14 +491,14 @@ function display_locations(){
 	}
 
 	function doDelete(src){
-		ttl = $(src).attr('ttl');
+		ttl = parseInt($(src).attr('ttl'), 10);
 		e_objects.each(function(item){
-			if (item.properties.get('ttl') == ttl){
+			if (parseInt(item.properties.get("ttl"), 10) === ttl){
 				e_objects.remove(item);
 			}
 		});
 		a_objects.each(function(item){
-			if (item.properties.get('ttl') == ttl){
+			if (parseInt(item.properties.get("ttl"), 10) === ttl){
 				a_objects.remove(item);
 			}
 		});
@@ -517,23 +519,20 @@ function display_locations(){
 	}
 
 	function doEdit(src){
-		var ttl = ($(src).attr('ttl') === undefined) ? src.properties.get('ttl') : $(src).attr('ttl');
+		var ttl = ($(src).attr('ttl') === undefined) ? parseInt(src.properties.get('ttl'), 10) : parseInt($(src).attr('ttl'), 10);
 		$("#location_id").val(ttl); // здесь строка
 		map.balloon.close();
 		a_objects.each(function(item){
-			if(item.properties.get('ttl') == ttl){
-				//console.log(item.properties.getAll().toSource());
-				item.options.set({ zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1 });
-				if(item.options.get('draggable') == 0){
-					item.options.set( { draggable: 1 } );
-				}
 
-				type = item.geometry.getType();							// получаем YM тип геометрии объекта
+			if(parseInt(item.properties.get("ttl"), 10) === ttl){
 				e_objects.add(item);									// переводим объект в группу редактируемых
 				item.balloon.open(item.geometry.getCoordinates());
+				type = item.geometry.getType();							// получаем YM тип геометрии объекта
+				//console.log(item.properties.getAll().toSource());
+				//item.options.set({ zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1, draggable: ((item.options.get('draggable') === 0) ? 1 : 0) });
 
 				if(e_objects.getLength() > 1){ // нет особого смысла задавать вручную координаты точек, если их для редактирования выбрано больше чем одна. Отключаем поля
-					$(".pointcoord, .circlecoord").attr('disabled','disabled');
+					$(".pointcoord, .circlecoord").prop('disabled', true);
 				}
 
 				if(type == "LineString" || type == "Polygon"){
@@ -553,9 +552,9 @@ function display_locations(){
 			desc = $("#bal_desc").val(),
 			link = $("#bal_link").val(),
 			name = $("#bal_name").val(),
-			ttl  = $(src).attr('ttl');
+			ttl  = parseInt($(src).attr('ttl'), 10);
 		e_objects.each(function(item){
-			if (item.properties.get('ttl') == ttl){
+			if (parseInt(item.properties.get("ttl"), 10) === ttl){
 				item.properties.set( {
 					description : desc,
 					address     : addr,
@@ -575,48 +574,63 @@ function display_locations(){
 				sendObject(item);
 			}
 		});
-		/*--B2
-		ex_objects.each(function(item){
-			if (item.properties.get('ttl') == ttl){
-
-				item.properties.set( {description: desc, address: addr, name: name, hintContent: name + ' ' + addr} );
-				a_objects.add(item);
-				item.options.set({ draggable: 0, zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1, strokeStyle: 'solid' });
-				sendObject(item);
-			}
-		});
-		*/
 		if(e_objects.getLength() < 2){
 			$(".pointcoord, .circlecoord").removeAttr('disabled');
 		}
 	}
 
 	function doFinishAll(){
-		while (e_objects.getLength() > 0){
+		while (e_objects.getLength()){
 			e_objects.each(function(item){
-				a_objects.add(item);
-				item.options.set({draggable: 0, zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1, strokeStyle: 'solid'});
+				a_objects.add(item); // эта операция не столько добавляет, сколько ПЕРЕМЕЩАЕТ объекты.
+				item.options.set({
+					draggable    : 0,
+					zIndex       : 1,
+					zIndexActive : 1,
+					zIndexDrag   : 1,
+					zIndexHover  : 1,
+					strokeStyle  : 'solid'
+				});
 			});
 		}
-		/*--B2
-		while (ex_objects.getLength() > 0){
-			ex_objects.each(function(item){
-				a_objects.add(item);
-				item.options.set({draggable: 0, zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1, strokeStyle: 'solid'});
-			});
-		}
-		*/
-		//e_objects.removeAll();
 		count_objects();
 	}
 
+
+
 	function draw_object(click){
-		var names = [],
-			valtz = '',
-			coords = click.get('coordPosition');
-		if( mp !== undefined && mp.id !== undefined && mp.id == 'void'){
+		var geometry,
+			object,
+			names		= [],
+			valtz		= '',
+			coords		= click.get('coordPosition'),
+			decAddr,
+			selectors	= {
+				1 : '#m_style',
+				2 : '#line_style',
+				3 : '#polygon_style',
+				4 : '#circle_style',
+				5 : ''
+			},
+			pr_type		= geoType2IntId[ $("#current_obj_type").val() ],
+			realStyle	= normalize_style( $(selectors[pr_type]).val(), pr_type ),
+			options		= ymaps.option.presetStorage.get(realStyle);
+			properties = {
+				attr        : realStyle,
+				frame       : parseInt($('#vp_frame').val()),
+				ttl         : ++object_gid,
+				name        : "Название",
+				img         : "nophoto.gif",
+				hintContent : '',
+				address     : '',
+				contact     : '',
+				description : ''
+			};
+
+		if( mp !== undefined && mp.id !== undefined && mp.id === 'void'){
 			return false;
 		}
+
 		if(counter){
 			if(confirm("На карте присутствуют редактируемые объекты.\nЗавершить их редактирование и создать новый объект?")){
 				doFinishAll();
@@ -632,79 +646,49 @@ function display_locations(){
 			});
 			valtz = names[0];
 		})
-		.then(function(coords){
-			var decAddr			= (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ') ,
-				pr_type			= geoType2IntId[$("#current_obj_type").val()],
-				styleLine		= $('#line_style').val(),
-				stylePolygon	= $('#polygon_style').val(),
-				styleCircle		= $('#circle_style').val();
-			properties = {
-				attr: $('#m_style').val(),
-				contact: "",
-				frame: parseInt($('#vp_frame').val()),
-				description: decAddr ,
-				ttl: ++object_gid,
-				hintContent: decAddr,
-				img: "nophoto.gif",
-				address: decAddr,
-				name: "Название"
-			};
-			switch (pr_type){
-				case 0 :
-					console.log("Ошибка в декодировании типа. 0 не является допустимым типом");
-				break;
-				case 1 : // точка
-					var style_id	= ($('#m_style').val() != 'Null') ? $('#m_style').val() :  "twirl#redDotIcon", // некорректно!!! исправить. Аналогично во всех 4
-						geometry	= { type: "Point", coordinates: click.get('coordPosition') },
-						options		= ymaps.option.presetStorage.get(style_id),
-						object		= new ymaps.Placemark(geometry, properties, options);
-					e_objects.add(object);
-					counter++;
-					object.properties.set( {preset: style_id} );
-					object.options.set({draggable: 1});
-					traceNode(object);
-				break;
-				case 2 :
-					var style_id	= ($('#line_style').val() != 'Null') ? $('#line_style').val() : "routes#default",
-						geometry	= {type: 'LineString', coordinates: [click.get('coordPosition')]},
-						options		= ymaps.option.presetStorage.get(style_id),
-						object		= new ymaps.Polyline(geometry, properties, options);
-					e_objects.add(object);
-					object.editor.startDrawing();
-					object.properties.set( {preset: style_id} );
-					object.options.set({draggable: 1});
-					counter++;
-					sendObject(object);
-				break;
-				case 3 :
-					var style_id = ($('#polygon_style').val() != 'Null') ? $('#polygon_style').val() : "area#default",
-						geometry = {type: 'Polygon',coordinates: [[click.get('coordPosition')]]},
-						options  = ymaps.option.presetStorage.get(style_id),
-						object   = new ymaps.Polygon(geometry, properties, options);
-					e_objects.add(object);
-					object.editor.startDrawing();
-					object.properties.set( {preset: style_id} );
-					object.options.set({draggable: 1});
-					sendObject(object);
-					counter++;
-				break;
-				case 4 :
-					var style_id = ($('#circle_style').val() != 'Null') ? $('#circle_style').val() : "circle#default",
-						geometry = [click.get('coordPosition'),$("#cir_radius").val()],
-						options  = ymaps.option.presetStorage.get(style_id),
-						object   = new ymaps.Circle(geometry, properties, options);
-					object.properties.set( {preset: style_id} );
-					object.options.set( {draggable: 1} );
-					traceNode(object);
-					e_objects.add(object);
-					counter++;
-					//sendObject(object);
-				break;
-			}
-			//console.log(frm);
-			$('#location_id').val(object_gid);
-			count_objects();
+		.then(function(coords) {
+			decAddr = (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ') ,
+			properties.description = decAddr;
+			properties.hintContent = decAddr;
+			properties.address     = decAddr;
 		});
+		
+
+		switch (pr_type){
+			case 0 :
+				console.log("Ошибка в декодировании типа. 0 не является допустимым типом");
+				return false;
+			break;
+			case 1 :
+				geometry = { type: "Point", coordinates: click.get('coordPosition') };
+				object   = new ymaps.Placemark(geometry, properties, options);
+				traceNode(object);
+			break;
+			case 2 :
+				geometry = {type: 'LineString', coordinates: [click.get('coordPosition')]};
+				object   = new ymaps.Polyline(geometry, properties, options);
+				sendObject(object);
+			break;
+			case 3 :
+				geometry = {type: 'Polygon',coordinates: [[click.get('coordPosition')]]};
+				object   = new ymaps.Polygon(geometry, properties, options);
+				sendObject(object);
+			break;
+			case 4 :
+				geometry = [click.get('coordPosition'),$("#cir_radius").val()];
+				object   = new ymaps.Circle(geometry, properties, options);
+				traceNode(object);
+			break;
+		}
+		object.properties.set({ preset: realStyle });
+		object.options.set({ draggable: 1 });
+		e_objects.add(object);
+		if (pr_type === 2 || pr_type === 3) {
+			object.editor.startDrawing();
+		}
+		counter++;
+		$('#location_id').val(object_gid);
+		count_objects();
 	}
 
 	function fromClipboard(src, wst){
