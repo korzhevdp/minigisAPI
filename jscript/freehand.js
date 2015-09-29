@@ -45,105 +45,105 @@ function display_locations(){
 	for (var a=0; a < 21; a++){ dX[a] = Math.pow(2, a) - 1; }
 	//api_url = (typeof $("#api_url") != 'undefined' && $("#api_url").val().length) ? $("#api_url").val() : "http://api.korzhevdp.com",
 	var current_type = $("#current_type").val(),
-	map_center   = $("#map_center").val(),
-	current      = (current !== undefined)     ? current : $('#location_id').val(),
-	lon          = (isNaN(ymaps.geolocation.longitude)) ? parseFloat(map_center.toString().split(",")[0]) : ymaps.geolocation.longitude,
-	lat          = (isNaN(ymaps.geolocation.latitude))  ? parseFloat(map_center.toString().split(",")[1]) : ymaps.geolocation.latitude,
-	current_zoom = ($("#current_zoom").val().length)    ? $("#current_zoom").val() : 15,
-	typeSelector = new ymaps.control.TypeSelector(),
-	forIFrame    = 0,
-	tileServerID = parseInt(Math.random() * (4-1) + 1).toString();
-	tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
-	layerTypes   = {
-		0: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[0].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "http://luft.korzhevdp.com/maps/nm/base/",
-			label : "base#arch",
-			name  : "Нарьян-Мар 1943 HD",
-			layers: ['yandex#satellite', "base#arch"]
+		map_center   = $("#map_center").val(),
+		current      = (current !== undefined)     ? current : $('#location_id').val(),
+		lon          = (isNaN(ymaps.geolocation.longitude)) ? parseFloat(map_center.toString().split(",")[0]) : ymaps.geolocation.longitude,
+		lat          = (isNaN(ymaps.geolocation.latitude))  ? parseFloat(map_center.toString().split(",")[1]) : ymaps.geolocation.latitude,
+		current_zoom = ($("#current_zoom").val().length)    ? $("#current_zoom").val() : 15,
+		typeSelector = new ymaps.control.TypeSelector(),
+		forIFrame    = 0,
+		tileServerID = parseInt(Math.random() * (4-1) + 1).toString();
+		tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
+		layerTypes   = {
+			0: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[0].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "http://luft.korzhevdp.com/maps/nm/base/",
+				label : "base#arch",
+				name  : "Нарьян-Мар 1943 HD",
+				layers: ['yandex#satellite', "base#arch"]
+			},
+			1: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[1].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "http://luft.korzhevdp.com/maps/1990/",
+				label : "base2#arch",
+				name  : "Архангельск. План 1998 года",
+				layers: ['yandex#satellite', "base2#arch"]
+			},
+			2: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[2].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "http://luft.korzhevdp.com/maps/arch1940/base/",
+				label : "base3#arch",
+				name  : "Архангельск. 1941-43 гг. Стандартное разрешение",
+				layers: ['yandex#satellite', "base3#arch"]
+			},
+			3: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[3].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "http://luft.korzhevdp.com/maps/arch1940/centerhr/",
+				label : "base4#arch",
+				name  : "Архангельск. 1941-43 гг. Центр. Высокое разрешение",
+				layers: ['yandex#satellite', "base3#arch", "base4#arch"]
+			},
+			4: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[4].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "http://luft.korzhevdp.com/maps/arch1940/farnorth/",
+				label : "base5#arch",
+				name  : "Архангельск. 1941-43 гг. Север, фрагменты. Высокое разрешение",
+				layers: ['yandex#satellite', "base3#arch", "base5#arch"]
+			},
+			5: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[5].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "http://luft.korzhevdp.com/maps/molotowsk/Molotowsk041/",
+				label : "base#molot",
+				name  : "Молотовск и окрестности 25.04.1943 г.",
+				layers: ['yandex#satellite', "base#molot"]
+			},
+			6: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[6].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "http://luft.korzhevdp.com/maps/molotowsk/Molotowsk040/",
+				label : "base#molot2",
+				name  : "Молотовск, центр города 25.04.1943 г.",
+				layers: ['yandex#satellite', "base#molot", "base#molot2"]
+			},
+			7: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[7].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "http://luft.korzhevdp.com/maps/molotowsk/Molotowsk042/",
+				label : "base#molot3",
+				name  : "Молотовск. Завод. 8.07.1943 г.",
+				layers: ['yandex#satellite', "base#molot", "base#molot3"]
+			},
+			8: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[8].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "Molotowsk044/",
+				label : "base#molot4",
+				name  : "Молотовск. Завод. Ягры. 15.08.1943 г.",
+				layers: ['yandex#satellite', "base#molot", "base#molot4"]
+			},
+			9: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[9].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
+				folder: "http://luft.korzhevdp.com/maps/molotowsk/Molotowsk049/",
+				label : "base#molot5",
+				name  : "Молотовск. Завод. 15.08.1943 г.",
+				layers: ['yandex#satellite', "base#molot5"]
+			},
+			10: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=ru&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo";}, {tileTransparent: 1, zIndex:1000});},
+				folder: "",
+				label : "satellite#google",
+				name  : "Гуглотест",
+				layers: ["satellite#google"]
+			},
+			11: {
+				func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://" + tileServerLit[tileServerID] + ".tile.openstreetmap.org/" + zoom + "/" + tile[0] + "/" + tile[1] + ".png";}, {tileTransparent: 1, zIndex:1000});},
+				folder: "",
+				label : "map#osm",
+				name  : "OSMтест",
+				layers: ["map#osm"]
+			}
 		},
-		1: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[1].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "http://luft.korzhevdp.com/maps/1990/",
-			label : "base2#arch",
-			name  : "Архангельск. План 1998 года",
-			layers: ['yandex#satellite', "base2#arch"]
-		},
-		2: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[2].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "http://luft.korzhevdp.com/maps/arch1940/base/",
-			label : "base3#arch",
-			name  : "Архангельск. 1941-43 гг. Стандартное разрешение",
-			layers: ['yandex#satellite', "base3#arch"]
-		},
-		3: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[3].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "http://luft.korzhevdp.com/maps/arch1940/centerhr/",
-			label : "base4#arch",
-			name  : "Архангельск. 1941-43 гг. Центр. Высокое разрешение",
-			layers: ['yandex#satellite', "base3#arch", "base4#arch"]
-		},
-		4: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[4].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "http://luft.korzhevdp.com/maps/arch1940/farnorth/",
-			label : "base5#arch",
-			name  : "Архангельск. 1941-43 гг. Север, фрагменты. Высокое разрешение",
-			layers: ['yandex#satellite', "base3#arch", "base5#arch"]
-		},
-		5: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[5].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "http://luft.korzhevdp.com/maps/molotowsk/Molotowsk041/",
-			label : "base#molot",
-			name  : "Молотовск и окрестности 25.04.1943 г.",
-			layers: ['yandex#satellite', "base#molot"]
-		},
-		6: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[6].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "http://luft.korzhevdp.com/maps/molotowsk/Molotowsk040/",
-			label : "base#molot2",
-			name  : "Молотовск, центр города 25.04.1943 г.",
-			layers: ['yandex#satellite', "base#molot", "base#molot2"]
-		},
-		7: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[7].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "http://luft.korzhevdp.com/maps/molotowsk/Molotowsk042/",
-			label : "base#molot3",
-			name  : "Молотовск. Завод. 8.07.1943 г.",
-			layers: ['yandex#satellite', "base#molot", "base#molot3"]
-		},
-		8: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[8].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "Molotowsk044/",
-			label : "base#molot4",
-			name  : "Молотовск. Завод. Ягры. 15.08.1943 г.",
-			layers: ['yandex#satellite', "base#molot", "base#molot4"]
-		},
-		9: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[9].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
-			folder: "http://luft.korzhevdp.com/maps/molotowsk/Molotowsk049/",
-			label : "base#molot5",
-			name  : "Молотовск. Завод. 15.08.1943 г.",
-			layers: ['yandex#satellite', "base#molot5"]
-		},
-		10: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=ru&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo";}, {tileTransparent: 1, zIndex:1000});},
-			folder: "",
-			label : "satellite#google",
-			name  : "Гуглотест",
-			layers: ["satellite#google"]
-		},
-		11: {
-			func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://" + tileServerLit[tileServerID] + ".tile.openstreetmap.org/" + zoom + "/" + tile[0] + "/" + tile[1] + ".png";}, {tileTransparent: 1, zIndex:1000});},
-			folder: "",
-			label : "map#osm",
-			name  : "OSMтест",
-			layers: ["map#osm"]
-		}
-	},
-	counter      = 0,
-	object_gid   = $("#gCounter").val(),
-	isCenterSet  = 1,
-	a_objects    = new ymaps.GeoObjectArray(),
+		counter      = 0,
+		object_gid   = $("#gCounter").val(),
+		isCenterSet  = 1;
+	a_objects    = new ymaps.GeoObjectArray();
 	e_objects    = new ymaps.GeoObjectArray();
 	//ex_objects    = new ymaps.GeoObjectArray(), //--B2
 
@@ -535,7 +535,7 @@ function display_locations(){
 					$(".pointcoord, .circlecoord").prop('disabled', true);
 				}
 
-				if(type == "LineString" || type == "Polygon"){
+				if(type === "LineString" || type === "Polygon"){
 					item.editor.startEditing();
 				}
 
@@ -579,9 +579,9 @@ function display_locations(){
 		}
 	}
 
-	function doFinishAll(){
-		while (e_objects.getLength()){
-			e_objects.each(function(item){
+	function doFinishAll() {
+		e_objects.each(function(item) {
+			while (e_objects.getLength()) {
 				a_objects.add(item); // эта операция не столько добавляет, сколько ПЕРЕМЕЩАЕТ объекты.
 				item.options.set({
 					draggable    : 0,
@@ -591,14 +591,14 @@ function display_locations(){
 					zIndexHover  : 1,
 					strokeStyle  : 'solid'
 				});
-			});
-		}
+			}
+		});
 		count_objects();
 	}
 
 
 
-	function draw_object(click){
+	function draw_object(click) {
 		var geometry,
 			object,
 			names		= [],
@@ -628,6 +628,12 @@ function display_locations(){
 			};
 
 		if( mp !== undefined && mp.id !== undefined && mp.id === 'void'){
+			console.log("Рисование запрещено");
+			return false;
+		}
+
+		if(pr_type === 0){
+			console.log("Ошибка в декодировании типа. 0 не является допустимым типом");
 			return false;
 		}
 
@@ -647,30 +653,25 @@ function display_locations(){
 			valtz = names[0];
 		})
 		.then(function(coords) {
-			decAddr = (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ') ,
+			decAddr = (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ');
 			properties.description = decAddr;
 			properties.hintContent = decAddr;
 			properties.address     = decAddr;
 		});
-		
 
-		switch (pr_type){
-			case 0 :
-				console.log("Ошибка в декодировании типа. 0 не является допустимым типом");
-				return false;
-			break;
+		switch (pr_type) {
 			case 1 :
 				geometry = { type: "Point", coordinates: click.get('coordPosition') };
 				object   = new ymaps.Placemark(geometry, properties, options);
 				traceNode(object);
 			break;
 			case 2 :
-				geometry = {type: 'LineString', coordinates: [click.get('coordPosition')]};
+				geometry = { type: 'LineString', coordinates: [click.get('coordPosition')] };
 				object   = new ymaps.Polyline(geometry, properties, options);
 				sendObject(object);
 			break;
 			case 3 :
-				geometry = {type: 'Polygon',coordinates: [[click.get('coordPosition')]]};
+				geometry = { type: 'Polygon',coordinates: [[click.get('coordPosition')]] };
 				object   = new ymaps.Polygon(geometry, properties, options);
 				sendObject(object);
 			break;
@@ -680,8 +681,8 @@ function display_locations(){
 				traceNode(object);
 			break;
 		}
-		object.properties.set({ preset: realStyle });
-		object.options.set({ draggable: 1 });
+		object.properties.set({ preset : realStyle });
+		object.options.set({ draggable : 1 });
 		e_objects.add(object);
 		if (pr_type === 2 || pr_type === 3) {
 			object.editor.startDrawing();
@@ -695,32 +696,32 @@ function display_locations(){
 		/*
 		вставка данных из локального буфера обмена
 		*/
-		var ttl = $(src).attr('ttl');
-		e_objects.each(function(item){
-			if(ttl == item.properties.get('ttl')){
+		var ttl = parseInt($(src).attr('ttl'), 10);
+		e_objects.each(function(item) {
+			if(ttl === parseInt(item.properties.get('ttl'), 10)) {
 				item.properties.set({
-					name : clipboard.name,
-					address: clipboard.address,
-					description: clipboard.description,
-					hintContent: clipboard.name + ' ' + clipboard.address
+					name        : clipboard.name,
+					address     : clipboard.address,
+					description : clipboard.description,
+					hintContent : clipboard.name + ' ' + clipboard.address
 				});
-				if(wst == 1 && item.geometry.getType() == clipboard.gtype){
-					item.options.set( ymaps.option.presetStorage.get(clipboard.preset) );
-					item.properties.set( {preset: clipboard.preset} );
+				if (wst === 1 && item.geometry.getType() === clipboard.gtype) {
+					item.options.set(ymaps.option.presetStorage.get(normalize_style(clipboard.preset)));
+					item.properties.set({ preset: clipboard.preset });
 				}
 			}
 		});
-		a_objects.each(function(item){
-			if(ttl == item.properties.get('ttl')){
+		a_objects.each(function(item) {
+			if (ttl === parseInt(item.properties.get('ttl'), 10)) {
 				item.properties.set({
-					name :			clipboard.name,
-					address:		clipboard.address,
-					description:	clipboard.description,
-					hintContent:	clipboard.name + ' ' + clipboard.address
+					name        :	clipboard.name,
+					address     :	clipboard.address,
+					description :	clipboard.description,
+					hintContent :	clipboard.name + ' ' + clipboard.address
 				});
-				if(wst == 1 && item.geometry.getType() == clipboard.gtype){
-					item.options.set( ymaps.option.presetStorage.get(clipboard.preset) );
-					item.properties.set( { preset: clipboard.preset } );
+				if(wst === 1 && item.geometry.getType() === clipboard.gtype) {
+					item.options.set(ymaps.option.presetStorage.get(normalize_style(clipboard.preset)));
+					item.properties.set({ preset: clipboard.preset });
 				}
 			}
 		});
@@ -728,21 +729,22 @@ function display_locations(){
 	}
 
 	function genListItem(ttl, name, address, pic) { //динамически генерируемый чанк
-		return string = '<div class="btn-group">'
-			+ '<button class="btn btn-mini mg-btn-list" ttl=' + ttl + '>'
-			+ '<img src="' + api_url + '/images/' + pic + '" alt="">' + 'Название: ' + name + '<br>'
-			+ 'Адрес: ' + address
-			+ '</button>'
-			+ '<button class="btn dropdown-toggle" data-toggle="dropdown" style="height:55px;">'
-				+ '<span class="caret"></span>'
-			+ '</button>'
-			+ '<ul class="dropdown-menu">'
-				+ '<li><a href="#" class="copyProp" ttl=' + ttl + '><i class="icon-upload"></i> Скопировать свойства</a></li>'
-				+ '<li><a href="#" class="pasteProp" ttl=' + ttl + ' title="Вставить свойства"><i class="icon-download"></i> Вставить свойства</a></li>'
-				+ '<li><a href="#" class="pastePropOpt" ttl=' + ttl + ' title="Вставить свойства и оформление"><i class="icon-download-alt"></i> Вставить всё</a></li>'
-				+ '<li><a href="#" class="sw-del" ttl=' + ttl + '><i class="icon-trash"></i> Удалить объект</a></li>'
-			+ '</ul>'
-		+ '</div>';
+		string = '<div class="btn-group">' +
+			'<button class="btn btn-mini mg-btn-list" ttl=' + ttl + '>' +
+			'<img src="' + api_url + '/images/' + pic + '" alt="">' + 'Название: ' + name + '<br>' +
+			'Адрес: ' + address +
+			'</button>' +
+			'<button class="btn dropdown-toggle" data-toggle="dropdown" style="height:55px;">' +
+			'<span class="caret"></span>' +
+			'</button>'+
+			'<ul class="dropdown-menu">' +
+				'<li><a href="#" class="copyProp" ttl=' + ttl + '><i class="icon-upload"></i> Скопировать свойства</a></li>' +
+				'<li><a href="#" class="pasteProp" ttl=' + ttl + ' title="Вставить свойства"><i class="icon-download"></i> Вставить свойства</a></li>' +
+				'<li><a href="#" class="pastePropOpt" ttl=' + ttl + ' title="Вставить свойства и оформление"><i class="icon-download-alt"></i> Вставить всё</a></li>' +
+				'<li><a href="#" class="sw-del" ttl=' + ttl + '><i class="icon-trash"></i> Удалить объект</a></li>' +
+			'</ul>' +
+		'</div>';
+		return string;
 	}
 
 	function hide_frame(frame){
@@ -800,16 +802,8 @@ function display_locations(){
 					place_freehand_objects(usermap);
 				}
 				if(mp !== undefined){
-					(mp.id === 'void')
-						? $("#mapSave, #ehashID, #SContainer").css('display',"none")
-						: $("#mapSave, #ehashID, #SContainer").css('display',"block");
-					map.setType(mp.maptype);
-					map.setZoom(mp.zoom);
-					//?????
-					map.panTo(mp.c); //,{ callback: function(err){}, checkZoomRange:1, duration:1000};
-					if(mp.indb){
-						//$(".readyMarker").removeClass("icon-remove").addClass("icon-ok");
-					}
+					$("#mapSave, #ehashID, #SContainer").css('display', ((mp.id === 'void') ? 'none' : 'block'))
+					map.setType(mp.maptype).setZoom(mp.zoom).panTo(mp.c);
 				}
 				count_objects();
 				lock_center();
@@ -919,7 +913,7 @@ function display_locations(){
 			},
 			test = ymaps.option.presetStorage.get(style);
 		if (test === undefined) {
-			style = ["twirl", prop.attr.split("#")[1]].join("#")
+			style = ["twirl", prop.attr.split("#")[1]].join("#");
 			if (ymaps.option.presetStorage.get(style) === undefined) {
 				console.log("Стиль оформления отсутствует в хранилище. Применены умолчания.");
 				style = defaults[type];
@@ -930,49 +924,53 @@ function display_locations(){
 
 	function place_freehand_objects(source){
 		var src;
-		for (b in source){
-			src = source[b],
-			frm = (src.frame === undefined) ? 1 : parseInt(src.frame),
-			properties = {
-				attr        : src.a,
-				description : src.d,
-				address     : src.b,
-				hintContent : src.n + ' ' + src.d,
-				img         : src.img,
-				frame       : frm,
-				link        : src.l,
-				name        : src.n,
-				ttl         : b
-			},
-			options = ymaps.option.presetStorage.get(normalize_style(src.a, src.p));
-			if(mframes[frm] === undefined) {
-				mframes[frm] = new ymaps.GeoObjectArray();
-			}
-			if(src.p === 1){
-				var geometry = src.c.split(","),
+		for (b in source) {
+			if (source.hasOwnAttribute(b)){
+				src = source[b],
+				frm = (src.frame === undefined) ? 1 : parseInt(src.frame),
+				properties = {
+					attr        : src.a,
+					description : src.d,
+					address     : src.b,
+					hintContent : src.n + ' ' + src.d,
+					img         : src.img,
+					frame       : frm,
+					link        : src.l,
+					name        : src.n,
+					ttl         : b
+				},
+				options = ymaps.option.presetStorage.get(normalize_style(src.a, src.p));
+				if(mframes[frm] === undefined) {
+					mframes[frm] = new ymaps.GeoObjectArray();
+				}
+				if(src.p === 1){
+					geometry = src.c.split(","),
 					object = new ymaps.Placemark(geometry, properties, options);
-			}
-			if(src.p === 2){
-				var geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.c),
+				}
+				if(src.p === 2){
+					geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.c),
 					object = new ymaps.Polyline(geometry, properties, options);
-			}
-			if(src.p === 3){
-				var geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.c),
+				}
+				if(src.p === 3){
+					geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.c),
 					object = new ymaps.Polygon(geometry, properties, options);
-			}
-			if(src.p == 4){
-				var geometry = new ymaps.geometry.Circle([parseFloat(src.c.split(",")[0]), parseFloat(src.c.split(",")[1])], parseFloat(src.c.split(",")[2])),
+				}
+				if(src.p === 4){
+					geometry = new ymaps.geometry.Circle([parseFloat(src.c.split(",")[0]), parseFloat(src.c.split(",")[1])], parseFloat(src.c.split(",")[2])),
 					object = new ymaps.Circle(geometry, properties, options);
+				}
+				mframes[frm].add(object);
 			}
-			mframes[frm].add(object);
 		}
 		count_objects();
 		//console.log(mframes.length)
 
 		frc = 1;
 		for (a in mframes){
-			if (a > frc){
-				frc = a;
+			if (mframes.hasOwnAttribute(a)) {
+				if ( a > frc ) {
+					frc = a;
+				}
 			}
 		}
 		for (a = 1; a <= frc; a++){
@@ -1087,9 +1085,9 @@ function display_locations(){
 		/*
 			ручной ввод параметров центра геометрии круга из полей навигатора
 		*/
-		var ttl = $('#location_id').val();
-		e_objects.each(function(item){
-			if(item.properties.get('ttl') == ttl){
+		var ttl = parseInt($('#location_id').val(), 10);
+		e_objects.each(function(item) {
+			if(parseInt(item.properties.get('ttl'), 10) === ttl){
 				item.geometry.setCoordinates([parseFloat($("#cir_lon").val()), parseFloat($("#cir_lat").val())]);
 				traceNode(item);
 			}
@@ -1100,9 +1098,9 @@ function display_locations(){
 		/*
 			ручной ввод параметра радиуса геометрии круга из поля навигатора
 		*/
-		var ttl = $('#location_id').val();
-		e_objects.each(function(item){
-			if(item.properties.get('ttl') == ttl){
+		var ttl = parseInt($('#location_id').val(), 10);
+		e_objects.each(function(item) {
+			if(parseInt(item.properties.get('ttl'), 10) === ttl) {
 				item.geometry.setRadius(parseFloat($("#cir_radius").val()));
 				traceNode(item);
 			}
@@ -1120,9 +1118,9 @@ function display_locations(){
 		/*
 			ручной ввод параметров геометрии точки из полей навигатора
 		*/
-		var ttl = $('#location_id').val();
-		e_objects.each(function(item){
-			if(item.properties.get('ttl') == ttl){
+		var ttl = parseInt(item.properties.get('ttl'), 10);
+		e_objects.each(function(item) {
+			if(parseInt(item.properties.get('ttl'), 10) === ttl) {
 				item.geometry.setCoordinates([parseFloat($("#m_lon").val()), parseFloat($("#m_lat").val())]);
 			}
 		});
@@ -1132,16 +1130,17 @@ function display_locations(){
 		/*
 			функция переключения фрейма
 		*/
-		while(geoObject = mframes[frm].get(0)) {
-			a_objects.add(geoObject);
+		while(mframes[frm].get(0)) {
+			a_objects.add(mframes[frm].get(0));
 		}
-		map.geoObjects.add(a_objects);
-		//map.geoObjects.add(e_objects);
+		//map.geoObjects.add(a_objects);
 	}
 
 	function style_list(){
 		for (a in style_src){
-			$("#m_style").append($('<option value="' + style_src[a][2] + '">' + style_src[a][3] + '</option>'));
+			if (style_src.hasOwnProperty(a)) {
+				$("#m_style").append($('<option value="' + style_src[a][2] + '">' + style_src[a][3] + '</option>'));
+			}
 		}
 	}
 
@@ -1149,9 +1148,9 @@ function display_locations(){
 		/*
 			помещение данных в локальный буфер обмена
 		*/
-		var ttl = $(src).attr('ttl');
-		e_objects.each(function(item){
-			if(ttl == item.properties.get('ttl')){
+		var ttl = parseInt($(src).attr('ttl'), 10);
+		e_objects.each(function(item) {
+			if (ttl === parseInt(item.properties.get('ttl'), 10)) {
 				clipboard = {
 					name:			item.properties.get('name'),
 					address:		item.properties.get('address'),
@@ -1162,7 +1161,7 @@ function display_locations(){
 			}
 		});
 		a_objects.each(function(item){
-			if(ttl == item.properties.get('ttl')){
+			if(ttl === parseInt(item.properties.get('ttl'), 10)){
 				clipboard = {
 					name:			item.properties.get('name'),
 					address:		item.properties.get('address'),
