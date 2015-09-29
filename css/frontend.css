@@ -219,6 +219,7 @@ div.stdView img {
 div.stdViewContent {
 	max-width:724px;
 	padding-left: 20px;
+	margin-bottom: 90px;
 }
 div.stdViewContent h1,
 div.stdViewContent h2,

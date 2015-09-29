@@ -1,14 +1,4 @@
-/*
-Если вам понравился этот скрипт и вы его захотели утащить к себе...
-Наслаждайтесь, что уж тут. Возможно, вам удастся его улучшить качественнее, чем мне.
-Прошу о немногом: оставьте в коде упоминание:
- Please, place this author note:
--- Base Project: Minigis.NET --
---     WWW.KORZHEVDP.COM     --
---      Dmitriy Korzhev      --
---    korzhevdp@gmail.com    --
-*/
-var map = {},
+var map,
 	a_objects,
 	e_objects,
 	api_url       = 'http://api.korzhevdp.com',
@@ -47,7 +37,6 @@ function setup_environment() {
 	list_circle_styles();
 	display_locations();
 }
-
 //######################################### процессор карты #########################################################
 function display_locations(){
 	dX = [];
@@ -56,7 +45,7 @@ function display_locations(){
 	//api_url = (typeof $("#api_url") != 'undefined' && $("#api_url").val().length) ? $("#api_url").val() : "http://api.korzhevdp.com",
 	var current_type = $("#current_type").val(),
 	map_center   = $("#map_center").val(),
-	current      = (typeof(current) != 'undefined')     ? current : $('#location_id').val(),
+	current      = (current !== undefined)     ? current : $('#location_id').val(),
 	lon          = (isNaN(ymaps.geolocation.longitude)) ? parseFloat(map_center.toString().split(",")[0]) : ymaps.geolocation.longitude,
 	lat          = (isNaN(ymaps.geolocation.latitude))  ? parseFloat(map_center.toString().split(",")[1]) : ymaps.geolocation.latitude,
 	current_zoom = ($("#current_zoom").val().length)    ? $("#current_zoom").val() : 15,
@@ -326,7 +315,7 @@ function display_locations(){
 	});
 
 	a_objects.events.add('contextmenu', function(e){
-		if(typeof mp != 'undefined' && typeof mp.id != 'undefined' && mp.id == 'void'){
+		if(mp !== undefined && mp.id !== undefined && mp.id == 'void'){
 			return false;
 		}
 		object = e.get('target');
@@ -336,7 +325,7 @@ function display_locations(){
 	});
 
 	e_objects.events.add('contextmenu', function(e){
-		if(typeof mp != 'undefined' && typeof mp.id != 'undefined' && mp.id == 'void'){
+		if(mp !== undefined && mp.id !== undefined && mp.id == 'void'){
 			return false;
 		}
 		object = e.get('target');
@@ -361,7 +350,7 @@ function display_locations(){
 			map.balloon.close();
 		});
 
-		if(typeof mp != 'undefined' && typeof mp.id != 'undefined' && mp.id == 'void'){
+		if(mp !== undefined && typeof mp.id !== undefined && mp.id == 'void'){
 			$(".sw-edit").addClass("hide");
 			return false;
 		}
@@ -404,9 +393,9 @@ function display_locations(){
 		$(".editX").unbind().click(function(e){
 			e.preventDefault();
 			m = $(this).attr('ttl');
-			//alert(m);
+			//console.log(m);
 			e_objects.each(function(item){
-				//alert([item.properties.get('ttl'), m].join(" -+- "));
+				//console.log([item.properties.get('ttl'), m].join(" -+- "));
 				if(item.properties.get('ttl') == m){
 					map.balloon.close();
 					ex_objects.add(item);
@@ -465,18 +454,18 @@ function display_locations(){
 				$('#' + newid).carousel();
 			},
 			error: function(a,b){
-				alert("При поиске изображений произошла ошибка на сервере");
+				console.log("При поиске изображений произошла ошибка на сервере");
 			}
 		});
 	}
 
 	function count_objects(){
 		$("#ResultBody, #nowEdited").empty();
-		//alert(a_objects.getLength())
+		//console.log(a_objects.getLength())
 		a_objects.each(function(item){
 			$("#ResultBody").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
 		});
-		//alert(e_objects.getLength())
+		//console.log(e_objects.getLength())
 		e_objects.each(function(item){
 			$("#nowEdited").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
 		});
@@ -517,7 +506,7 @@ function display_locations(){
 			},
 			type: "POST",
 			success: function(data){
-				//alert(data);
+				//console.log(data);
 				//$("#consoleContent").html(data);
 			},
 			error: function(data,stat,err){
@@ -527,12 +516,12 @@ function display_locations(){
 	}
 
 	function doEdit(src){
-		var ttl = (typeof $(src).attr('ttl') == 'undefined') ? src.properties.get('ttl') : $(src).attr('ttl');
+		var ttl = ($(src).attr('ttl') === undefined) ? src.properties.get('ttl') : $(src).attr('ttl');
 		$("#location_id").val(ttl); // здесь строка
 		map.balloon.close();
 		a_objects.each(function(item){
 			if(item.properties.get('ttl') == ttl){
-				//alert(item.properties.getAll().toSource());
+				//console.log(item.properties.getAll().toSource());
 				item.options.set({ zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1 });
 				if(item.options.get('draggable') == 0){
 					item.options.set( { draggable: 1 } );
@@ -624,7 +613,7 @@ function display_locations(){
 		var names = [],
 			valtz = '',
 			coords = click.get('coordPosition');
-		if(typeof mp != 'undefined' && typeof mp.id != 'undefined' && mp.id == 'void'){
+		if( mp !== undefined && mp.id !== undefined && mp.id == 'void'){
 			return false;
 		}
 		if(counter){
@@ -643,7 +632,7 @@ function display_locations(){
 			valtz = names[0];
 		})
 		.then(function(coords){
-			var decAddr			= (typeof valtz != "undefined" || [valtz].join(', ').length > 0) ? [valtz].join(', ') : "Нет адреса",
+			var decAddr			= (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ') ,
 				pr_type			= geoType2IntId[$("#current_obj_type").val()],
 				styleLine		= $('#line_style').val(),
 				stylePolygon	= $('#polygon_style').val(),
@@ -661,7 +650,7 @@ function display_locations(){
 			};
 			switch (pr_type){
 				case 0 :
-					alert("Ошибка в декодировании типа. 0 не является допустимым типом");
+					console.log("Ошибка в декодировании типа. 0 не является допустимым типом");
 				break;
 				case 1 : // точка
 					var style_id	= ($('#m_style').val() != 'Null') ? $('#m_style').val() :  "twirl#redDotIcon", // некорректно!!! исправить. Аналогично во всех 4
@@ -711,7 +700,7 @@ function display_locations(){
 					//sendObject(object);
 				break;
 			}
-			//alert(frm);
+			//console.log(frm);
 			$('#location_id').val(object_gid);
 			count_objects();
 		});
@@ -799,9 +788,9 @@ function display_locations(){
 			end			= [],
 			delta		= 0;
 		for (var i=0; i < (src.length - 1);i++){
-			next = (i + 1);
+			next  = (i + 1);
 			start = [ src[i][0],src[i][1] ];
-			end = [ src[next][0],src[next][1] ];
+			end   = [ src[next][0],src[next][1] ];
 			delta = ymaps.coordSystem.geo.getDistance(start, end);
 			routelength += delta;
 		}
@@ -820,13 +809,13 @@ function display_locations(){
 			success: function(data){
 				a_objects.removeAll();
 				e_objects.removeAll();
-				if(typeof usermap != 'undefined' && typeof usermap.error == 'undefined'){
-					place_freehand_objects(usermap);
-				}else{
+				if(usermap === undefined && usermap.error === undefined){
 					console.log(usermap.error);
+				}else{
+					place_freehand_objects(usermap);
 				}
-				if(typeof mp != 'undefined'){
-					(mp.id == 'void')
+				if(mp !== undefined){
+					(mp.id === 'void')
 						? $("#mapSave, #ehashID, #SContainer").css('display',"none")
 						: $("#mapSave, #ehashID, #SContainer").css('display',"block");
 					map.setType(mp.maptype);
@@ -842,7 +831,7 @@ function display_locations(){
 			},
 			error: function(data,stat,err){
 				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
@@ -860,7 +849,7 @@ function display_locations(){
 			},
 			error: function(data,stat,err){
 				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
@@ -935,48 +924,65 @@ function display_locations(){
 		return routelength.toFixed(2);
 	}
 
+	function normalize_style(style, type){
+		var defaults   = {
+				1: 'twirl#redDotIcon',
+				2: 'routes#default',
+				3: 'area#default',
+				4: 'circle#default',
+				5: 'rct#default'
+			},
+			test = ymaps.option.presetStorage.get(style);
+		if (test === undefined) {
+			style = ["twirl", prop.attr.split("#")[1]].join("#")
+			if (ymaps.option.presetStorage.get(style) === undefined) {
+				console.log("Стиль оформления отсутствует в хранилище. Применены умолчания.");
+				style = defaults[type];
+			}
+		}
+		return style;
+	}
+
 	function place_freehand_objects(source){
+		var src;
 		for (b in source){
-			var src = source[b],
-			frm = (typeof src.frame != 'undefined') ? parseInt(src.frame) : 1,
+			src = source[b],
+			frm = (src.frame === undefined) ? 1 : parseInt(src.frame),
 			properties = {
-				attr: src.a,
-				description: src.d,
-				address: src.b,
-				hintContent: src.n + ' ' + src.d,
-				img: src.img,
-				frame: frm,
-				link: src.l,
-				name: src.n,
-				ttl: b
-			};
-			if(typeof mframes[frm] == 'undefined') {
+				attr        : src.a,
+				description : src.d,
+				address     : src.b,
+				hintContent : src.n + ' ' + src.d,
+				img         : src.img,
+				frame       : frm,
+				link        : src.l,
+				name        : src.n,
+				ttl         : b
+			},
+			options = ymaps.option.presetStorage.get(normalize_style(src.a, src.p));
+			if(mframes[frm] === undefined) {
 				mframes[frm] = new ymaps.GeoObjectArray();
 			}
-			if(src.p == 1){
+			if(src.p === 1){
 				var geometry = src.c.split(","),
-					options = { preset: src.a },
 					object = new ymaps.Placemark(geometry, properties, options);
 			}
-			if(src.p == 2){
+			if(src.p === 2){
 				var geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.c),
-					options = { preset: src.a },
 					object = new ymaps.Polyline(geometry, properties, options);
 			}
-			if(src.p == 3){
+			if(src.p === 3){
 				var geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.c),
-					options = { preset: src.a },
 					object = new ymaps.Polygon(geometry, properties, options);
 			}
 			if(src.p == 4){
 				var geometry = new ymaps.geometry.Circle([parseFloat(src.c.split(",")[0]), parseFloat(src.c.split(",")[1])], parseFloat(src.c.split(",")[2])),
-					options = { preset: src.a },
 					object = new ymaps.Circle(geometry, properties, options);
 			}
 			mframes[frm].add(object);
 		}
 		count_objects();
-		//alert(mframes.length)
+		//console.log(mframes.length)
 
 		frc = 1;
 		for (a in mframes){
@@ -985,19 +991,19 @@ function display_locations(){
 			}
 		}
 		for (a = 1; a <= frc; a++){
-			if(typeof mframes[a] == 'undefined'){
+			if(mframes[a] === undefined){
 				mframes[a] = new ymaps.GeoObjectArray();
 			}
 		}
-		frm = (typeof mframes[$("#vp_frame").val()] != 'undefined' ) ? $("#vp_frame").val() : mframes.length - 1;
+		frm = (mframes[$("#vp_frame").val()] === undefined ) ?  mframes.length - 1 : $("#vp_frame").val();
 		//alert (frm)
-		while(geoObject = mframes[frm].get(0)) {
+		while (geoObject = mframes[frm].get(0)) {
 			a_objects.add(geoObject);
 		}
 		map.geoObjects.add(a_objects);
 		map.geoObjects.add(e_objects);
 
-		//alert(a_objects.getLength());
+		//console.log(a_objects.getLength());
 	}
 
 	function saveAll(){
@@ -1017,13 +1023,13 @@ function display_locations(){
 			},
 			error: function(data,stat,err){
 				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
 
 	function sendMap(){
-		if(typeof mp != 'undefined' && typeof mp.id != 'undefined' && mp.id == 'void'){
+		if(mp !== undefined && mp.id !== undefined && mp.id === 'void'){
 			return false;
 		}
 		$.ajax({
@@ -1036,11 +1042,10 @@ function display_locations(){
 			},
 			datatype: "text",
 			success: function(data){
-				//$("#consoleContent").html(data);
+				console.log("Data sent");
 			},
 			error: function(data,stat,err){
-				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
@@ -1049,7 +1054,7 @@ function display_locations(){
 		/*
 			отправка объекта на сервер
 		*/
-		if(typeof mp != 'undefined' && typeof mp.id != 'undefined' && mp.id == 'void'){
+		if(mp !== undefined && mp.id !== undefined && mp.id === 'void'){
 			return false;
 		}
 		// конверсия строкового типа во внутренний
@@ -1088,7 +1093,7 @@ function display_locations(){
 			},
 			error: function(data,stat,err){
 				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
@@ -1204,8 +1209,8 @@ function display_locations(){
 						names.push(obj.properties.get('name'));
 					});
 					valtz = names[0];
-					valtz = (typeof valtz != "undefined" || [valtz].join(', ').length > 0) ? [valtz].join(', ') : "Нет адреса";
-					src.properties.set({hintContent: valtz, address: valtz});
+					valtz = (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ');
+					src.properties.set({ hintContent: valtz, address: valtz });
 					sendObject(src);
 					count_objects();
 				});
@@ -1240,18 +1245,16 @@ function display_locations(){
 			val = $(this).val();
 		e_objects.each(function(item){
 			type = item.geometry.getType();
-			//console.log(type, id, val);
-			//alert(type + ' - ' +id);
-			if(type == "Point" && id == "m_style"){
+			if(type === "Point" && id === "m_style"){
 				apply_preset(val);
 			}
-			if(type == "LineString" && id == "line_style"){
+			if(type === "LineString" && id === "line_style"){
 				apply_preset(val);
 			}
-			if(type == "Polygon" && id == "polygon_style"){
+			if(type === "Polygon" && id === "polygon_style"){
 				apply_preset(val);
 			}
-			if(type == "Circle" && id == "circle_style"){
+			if(type === "Circle" && id === "circle_style"){
 				apply_preset(val);
 			}
 		})
@@ -1315,7 +1318,7 @@ $(".frame-switcher").click(function(){
 		nfrm = 1;
 	}
 	hide_frame(pfrm);
-	if(typeof mframes[nfrm] == 'undefined'){
+	if(mframes[nfrm] === undefined){
 		mframes[nfrm] = new ymaps.GeoObjectArray();
 		if(confirm("Вы создаёте новый фрейм. Следует ли скопировать содержимое предыдущего фрейма в новый?")){
 			//или другой вариант - отослать команду на сервер и перезагрузить уже клонированный фрейм...
@@ -1331,14 +1334,11 @@ $(".frame-switcher").click(function(){
 					place_freehand_objects(usermap);
 				},
 				error: function(data,stat,err){
-					//$("#consoleContent").html([data,stat,err].join("<br>"));
-					alert([data,stat,err].join("\n"));
+					console.log([data,stat,err].join("\n"));
 				}
 			});
 		}
 	}
-	//alert(mframes[1].getLength() + ' ' + mframes[2].getLength());
-	//alert(frm);
 	show_frame(nfrm);
 	$("#vp_frame").val(nfrm);
 });
@@ -1352,23 +1352,21 @@ $("#mapFix").click(function(){
 	lock_center();
 });
 
-
-
-$("#linkFactory a").click(function(e){
-	mode = parseInt($(this).attr('pr'));
-	if(typeof mp == 'undefined'){
-		alert("Текущая карта ещё не была обработана.");
+$("#linkFactory a").click(function(e) {
+	var mode = parseInt($(this).attr('pr'));
+	if (mp === undefined) {
+		console.log("Текущая карта ещё не была обработана.");
 		return false;
 	}
-	if(mode == 1){
+	if(mode === 1){
 		$("#mapLink").val("http://maps.korzhevdp.com" + controller + '/map/' + mp.ehash);
 		$("#mapLinkContainer").removeClass("hide");
 	}
-	if(mode == 2){
+	if(mode === 2){
 		$("#mapLink").val("http://maps.korzhevdp.com" + controller + '/map/' + mp.uhash);
 		$("#mapLinkContainer").removeClass("hide");
 	}
-	if(mode == 3){
+	if(mode === 3){
 		e.preventDefault();  //stop the browser
 		$.ajax({
 			url: controller + '/loadscript/' + mp.uhash,
@@ -1378,13 +1376,11 @@ $("#linkFactory a").click(function(e){
 				window.location.href = controller + '/loadscript/' + mp.uhash;
 			},
 			error: function(data,stat,err){
-				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
-		//window.location.href = api_url + controller + '/loadscript/' + mp.uhash;
 	}
-	if(mode == 4){
+	if(mode === 4){
 		e.preventDefault();  //stop the browser
 		$.ajax({
 			url: controller + "/createframe/" + mp.uhash,
@@ -1393,16 +1389,13 @@ $("#linkFactory a").click(function(e){
 			success: function(data){
 				$("#mapLink").val("http://maps.korzhevdp.com" + controller + '/loadframe/' + mp.uhash);
 				$("#mapLinkContainer").removeClass("hide");
-				//(data == "OK") ? window.location.href = api_url + controller + '/loadiframelist/' + mp.uhash : '';
-				//window.location.href = controller + '/loadframe/' + mp.uhash
 			},
 			error: function(data,stat,err){
-				//alert([data,stat,err].join("<br>"));
+				//console.log([data,stat,err].join("<br>"));
 			}
 		});
-		///window.location.href = '/' + controller + '/loadframe/' + mp.uhash;
 	}
-	if(mode == 5){
+	if(mode === 5){
 		e.preventDefault();
 		$.ajax({
 			url: controller + "/transfer",
@@ -1416,10 +1409,9 @@ $("#linkFactory a").click(function(e){
 				$("#transferM").modal("show");
 			},
 			error: function(data,stat,err){
-				//alert([data,stat,err].join("<br>"));
+				//console.log([data,stat,err].join("<br>"));
 			}
 		});
-		///window.location.href = '/' + controller + '/loadframe/' + mp.uhash;
 	}
 });
 
@@ -1431,12 +1423,9 @@ $("#sessDestroy").click(function(){
 		success: function(data){
 			a_objects.removeAll();
 			e_objects.removeAll();
-			//$("#consoleContent").html(data);
-			//$(".readyMarker").removeClass("icon-ok").addClass("icon-remove");
 		},
 		error: function(data,stat,err){
-			//$("#consoleContent").html([data,stat,err].join("<br>"));
-			alert([data,stat,err].join("\n"));
+			console.log([data,stat,err].join("\n"));
 		}
 	});
 });
@@ -1450,8 +1439,6 @@ $("#mapReset").click(function(){
 			a_objects.removeAll();
 			e_objects.removeAll();
 			$("#mapSave, #ehashID, #SContainer").css('display',"block");
-			//$("#consoleContent").html(data);
-			//$(".readyMarker").removeClass("icon-ok").addClass("icon-remove");
 		},
 		error: function(data,stat,err){
 			//$("#consoleContent").html([data,stat,err].join("<br>"));
@@ -1459,46 +1446,46 @@ $("#mapReset").click(function(){
 	});
 });
 
-$("#linkClose").click(function(){
+$("#linkClose").click(function() {
 	$("#mapLinkContainer").addClass("hide");
 });
 
 function styleAddToStorage(src){
 	for (a in src){
-		ymaps.option.presetStorage.add(a,src[a]);
+		ymaps.option.presetStorage.add(a, src[a]);
 	}
 }
 
-function list_marker_styles(){
-	$("#m_style").append($('<optgroup label="Объекты">'));
-	for (a in yandex_styles){
-		$("#m_style").append($(yandex_styles[a]));
+function list_marker_styles() {
+	$("#m_style").append('<optgroup label="Объекты">');
+	for (a in yandex_styles) {
+		$("#m_style").append( yandex_styles[a] );
 	}
-	$("#m_style").append($('</optgroup><optgroup label="Маркеры">'));
-	for (a in yandex_markers){
-		$("#m_style").append($(yandex_markers[a]));
+	$("#m_style").append('</optgroup><optgroup label="Маркеры">');
+	for (a in yandex_markers) {
+		$("#m_style").append( yandex_markers[a] );
 	}
-	$("#m_style").append($('</optgroup><optgroup label="Пользовательские">'));
-	for (a in style_src){
-		$("#m_style").append($('<option value="' + style_src[a][2] +'">' + style_src[a][3] + '</option>'));
+	$("#m_style").append( '</optgroup><optgroup label="Пользовательские">');
+	for (a in style_src) {
+		$("#m_style").append('<option value="' + style_src[a][2] +'">' + style_src[a][3] + '</option>');
 	}
-	$("#m_style").append($('</optgroup>'));
+	$("#m_style").append('</optgroup>');
 }
 
-function list_route_styles(){
-	for (a in style_paths){
-		$("#line_style").append($('<option value="' + style_paths[a][2] +'">' + style_paths[a][4] + '</option>'));
-	}
-}
-
-function list_polygon_styles(){
-	for (a in style_polygons){
-		$("#polygon_style").append($('<option value="' + style_polygons[a][5] +'">' + style_polygons[a][7] + '</option>'));
+function list_route_styles() {
+	for (a in style_paths) {
+		$("#line_style").append('<option value="' + style_paths[a][2] +'">' + style_paths[a][4] + '</option>');
 	}
 }
 
-function list_circle_styles(){
-	for (a in style_circles){
-		$("#circle_style").append($('<option value="' + style_circles[a][7] +'">' + style_circles[a][9] + '</option>'));
+function list_polygon_styles() {
+	for (a in style_polygons) {
+		$("#polygon_style").append('<option value="' + style_polygons[a][5] +'">' + style_polygons[a][7] + '</option>');
+	}
+}
+
+function list_circle_styles() {
+	for (a in style_circles) {
+		$("#circle_style").append('<option value="' + style_circles[a][7] +'">' + style_circles[a][9] + '</option>');
 	}
 }
