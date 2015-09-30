@@ -1,6 +1,6 @@
 /* jshint -W100 */
 /* jshint undef: true, unused: true */
-/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers */
+/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons */
 var userstyles,
 	map,
 	a_objects,
@@ -359,154 +359,12 @@ function display_locations() {
 	//map.geoObjects.add(ex_objects); //--B2
 	//sendMap();
 
-
-
 	//################################## выносные функции
 
-
-
-	function apply_preset(src) {
-		e_objects.each(function(item) {
-			if (item.geometry.getType() === parseInt($("#current_obj_type").val(), 10)) {
-				item.options.set( ymaps.option.presetStorage.get(src) );	// назначение стиля в опции.
-				item.properties.set( { attr: src } );						// параллельная запись определения в свойства.
-				sendObject(item);
-			}
-		});
-	}
-
-	function carousel_destroy() {
-		$('.modal:has(.carousel)').on('shown', function() {
-			var $carousel = $(this).find('.carousel');
-			if ($carousel.data('carousel') && $carousel.data('carousel').sliding) {
-				$carousel.find('.active').trigger($.support.transition.end);
-			}
-		});
-	}
-
-	function carousel_init() {
-		$.ajax({
-			url: "/ajaxutils/getimagelist/",
-			data: {
-				picref: $('#l_photo').attr('picref')
-			},
-			type: "POST",
-			cache: false,
-			dataType: "html",
-			success: function(data) {
-				var newid = 'car_' + ($(".carousel").attr('id').split('_')[1]++);
-				$("#pic_collection").empty().append(data);
-				$(".carousel").attr('id', newid);
-				$('#' + newid).carousel();
-			},
-			error: function(data, stat, err) {
-				console.log("При поиске изображений произошла ошибка на сервере");
-				console.log([ data, stat, err ]);
-			}
-		});
-	}
-
-	function doDelete(src) {
-		var ttl = parseInt($(src).attr('ttl'), 10);
-		e_objects.each(function(item) {
-			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
-				e_objects.remove(item);
-			}
-		});
-		a_objects.each(function(item) {
-			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
-				a_objects.remove(item);
-			}
-		});
-		$.ajax({
-			url: controller + "/obj_delete",
-			data: {
-				ttl: ttl
-			},
-			type: "POST",
-			success: function() {
-				console.log("The object is to be believed deleted");
-			},
-			error: function(data, stat, err) {
-				console.log([ data, stat, err ]);
-			}
-		});
-	}
-
-	function doEdit(src) {
-		var ttl;
-		ttl = ($(src).attr('ttl') === undefined) ? parseInt(src.properties.get('ttl'), 10) : parseInt($(src).attr('ttl'), 10);
-		$("#location_id").val(ttl); // здесь строка
-		map.balloon.close();
-		a_objects.each(function(item) {
-			var type;
-			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
-				e_objects.add(item);									// переводим объект в группу редактируемых
-				item.balloon.open(item.geometry.getCoordinates());
-				type = item.geometry.getType();							// получаем YM тип геометрии объекта
-				//console.log(item.properties.getAll().toSource());
-				//item.options.set({ zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1, draggable: ((item.options.get('draggable') === 0) ? 1 : 0) });
-				if (e_objects.getLength() > 1) { // нет особого смысла задавать вручную координаты точек, если их для редактирования выбрано больше чем одна. Отключаем поля
-					$(".pointcoord, .circlecoord").prop('disabled', true);
-				}
-				if (type === "LineString" || type === "Polygon") {
-					item.editor.startEditing();
-				}
-				item.options.set({ draggable: 1, zIndex: 300, zIndexActive: 300, zIndexDrag: 300, zIndexHover: 300 });
-				openEditPane(type); // открываем требуемую панель редактора
-				traceNode(item);
-			}
-		});
-		action_listeners_add();
-	}
-
-	function doFinish(src) {
-		var addr = $("#bal_addr").val(),
-			desc = $("#bal_desc").val(),
-			link = $("#bal_link").val(),
-			name = $("#bal_name").val(),
-			ttl  = parseInt($(src).attr('ttl'), 10);
-		e_objects.each(function(item) {
-			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
-				item.properties.set( {
-					description : desc,
-					address     : addr,
-					name        : name,
-					link        : link,
-					hintContent : name + ' ' + addr
-				} );
-				a_objects.add(item);
-				item.options.set({
-					draggable   : 0,
-					zIndex      : 1,
-					zIndexActive: 1,
-					zIndexDrag  : 1,
-					zIndexHover : 1,
-					strokeStyle : 'solid'
-				});
-				sendObject(item);
-			}
-		});
-		if (e_objects.getLength() === 1) {
-			$(".pointcoord, .circlecoord").removeAttr('disabled');
-		}
-	}
-
-	function doFinishAll() {
-		e_objects.each(function(item) {
-			while (e_objects.getLength()) {
-				a_objects.add(item); // эта операция не столько добавляет, сколько ПЕРЕМЕЩАЕТ объекты.
-				item.options.set({
-					draggable    : 0,
-					zIndex       : 1,
-					zIndexActive : 1,
-					zIndexDrag   : 1,
-					zIndexHover  : 1,
-					strokeStyle  : 'solid'
-				});
-			}
-		});
-		count_objects();
+	function apply_preset(src, style) {
+		src.options.set( ymaps.option.presetStorage.get(style) );	// назначение стиля в опции.
+		src.properties.set( { attr: style } );						// параллельная запись определения в свойства.
+		sendObject(src);
 	}
 
 	function draw_object(click) {
@@ -710,46 +568,6 @@ function display_locations() {
 		});
 	}
 
-
-
-	function nullTracers() {
-		/*
-		обнуление всех полей навигатора
-		*/
-		$("#m_lon").val('');
-		$("#m_lat").val('');
-		$("#m_style :first").attr("selected", "selected");
-		$("#m_description").html('');
-		$("#line_vtx").html(0);
-		$("#line_len").html(0);
-		$("#line_style :first").attr("selected", "selected");
-		$("#line_description").html('');
-		$("#polygon_vtx").html(0);
-		$("#polygon_len").html(0);
-		$("#polygon_style :first").attr("selected", "selected");
-		$("#polygon_description").html('');
-		$("#cir_lon").val('');
-		$("#cir_lat").val('');
-		$("#cir_radius").val(100);
-		$("#cir_len").html(0);
-		$("#cir_field").html(0);
-		$("#circle_style :first").attr("selected", "selected");
-		$("#circle_description").html('');
-	}
-
-	function openEditPane(type) {
-		var intType = geoType2IntId[type];
-		$("#current_obj_type").val(type);
-		$(".obj_sw").removeClass("active");
-		$(".obj_sw[pr=" + intType + "]").addClass("active");
-		$(".navigator-pane").addClass("hide");
-		$("#navigator-pane" + intType).removeClass("hide");
-		$("#navheader > li").removeClass("active");
-		$("#palette").addClass("active");
-		$('#results').removeClass('active');
-		$('#mainselector').addClass('active');
-	}
-
 	function perimeter_calc(src) {
 		/*
 			расчёт длины периметра полигона методом прибавления дельты.
@@ -820,54 +638,6 @@ function display_locations() {
 		});
 	}
 
-	function sendObject(item) {
-		/*
-			отправка объекта на сервер
-		*/
-		var type = geoType2IntId[ item.geometry.getType() ],
-			geometry;
-		if (mp !== undefined && mp.id !== undefined && mp.id === 'void') {
-			return false;
-		}
-		// конверсия строкового типа во внутренний
-		switch (type) {
-			case 1:
-				geometry = item.geometry.getCoordinates();
-			break;
-			case 2:
-				geometry = ymaps.geometry.LineString.toEncodedCoordinates(item.geometry);
-			break;
-			case 3:
-				geometry = ymaps.geometry.Polygon.toEncodedCoordinates(item.geometry);
-			break;
-			case 4:
-				geometry = [ item.geometry.getCoordinates(), item.geometry.getRadius() ];
-			break;
-		}
-
-		$.ajax({
-			url: controller + "/save",
-			type: "POST",
-			data: {
-				id :		item.properties.get('ttl'),
-				type:		type,
-				geometry:	geometry,
-				attr:		item.properties.get('attr'),
-				desc:		item.properties.get('description'),
-				address:	item.properties.get('address'),
-				link:		item.properties.get('link'),
-				name:		item.properties.get('name'),
-				frame:		parseInt($("#vp_frame").val())
-			},
-			success: function() {
-				//$("#consoleContent").html(data);
-			},
-			error: function(data, stat, err) {
-				console.log([ data, stat, err ]);
-			}
-		});
-	}
-
 	function setCircleCoordinates() {
 		/*
 			ручной ввод параметров центра геометрии круга из полей навигатора
@@ -931,75 +701,13 @@ function display_locations() {
 		count_objects();
 	}
 
-	function traceNode(src) {
-		/*
-		заполнение полей навигатора характеристиками текущего редактируемого объекта
-		*/
-		var type   = src.geometry.getType(),
-			coords = src.geometry.getCoordinates(),
-			desc   = src.properties.get("description"),
-			cstyle = src.properties.get("attr"),
-			names  = [],
-			radius;
-		// заполнение в соответствии с типом геометрии объекта
-		switch (type) {
-			case "Point" :
-				// запрос адреса
-				ymaps.geocode(coords, { kind: ['house'] })
-				.then(function (res) {
-					res.geoObjects.each(function (obj) {
-						names.push(obj.properties.get('name'));
-					});
-					valtz = names[0];
-					valtz = (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ');
-					src.properties.set({ hintContent: valtz, address: valtz });
-					sendObject(src);
-					count_objects();
-				});
-				$("#m_lon").val(parseFloat(coords[0]).toFixed(8));
-				$("#m_lat").val(parseFloat(coords[1]).toFixed(8));
-				$("#m_style [value='" + cstyle + "']").attr("selected", "selected");
-			break;
-			case "LineString" :
-				$("#line_vtx").html(src.geometry.getLength());
-				$("#line_len").html(length_calc(coords) + " м.");
-				$("#line_style [value='" + cstyle + "']").attr("selected", "selected");
-			break;
-			case "Polygon" :
-				$("#polygon_vtx").html(coords[0].length - 1);
-				$("#polygon_len").html(perimeter_calc(coords) + " м.");
-				$("#polygon_style [value='" + cstyle + "']").attr("selected", "selected");
-			break;
-			case "Circle" :
-				radius = src.geometry.getRadius();
-				$("#cir_lon").val(coords[0].toFixed(8));
-				$("#cir_lat").val(coords[1].toFixed(8));
-				$("#cir_radius").val(radius);
-				$("#cir_len").html((radius * 2 * Math.PI).toFixed(2));
-				$("#cir_field").html((Math.pow(radius,2) * Math.PI).toFixed(2));
-				$('#circle_style [value="' + cstyle + '"]').attr("selected", "selected");
-			break;
-		}
-	}
-
 	$("#m_style, #line_style, #polygon_style, #circle_style").change(function() {
+		//alert ($(this).val() + ' --- ' + $(this).attr("id"));
 		var id = $(this).attr("id"),
 			val = $(this).val(),
 			type;
 		e_objects.each(function(item) {
-			type = item.geometry.getType();
-			if (type === "Point" && id === "m_style") {
-				apply_preset(val);
-			}
-			if (type === "LineString" && id === "line_style") {
-				apply_preset(val);
-			}
-			if (type === "Polygon" && id === "polygon_style") {
-				apply_preset(val);
-			}
-			if (type === "Circle" && id === "circle_style") {
-				apply_preset(val);
-			}
+			apply_preset(item, val);
 		});
 	});
 
@@ -1198,6 +906,109 @@ function action_listeners_add() {
 	*/
 }
 
+function doDelete(src) {
+	var ttl = parseInt($(src).attr('ttl'), 10);
+	e_objects.each(function(item) {
+		if (parseInt(item.properties.get("ttl"), 10) === ttl) {
+			e_objects.remove(item);
+		}
+	});
+	a_objects.each(function(item) {
+		if (parseInt(item.properties.get("ttl"), 10) === ttl) {
+			a_objects.remove(item);
+		}
+	});
+	$.ajax({
+		url: controller + "/obj_delete",
+		data: {
+			ttl: ttl
+		},
+		type: "POST",
+		success: function() {
+			console.log("The object is to be believed deleted");
+		},
+		error: function(data, stat, err) {
+			console.log([ data, stat, err ]);
+		}
+	});
+}
+
+function doEdit(src) {
+	var ttl;
+	ttl = ($(src).attr('ttl') === undefined) ? parseInt(src.properties.get('ttl'), 10) : parseInt($(src).attr('ttl'), 10);
+	$("#location_id").val(ttl); // здесь строка
+	map.balloon.close();
+	a_objects.each(function(item) {
+		var type;
+		if (parseInt(item.properties.get("ttl"), 10) === ttl) {
+			e_objects.add(item);									// переводим объект в группу редактируемых
+			item.balloon.open(item.geometry.getCoordinates());
+			type = item.geometry.getType();							// получаем YM тип геометрии объекта
+			//console.log(item.properties.getAll().toSource());
+			//item.options.set({ zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1, draggable: ((item.options.get('draggable') === 0) ? 1 : 0) });
+			if (e_objects.getLength() > 1) { // нет особого смысла задавать вручную координаты точек, если их для редактирования выбрано больше чем одна. Отключаем поля
+				$(".pointcoord, .circlecoord").prop('disabled', true);
+			}
+			if (type === "LineString" || type === "Polygon") {
+				item.editor.startEditing();
+			}
+			item.options.set({ draggable: 1, zIndex: 300, zIndexActive: 300, zIndexDrag: 300, zIndexHover: 300 });
+			openEditPane(type); // открываем требуемую панель редактора
+			traceNode(item);
+		}
+	});
+	action_listeners_add();
+}
+
+function doFinish(src) {
+	var addr = $("#bal_addr").val(),
+		desc = $("#bal_desc").val(),
+		link = $("#bal_link").val(),
+		name = $("#bal_name").val(),
+		ttl  = parseInt($(src).attr('ttl'), 10);
+	e_objects.each(function(item) {
+		if (parseInt(item.properties.get("ttl"), 10) === ttl) {
+			item.properties.set( {
+				description : desc,
+				address     : addr,
+				name        : name,
+				link        : link,
+				hintContent : name + ' ' + addr
+			} );
+			a_objects.add(item);
+			item.options.set({
+				draggable   : 0,
+				zIndex      : 1,
+				zIndexActive: 1,
+				zIndexDrag  : 1,
+				zIndexHover : 1,
+				strokeStyle : 'solid'
+			});
+			sendObject(item);
+		}
+	});
+	if (e_objects.getLength() === 1) {
+		$(".pointcoord, .circlecoord").removeAttr('disabled');
+	}
+}
+
+function doFinishAll() {
+	e_objects.each(function(item) {
+		while (e_objects.getLength()) {
+			a_objects.add(item); // эта операция не столько добавляет, сколько ПЕРЕМЕЩАЕТ объекты.
+			item.options.set({
+				draggable    : 0,
+				zIndex       : 1,
+				zIndexActive : 1,
+				zIndexDrag   : 1,
+				zIndexHover  : 1,
+				strokeStyle  : 'solid'
+			});
+		}
+	});
+	count_objects();
+}
+
 function count_objects() {
 	$("#ResultBody, #nowEdited").empty();
 	//console.log(a_objects.getLength())
@@ -1224,6 +1035,143 @@ function count_objects() {
 		});
 	});
 	action_listeners_add();
+}
+
+function openEditPane(type) {
+	var intType = geoType2IntId[type];
+	$("#current_obj_type").val(type);
+	$(".obj_sw").removeClass("active");
+	$(".obj_sw[pr=" + intType + "]").addClass("active");
+	$(".navigator-pane").addClass("hide");
+	$("#navigator-pane" + intType).removeClass("hide");
+	$("#navheader > li").removeClass("active");
+	$("#palette").addClass("active");
+	$('#results').removeClass('active');
+	$('#mainselector').addClass('active');
+}
+
+function nullTracers() {
+	/*
+	обнуление всех полей навигатора
+	*/
+	$("#m_lon").val('');
+	$("#m_lat").val('');
+	$("#m_style :first").attr("selected", "selected");
+	$("#m_description").html('');
+	$("#line_vtx").html(0);
+	$("#line_len").html(0);
+	$("#line_style :first").attr("selected", "selected");
+	$("#line_description").html('');
+	$("#polygon_vtx").html(0);
+	$("#polygon_len").html(0);
+	$("#polygon_style :first").attr("selected", "selected");
+	$("#polygon_description").html('');
+	$("#cir_lon").val('');
+	$("#cir_lat").val('');
+	$("#cir_radius").val(100);
+	$("#cir_len").html(0);
+	$("#cir_field").html(0);
+	$("#circle_style :first").attr("selected", "selected");
+	$("#circle_description").html('');
+}
+
+function traceNode(src) {
+	/*
+	заполнение полей навигатора характеристиками текущего редактируемого объекта
+	*/
+	var type   = src.geometry.getType(),
+		coords = src.geometry.getCoordinates(),
+		desc   = src.properties.get("description"),
+		cstyle = src.properties.get("attr"),
+		names  = [],
+		radius;
+	// заполнение в соответствии с типом геометрии объекта
+	switch (type) {
+		case "Point" :
+			// запрос адреса
+			ymaps.geocode(coords, { kind: ['house'] })
+			.then(function (res) {
+				res.geoObjects.each(function (obj) {
+					names.push(obj.properties.get('name'));
+				});
+				valtz = names[0];
+				valtz = (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ');
+				src.properties.set({ hintContent: valtz, address: valtz });
+				sendObject(src);
+				count_objects();
+			});
+			$("#m_lon").val(parseFloat(coords[0]).toFixed(8));
+			$("#m_lat").val(parseFloat(coords[1]).toFixed(8));
+			$("#m_style [value='" + cstyle + "']").attr("selected", "selected");
+		break;
+		case "LineString" :
+			$("#line_vtx").html(src.geometry.getLength());
+			$("#line_len").html(length_calc(coords) + " м.");
+			$("#line_style [value='" + cstyle + "']").attr("selected", "selected");
+		break;
+		case "Polygon" :
+			$("#polygon_vtx").html(coords[0].length - 1);
+			$("#polygon_len").html(perimeter_calc(coords) + " м.");
+			$("#polygon_style [value='" + cstyle + "']").attr("selected", "selected");
+		break;
+		case "Circle" :
+			radius = src.geometry.getRadius();
+			$("#cir_lon").val(coords[0].toFixed(8));
+			$("#cir_lat").val(coords[1].toFixed(8));
+			$("#cir_radius").val(radius);
+			$("#cir_len").html((radius * 2 * Math.PI).toFixed(2));
+			$("#cir_field").html((Math.pow(radius,2) * Math.PI).toFixed(2));
+			$('#circle_style [value="' + cstyle + '"]').attr("selected", "selected");
+		break;
+	}
+}
+
+function sendObject(item) {
+	/*
+		отправка объекта на сервер
+	*/
+	var type = geoType2IntId[ item.geometry.getType() ],
+		geometry;
+	if (mp !== undefined && mp.id !== undefined && mp.id === 'void') {
+		return false;
+	}
+	// конверсия строкового типа во внутренний
+	switch (type) {
+		case 1:
+			geometry = item.geometry.getCoordinates();
+		break;
+		case 2:
+			geometry = ymaps.geometry.LineString.toEncodedCoordinates(item.geometry);
+		break;
+		case 3:
+			geometry = ymaps.geometry.Polygon.toEncodedCoordinates(item.geometry);
+		break;
+		case 4:
+			geometry = [ item.geometry.getCoordinates(), item.geometry.getRadius() ];
+		break;
+	}
+
+	$.ajax({
+		url: controller + "/save",
+		type: "POST",
+		data: {
+			id :		item.properties.get('ttl'),
+			type:		type,
+			geometry:	geometry,
+			attr:		item.properties.get('attr'),
+			desc:		item.properties.get('description'),
+			address:	item.properties.get('address'),
+			link:		item.properties.get('link'),
+			name:		item.properties.get('name'),
+			frame:		parseInt($("#vp_frame").val())
+		},
+		success: function() {
+			//$("#consoleContent").html(data);
+		},
+		error: function(data, stat, err) {
+			console.log([ data, stat, err ]);
+		}
+	});
 }
 
 function genListItem(ttl, name, address, pic) { //динамически генерируемый чанк
@@ -1509,10 +1457,41 @@ function nullPlacemarkTracer() {
 }
 // Fillers
 function style_list() {
+	var a;
 	for (a in style_src) {
 		if (style_src.hasOwnProperty(a)) {
 			$("#m_style").append($('<option value="' + style_src[a][2] + '">' + style_src[a][3] + '</option>'));
 		}
 	}
 }
+// Carousel
+function carousel_destroy() {
+	$('.modal:has(.carousel)').on('shown', function() {
+		var $carousel = $(this).find('.carousel');
+		if ($carousel.data('carousel') && $carousel.data('carousel').sliding) {
+			$carousel.find('.active').trigger($.support.transition.end);
+		}
+	});
+}
 
+function carousel_init() {
+	$.ajax({
+		url: "/ajaxutils/getimagelist/",
+		data: {
+			picref: $('#l_photo').attr('picref')
+		},
+		type: "POST",
+		cache: false,
+		dataType: "html",
+		success: function(data) {
+			var newid = 'car_' + ($(".carousel").attr('id').split('_')[1]++);
+			$("#pic_collection").empty().append(data);
+			$(".carousel").attr('id', newid);
+			$('#' + newid).carousel();
+		},
+		error: function(data, stat, err) {
+			console.log("При поиске изображений произошла ошибка на сервере");
+			console.log([ data, stat, err ]);
+		}
+	});
+}
