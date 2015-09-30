@@ -1040,39 +1040,21 @@ function count_objects() {
 function openEditPane(type) {
 	var intType = geoType2IntId[type];
 	$("#current_obj_type").val(type);
-	$(".obj_sw").removeClass("active");
-	$(".obj_sw[pr=" + intType + "]").addClass("active");
+	$(".obj_sw, #navheader li, #results").removeClass('active');
+	$(".obj_sw[pr=" + intType + "], #palette, #mainselector").addClass('active');
 	$(".navigator-pane").addClass("hide");
 	$("#navigator-pane" + intType).removeClass("hide");
-	$("#navheader > li").removeClass("active");
-	$("#palette").addClass("active");
-	$('#results').removeClass('active');
-	$('#mainselector').addClass('active');
 }
 
 function nullTracers() {
 	/*
 	обнуление всех полей навигатора
 	*/
-	$("#m_lon").val('');
-	$("#m_lat").val('');
-	$("#m_style :first").attr("selected", "selected");
-	$("#m_description").html('');
-	$("#line_vtx").html(0);
-	$("#line_len").html(0);
-	$("#line_style :first").attr("selected", "selected");
-	$("#line_description").html('');
-	$("#polygon_vtx").html(0);
-	$("#polygon_len").html(0);
-	$("#polygon_style :first").attr("selected", "selected");
-	$("#polygon_description").html('');
-	$("#cir_lon").val('');
-	$("#cir_lat").val('');
+	$("#m_lon, #m_lat, #cir_lon, #cir_lat").val('');
+	$("#m_style option:first, #line_style option:first, #polygon_style option:first, #circle_style option:first").attr("selected", "selected");
+	$("#m_description, #circle_description, #polygon_description, #line_description").html('');
+	$("#polygon_vtx, #polygon_len, #cir_len, #cir_field, #line_vtx, #line_len").html(0);
 	$("#cir_radius").val(100);
-	$("#cir_len").html(0);
-	$("#cir_field").html(0);
-	$("#circle_style :first").attr("selected", "selected");
-	$("#circle_description").html('');
 }
 
 function traceNode(src) {
@@ -1126,16 +1108,8 @@ function traceNode(src) {
 	}
 }
 
-function sendObject(item) {
-	/*
-		отправка объекта на сервер
-	*/
-	var type = geoType2IntId[ item.geometry.getType() ],
-		geometry;
-	if (mp !== undefined && mp.id !== undefined && mp.id === 'void') {
-		return false;
-	}
-	// конверсия строкового типа во внутренний
+function returnPreparedGeometry(item) {
+	var type = geoType2IntId[ item.geometry.getType() ];
 	switch (type) {
 		case 1:
 			geometry = item.geometry.getCoordinates();
@@ -1150,7 +1124,18 @@ function sendObject(item) {
 			geometry = [ item.geometry.getCoordinates(), item.geometry.getRadius() ];
 		break;
 	}
+	return geometry;
+}
 
+function sendObject(item) {
+	/*
+		отправка объекта на сервер
+	*/
+	var geometry;
+	if (mp.id !== undefined && mp.id === 'void') {
+		return false;
+	}
+	geometry = returnPreparedGeometry();
 	$.ajax({
 		url: controller + "/save",
 		type: "POST",
@@ -1166,7 +1151,7 @@ function sendObject(item) {
 			frame:		parseInt($("#vp_frame").val())
 		},
 		success: function() {
-			//$("#consoleContent").html(data);
+			console.log("The object is to be believed sent");
 		},
 		error: function(data, stat, err) {
 			console.log([ data, stat, err ]);
