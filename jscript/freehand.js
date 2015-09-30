@@ -862,7 +862,7 @@ function traceNode(src) {
 			tracePoint(src);
 		break;
 		case "LineString":
-			tracePolyline()src;
+			tracePolyline(src);
 		break;
 		case "Polygon":
 			tracePolygon(src);
