@@ -1,5 +1,6 @@
 /* jshint -W100 */
-var ymaps,
+var userstyles,
+	ymaps,
 	map,
 	a_objects,
 	e_objects,
@@ -27,7 +28,8 @@ var ymaps,
 		4 : "Circle",
 		5 : "Rectangle"
 	},
-	mframes = [];
+	mframes = [],
+	isCenterSet  = 1;
 
 ymaps.ready(setup_environment);
 
@@ -40,11 +42,16 @@ function setup_environment() {
 	display_locations();
 }
 //######################################### процессор карты #########################################################
-function display_locations(){
+function display_locations() {
 	var a,
+		cursor,
 		layerTypes,
 		dX = [],
 		typeSelector,
+		searchControl,
+		viewPort,
+		valtz,
+		coords,
 		forIFrame    = 0,
 		counter      = 0,
 		object_gid   = $("#gCounter").val(),
@@ -55,11 +62,11 @@ function display_locations(){
 		lat          = (isNaN(ymaps.geolocation.latitude))  ? parseFloat(map_center.toString().split(",")[1]) : ymaps.geolocation.latitude,
 		current_zoom = ($("#current_zoom").val().length)    ? $("#current_zoom").val() : 15,
 		tileServerID = parseInt(Math.random() * (4-1) + 1).toString(),
-		tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
-		isCenterSet  = 1;
+		tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" };
+
 		//определение механизма пересчёта стандартной сетки тайлов в сетку тайлов Яндекс-карт (TMS)
 		//api_url = (typeof $("#api_url") != 'undefined' && $("#api_url").val().length) ? $("#api_url").val() : "http://api.korzhevdp.com",
-	for ( a = 0; a < 21; a++){ 
+	for ( a = 0; a < 21; a++) { 
 		dX[a] = Math.pow(2, a) - 1;
 	}
 	layerTypes   = {
@@ -154,8 +161,8 @@ function display_locations(){
 	//ex_objects    = new ymaps.GeoObjectArray(), //--B2
 
 	// создаём слои наложения для карты
-	for(a in layerTypes){
-		if(layerTypes.hasOwnProperty(a)){
+	for (a in layerTypes) {
+		if (layerTypes.hasOwnProperty(a)) {
 			ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
 			ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
 				layerTypes[a].name, layerTypes[a].layers
@@ -275,19 +282,19 @@ function display_locations(){
 	*/
 	// ##### события #####
 	// карта
-	map.events.add('balloonopen', function (){
+	map.events.add('balloonopen', function () {
 		$('#upload_location').val($('#l_photo').attr('picref'));
 		action_listeners_add();
 	});
 
 	/*
-	map.events.add('balloonclose', function (){
+	map.events.add('balloonclose', function () {
 		//carousel_destroy();
 	});
 	*/
 
-	map.events.add('boundschange', function (data){
-		if(!isCenterSet){
+	map.events.add('boundschange', function (data) {
+		if (!isCenterSet) {
 			$("#vp_lon").val(data.get('newCenter')[0].toFixed(8)); // сохраняем в поле новое значение центра карты
 			$("#vp_lat").val(data.get('newCenter')[1].toFixed(8)); // сохраняем в поле новое значение центра карты
 			$("#map_center").val(data.get('newCenter').join(",")); // сохраняем в поле новое значение центра карты
@@ -296,16 +303,16 @@ function display_locations(){
 		}
 	});
 
-	map.events.add('typechange', function (){
+	map.events.add('typechange', function () {
 		$("#current_type").val(map.getType()); // сохраняем в поле новое значение типа карты
 		sendMap();
 	});
 
-	map.events.add('click', function (click){
+	map.events.add('click', function (click) {
 		draw_object(click);
 	});
 
-	map.events.add('contextmenu', function (e){
+	map.events.add('contextmenu', function (e) {
 		coords = e.get('coordPosition');
 		ymaps.geocode(coords,{kind: ['house']}).then(function (res) {
 			var names = [];
@@ -318,13 +325,13 @@ function display_locations(){
 		});
 	});
 
-	e_objects.events.add('dragend', function(e){
+	e_objects.events.add('dragend', function(e) {
 		var object = e.get('target');
 		traceNode(object);
 	});
 
-	a_objects.events.add('contextmenu', function(e){
-		if(mp !== undefined && mp.id !== undefined && mp.id === 'void'){
+	a_objects.events.add('contextmenu', function(e) {
+		if (mp !== undefined && mp.id !== undefined && mp.id === 'void') {
 			return false;
 		}
 		object = e.get('target');
@@ -333,8 +340,8 @@ function display_locations(){
 		counter = 1;
 	});
 
-	e_objects.events.add('contextmenu', function(e){
-		if(mp !== undefined && mp.id !== undefined && mp.id === 'void'){
+	e_objects.events.add('contextmenu', function(e) {
+		if (mp !== undefined && mp.id !== undefined && mp.id === 'void') {
 			return false;
 		}
 		object = e.get('target');
@@ -353,18 +360,18 @@ function display_locations(){
 
 	//################################## выносные функции
 
-	function action_listeners_add(){
+	function action_listeners_add() {
 
-		$(".balloonClose").unbind().click(function(){
+		$(".balloonClose").unbind().click(function() {
 			map.balloon.close();
 		});
 
-		if(mp !== undefined && typeof mp.id !== undefined && mp.id === 'void'){
+		if (mp !== undefined && typeof mp.id !== undefined && mp.id === 'void') {
 			$(".sw-edit").addClass("hide");
 			return false;
 		}
 
-		$(".sw-finish").unbind().click(function(){
+		$(".sw-finish").unbind().click(function() {
 			doFinish(this);
 			nullTracers();
 			counter = 0;
@@ -372,13 +379,13 @@ function display_locations(){
 			count_objects();
 		});
 
-		$(".sw-edit").unbind().click(function(){
+		$(".sw-edit").unbind().click(function() {
 			doEdit(this);
 			count_objects();
 			counter = 1;
 		});
 
-		$(".sw-del").unbind().click(function(){
+		$(".sw-del").unbind().click(function() {
 			doDelete(this);
 			nullTracers();
 			counter = 0;
@@ -386,26 +393,26 @@ function display_locations(){
 			count_objects();
 		});
 
-		$(".copyProp").unbind().click(function(){
+		$(".copyProp").unbind().click(function() {
 			toClipboard(this);
 		});
 
-		$(".pasteProp").unbind().click(function(){
+		$(".pasteProp").unbind().click(function() {
 			fromClipboard(this,0);
 		});
 
-		$(".pastePropOpt").unbind().click(function(){
+		$(".pastePropOpt").unbind().click(function() {
 			fromClipboard(this,1);
 		});
 
 		/*
-		$(".editX").unbind().click(function(e){
+		$(".editX").unbind().click(function(e) {
 			e.preventDefault();
 			m = $(this).attr('ttl');
 			//console.log(m);
-			e_objects.each(function(item){
+			e_objects.each(function(item) {
 				//console.log([item.properties.get('ttl'), m].join(" -+- "));
-				if(item.properties.get('ttl') == m){
+				if (item.properties.get('ttl') == m) {
 					map.balloon.close();
 					ex_objects.add(item);
 					item.balloon.open(item.geometry.getCoordinates());
@@ -428,8 +435,8 @@ function display_locations(){
 		*/
 	}
 
-	function apply_preset(src){
-		e_objects.each(function(item){
+	function apply_preset(src) {
+		e_objects.each(function(item) {
 			if (item.geometry.getType() === parseInt($("#current_obj_type").val(), 10)) {
 				item.options.set( ymaps.option.presetStorage.get(src) );	// назначение стиля в опции.
 				item.properties.set( { attr: src } );						// параллельная запись определения в свойства.
@@ -438,7 +445,7 @@ function display_locations(){
 		});
 	}
 
-	function carousel_destroy(){
+	function carousel_destroy() {
 		$('.modal:has(.carousel)').on('shown', function() {
 			var $carousel = $(this).find('.carousel');
 			if ($carousel.data('carousel') && $carousel.data('carousel').sliding) {
@@ -447,7 +454,7 @@ function display_locations(){
 		});
 	}
 
-	function carousel_init(){
+	function carousel_init() {
 		$.ajax({
 			url: "/ajaxutils/getimagelist/",
 			data: {
@@ -456,37 +463,37 @@ function display_locations(){
 			type: "POST",
 			cache: false,
 			dataType: "html",
-			success: function(data){
+			success: function(data) {
 				$("#pic_collection").empty().append(data);
 				newid = 'car_' + ($(".carousel").attr('id').split('_')[1]++);
 				$(".carousel").attr('id', newid);
 				$('#' + newid).carousel();
 			},
-			error: function(a,b){
+			error: function(a,b) {
 				console.log("При поиске изображений произошла ошибка на сервере");
 			}
 		});
 	}
 
-	function count_objects(){
+	function count_objects() {
 		$("#ResultBody, #nowEdited").empty();
 		//console.log(a_objects.getLength())
-		a_objects.each(function(item){
+		a_objects.each(function(item) {
 			$("#ResultBody").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
 		});
 		//console.log(e_objects.getLength())
-		e_objects.each(function(item){
+		e_objects.each(function(item) {
 			$("#nowEdited").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
 		});
 
-		$(".mg-btn-list").click(function(){
+		$(".mg-btn-list").click(function() {
 			ttl = parseInt($(this).attr("ttl"), 10);
-			a_objects.each(function(item){
+			a_objects.each(function(item) {
 				if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 					item.balloon.open(item.geometry.getCoordinates());
 				}
 			});
-			e_objects.each(function(item){
+			e_objects.each(function(item) {
 				if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 					item.balloon.open( item.geometry.getCoordinates() );
 					openEditPane( item.geometry.getType() );
@@ -496,15 +503,15 @@ function display_locations(){
 		action_listeners_add();
 	}
 
-	function doDelete(src){
+	function doDelete(src) {
 		ttl = parseInt($(src).attr('ttl'), 10);
-		e_objects.each(function(item){
-			if (parseInt(item.properties.get("ttl"), 10) === ttl){
+		e_objects.each(function(item) {
+			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 				e_objects.remove(item);
 			}
 		});
-		a_objects.each(function(item){
-			if (parseInt(item.properties.get("ttl"), 10) === ttl){
+		a_objects.each(function(item) {
+			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 				a_objects.remove(item);
 			}
 		});
@@ -514,34 +521,34 @@ function display_locations(){
 				ttl: ttl
 			},
 			type: "POST",
-			success: function(data){
+			success: function(data) {
 				//console.log(data);
 				//$("#consoleContent").html(data);
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				//$("#consoleContent").html([data,stat,err].join("<br>"));
 			}
 		});
 	}
 
-	function doEdit(src){
+	function doEdit(src) {
 		var ttl = ($(src).attr('ttl') === undefined) ? parseInt(src.properties.get('ttl'), 10) : parseInt($(src).attr('ttl'), 10);
 		$("#location_id").val(ttl); // здесь строка
 		map.balloon.close();
-		a_objects.each(function(item){
+		a_objects.each(function(item) {
 
-			if(parseInt(item.properties.get("ttl"), 10) === ttl){
+			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 				e_objects.add(item);									// переводим объект в группу редактируемых
 				item.balloon.open(item.geometry.getCoordinates());
 				type = item.geometry.getType();							// получаем YM тип геометрии объекта
 				//console.log(item.properties.getAll().toSource());
 				//item.options.set({ zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1, draggable: ((item.options.get('draggable') === 0) ? 1 : 0) });
 
-				if(e_objects.getLength() > 1){ // нет особого смысла задавать вручную координаты точек, если их для редактирования выбрано больше чем одна. Отключаем поля
+				if (e_objects.getLength() > 1) { // нет особого смысла задавать вручную координаты точек, если их для редактирования выбрано больше чем одна. Отключаем поля
 					$(".pointcoord, .circlecoord").prop('disabled', true);
 				}
 
-				if(type === "LineString" || type === "Polygon"){
+				if (type === "LineString" || type === "Polygon") {
 					item.editor.startEditing();
 				}
 
@@ -559,8 +566,8 @@ function display_locations(){
 			link = $("#bal_link").val(),
 			name = $("#bal_name").val(),
 			ttl  = parseInt($(src).attr('ttl'), 10);
-		e_objects.each(function(item){
-			if (parseInt(item.properties.get("ttl"), 10) === ttl){
+		e_objects.each(function(item) {
+			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 				item.properties.set( {
 					description : desc,
 					address     : addr,
@@ -580,7 +587,7 @@ function display_locations(){
 				sendObject(item);
 			}
 		});
-		if(e_objects.getLength() < 2){
+		if (e_objects.getLength() < 2) {
 			$(".pointcoord, .circlecoord").removeAttr('disabled');
 		}
 	}
@@ -633,18 +640,18 @@ function display_locations(){
 				description : ''
 			};
 
-		if( mp !== undefined && mp.id !== undefined && mp.id === 'void'){
+		if ( mp !== undefined && mp.id !== undefined && mp.id === 'void') {
 			console.log("Рисование запрещено");
 			return false;
 		}
 
-		if(pr_type === 0){
+		if (pr_type === 0) {
 			console.log("Ошибка в декодировании типа. 0 не является допустимым типом");
 			return false;
 		}
 
-		if(counter){
-			if(confirm("На карте присутствуют редактируемые объекты.\nЗавершить их редактирование и создать новый объект?")){
+		if (counter) {
+			if (confirm("На карте присутствуют редактируемые объекты.\nЗавершить их редактирование и создать новый объект?")) {
 				doFinishAll();
 			}else{
 				return false;
@@ -704,7 +711,7 @@ function display_locations(){
 		*/
 		var ttl = parseInt($(src).attr('ttl'), 10);
 		e_objects.each(function(item) {
-			if(ttl === parseInt(item.properties.get('ttl'), 10)) {
+			if (ttl === parseInt(item.properties.get('ttl'), 10)) {
 				item.properties.set({
 					name        : clipboard.name,
 					address     : clipboard.address,
@@ -725,7 +732,7 @@ function display_locations(){
 					description :	clipboard.description,
 					hintContent :	clipboard.name + ' ' + clipboard.address
 				});
-				if(wst === 1 && item.geometry.getType() === clipboard.gtype) {
+				if (wst === 1 && item.geometry.getType() === clipboard.gtype) {
 					item.options.set(ymaps.option.presetStorage.get(normalize_style(clipboard.preset)));
 					item.properties.set({ preset: clipboard.preset });
 				}
@@ -759,11 +766,11 @@ function display_locations(){
 			фреймы пока упразднены, с их наследием надо разобраться
 		*/
 		mframes[frame].removeAll();
-		while(geoObject = a_objects.get(0)) {
-			mframes[frame].add(geoObject);
+		while(a_objects.get(0)) {
+			mframes[frame].add(a_objects.get(0));
 		}
-		while(geoObject = e_objects.get(0)) {
-			mframes[frame].add(geoObject);
+		while(e_objects.get(0)) {
+			mframes[frame].add(e_objects.get(0));
 		}
 	}
 
@@ -772,7 +779,7 @@ function display_locations(){
 			расчёт длины ломаной методом прибавления дельты.
 			в цикле прибавляется дельта дистанции между вершинами (WGS84)
 		*/
-		if(src.length < 2){
+		if (src.length < 2) {
 			return 0;
 		}
 		var routelength = 0,
@@ -780,7 +787,7 @@ function display_locations(){
 			start		= [],
 			end			= [],
 			delta		= 0;
-		for (var i=0; i < (src.length - 1);i++){
+		for (var i=0; i < (src.length - 1);i++) {
 			next  = (i + 1);
 			start = [ src[i][0],src[i][1] ];
 			end   = [ src[next][0],src[next][1] ];
@@ -799,22 +806,22 @@ function display_locations(){
 				name: name
 			},
 			dataType: "script",
-			success: function(data){
+			success: function(data) {
 				a_objects.removeAll();
 				e_objects.removeAll();
-				if(usermap === undefined && usermap.error === undefined){
+				if (usermap === undefined && usermap.error === undefined) {
 					console.log(usermap.error);
 				}else{
 					place_freehand_objects(usermap);
 				}
-				if(mp !== undefined){
+				if (mp !== undefined) {
 					$("#mapSave, #ehashID, #SContainer").css('display', ((mp.id === 'void') ? 'none' : 'block'));
 					map.setType(mp.maptype).setZoom(mp.zoom).panTo(mp.c);
 				}
 				count_objects();
 				lock_center();
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				//$("#consoleContent").html([data,stat,err].join("<br>"));
 				console.log([data,stat,err].join("\n"));
 			}
@@ -829,10 +836,10 @@ function display_locations(){
 			url: controller + "/get_session",
 			dataType: "script",
 			type: "POST",
-			success: function(data){
+			success: function(data) {
 				place_freehand_objects(usermap);
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				//$("#consoleContent").html([data,stat,err].join("<br>"));
 				console.log([data,stat,err].join("\n"));
 			}
@@ -888,7 +895,7 @@ function display_locations(){
 			в цикле прибавляется дельта дистанции между вершинами (WGS84)
 			расчёт периметра геометрии, как сумма всех периметров геометрии, в том числе и внутренние границы
 		*/
-		if(src[0].length < 2){
+		if (src[0].length < 2) {
 			return 0;
 		}
 		var routelength = 0,
@@ -896,8 +903,8 @@ function display_locations(){
 			start = [],
 			end = [],
 			delta = 0;
-		for(var j = 0; j < src.length; j++){
-			for (var i=0; i < (src[j].length - 1); i++){
+		for (var j = 0; j < src.length; j++) {
+			for (var i=0; i < (src[j].length - 1); i++) {
 				next = (i + 1);
 				start = src[j][i];
 				end = src[j][next];
@@ -935,9 +942,10 @@ function display_locations(){
 			properties,
 			frm;
 		for (b in source) {
-			if (source.hasOwnAttribute(b)){
-				src = source[b],
-				frm = (src.frame === undefined) ? 1 : parseInt(src.frame),
+			if (source.hasOwnProperty(b)) {
+				src = source[b];
+				options = ymaps.option.presetStorage.get(normalize_style(src.a, src.p));
+				frm = (src.frame === undefined) ? 1 : parseInt(src.frame);
 				properties = {
 					attr        : src.a,
 					description : src.d,
@@ -949,24 +957,23 @@ function display_locations(){
 					name        : src.n,
 					ttl         : b
 				};
-				options = ymaps.option.presetStorage.get(normalize_style(src.a, src.p));
-				if(mframes[frm] === undefined) {
+				if (mframes[frm] === undefined) {
 					mframes[frm] = new ymaps.GeoObjectArray();
 				}
-				if(src.p === 1){
-					geometry = src.c.split(","),
-					object = new ymaps.Placemark(geometry, properties, options);
+				if (src.p === 1) {
+					geometry = src.c.split(",");
+					object   = new ymaps.Placemark(geometry, properties, options);
 				}
-				if(src.p === 2){
-					geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.c),
-					object = new ymaps.Polyline(geometry, properties, options);
+				if (src.p === 2) {
+					geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.c);
+					object   = new ymaps.Polyline(geometry, properties, options);
 				}
-				if(src.p === 3){
-					geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.c),
-					object = new ymaps.Polygon(geometry, properties, options);
+				if (src.p === 3) {
+					geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.c);
+					object   = new ymaps.Polygon(geometry, properties, options);
 				}
-				if(src.p === 4){
-					geometry = new ymaps.geometry.Circle([parseFloat(src.c.split(",")[0]), parseFloat(src.c.split(",")[1])], parseFloat(src.c.split(",")[2])),
+				if (src.p === 4) {
+					geometry = new ymaps.geometry.Circle([parseFloat(src.c.split(",")[0]), parseFloat(src.c.split(",")[1])], parseFloat(src.c.split(",")[2]));
 					object = new ymaps.Circle(geometry, properties, options);
 				}
 				mframes[frm].add(object);
@@ -976,25 +983,25 @@ function display_locations(){
 		//console.log(mframes.length)
 
 		frc = 1;
-		for (a in mframes){
-			if (mframes.hasOwnAttribute(a)) {
+		for (a in mframes) {
+			if (mframes.hasOwnProperty(a)) {
 				if ( a > frc ) {
 					frc = a;
 				}
 			}
 		}
-		for (a = 1; a <= frc; a++){
-			if(mframes[a] === undefined){
+		for (a = 1; a <= frc; a++) {
+			if (mframes[a] === undefined) {
 				mframes[a] = new ymaps.GeoObjectArray();
 			}
 		}
 		frm = (mframes[$("#vp_frame").val()] === undefined ) ?  mframes.length - 1 : $("#vp_frame").val();
 		//alert (frm)
-		while (geoObject = mframes[frm].get(0)) {
-			a_objects.add(geoObject);
+		while (mframes[frm].get(0)) {
+			a_objects.add(mframes[frm].get(0));
 		}
-		map.geoObjects.add(a_objects);
-		map.geoObjects.add(e_objects);
+		//map.geoObjects.add(a_objects);
+		//map.geoObjects.add(e_objects);
 
 		//console.log(a_objects.getLength());
 	}
@@ -1008,21 +1015,21 @@ function display_locations(){
 			url: controller + "/savedb",
 			type: "POST",
 			dataType: "script",
-			success: function(data){
+			success: function(data) {
 				a_objects.removeAll();
 				e_objects.removeAll();
 				place_freehand_objects(usermap);
 				count_objects();
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				//$("#consoleContent").html([data,stat,err].join("<br>"));
 				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
 
-	function sendMap(){
-		if(mp !== undefined && mp.id !== undefined && mp.id === 'void') {
+	function sendMap() {
+		if (mp !== undefined && mp.id !== undefined && mp.id === 'void') {
 			return false;
 		}
 		$.ajax({
@@ -1034,25 +1041,25 @@ function display_locations(){
 				zoom: map.getZoom()
 			},
 			datatype: "text",
-			success: function(data){
+			success: function(data) {
 				console.log("Data sent");
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
 
-	function sendObject(item){
+	function sendObject(item) {
 		/*
 			отправка объекта на сервер
 		*/
-		if(mp !== undefined && mp.id !== undefined && mp.id === 'void'){
+		if (mp !== undefined && mp.id !== undefined && mp.id === 'void') {
 			return false;
 		}
 		// конверсия строкового типа во внутренний
 		type = geoType2IntId[ item.geometry.getType() ];
-		switch (type){
+		switch (type) {
 			case 1:
 				geometry = item.geometry.getCoordinates();
 			break;
@@ -1081,62 +1088,62 @@ function display_locations(){
 				name:		item.properties.get('name'),
 				frame:		parseInt($("#vp_frame").val())
 			},
-			success: function(data){
+			success: function(data) {
 				//$("#consoleContent").html(data);
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				//$("#consoleContent").html([data,stat,err].join("<br>"));
 				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
 
-	function setCircleCoordinates(){
+	function setCircleCoordinates() {
 		/*
 			ручной ввод параметров центра геометрии круга из полей навигатора
 		*/
 		var ttl = parseInt($('#location_id').val(), 10);
 		e_objects.each(function(item) {
-			if(parseInt(item.properties.get('ttl'), 10) === ttl){
+			if (parseInt(item.properties.get('ttl'), 10) === ttl) {
 				item.geometry.setCoordinates([parseFloat($("#cir_lon").val()), parseFloat($("#cir_lat").val())]);
 				traceNode(item);
 			}
 		});
 	}
 
-	function setCircleRadius(){
+	function setCircleRadius() {
 		/*
 			ручной ввод параметра радиуса геометрии круга из поля навигатора
 		*/
 		var ttl = parseInt($('#location_id').val(), 10);
 		e_objects.each(function(item) {
-			if(parseInt(item.properties.get('ttl'), 10) === ttl) {
+			if (parseInt(item.properties.get('ttl'), 10) === ttl) {
 				item.geometry.setRadius(parseFloat($("#cir_radius").val()));
 				traceNode(item);
 			}
 		});
 	}
 
-	function setMapCoordinates(){
+	function setMapCoordinates() {
 		/*
 			ручной ввод параметров центра карты из полей навигатора
 		*/
 		map.setCenter([parseFloat($("#vp_lon").val()), parseFloat($("#vp_lat").val())], parseInt($("#current_zoom").val()));
 	}
 
-	function setPointCoordinates(){
+	function setPointCoordinates() {
 		/*
 			ручной ввод параметров геометрии точки из полей навигатора
 		*/
 		var ttl = parseInt(item.properties.get('ttl'), 10);
 		e_objects.each(function(item) {
-			if(parseInt(item.properties.get('ttl'), 10) === ttl) {
+			if (parseInt(item.properties.get('ttl'), 10) === ttl) {
 				item.geometry.setCoordinates([parseFloat($("#m_lon").val()), parseFloat($("#m_lat").val())]);
 			}
 		});
 	}
 
-	function show_frame(frm){
+	function show_frame(frm) {
 		/*
 			функция переключения фрейма
 		*/
@@ -1146,8 +1153,8 @@ function display_locations(){
 		//map.geoObjects.add(a_objects);
 	}
 
-	function style_list(){
-		for (a in style_src){
+	function style_list() {
+		for (a in style_src) {
 			if (style_src.hasOwnProperty(a)) {
 				$("#m_style").append($('<option value="' + style_src[a][2] + '">' + style_src[a][3] + '</option>'));
 			}
@@ -1170,8 +1177,8 @@ function display_locations(){
 				};
 			}
 		});
-		a_objects.each(function(item){
-			if(ttl === parseInt(item.properties.get('ttl'), 10)){
+		a_objects.each(function(item) {
+			if (ttl === parseInt(item.properties.get('ttl'), 10)) {
 				clipboard = {
 					name:			item.properties.get('name'),
 					address:		item.properties.get('address'),
@@ -1193,7 +1200,7 @@ function display_locations(){
 			desc   = src.properties.get("description"),
 			cstyle = src.properties.get("attr");
 		// заполнение в соответствии с типом геометрии объекта
-		switch (type){
+		switch (type) {
 			case "Point" :
 				// запрос адреса
 				ymaps.geocode(coords,{ kind: ['house'] })
@@ -1237,21 +1244,21 @@ function display_locations(){
 	$("#m_style, #line_style, #polygon_style, #circle_style").change(function() {
 		var id = $(this).attr("id"),
 			val = $(this).val();
-		e_objects.each(function(item){
+		e_objects.each(function(item) {
 			type = item.geometry.getType();
-			if(type === "Point" && id === "m_style"){
+			if (type === "Point" && id === "m_style") {
 				apply_preset(val);
 			}
-			if(type === "LineString" && id === "line_style"){
+			if (type === "LineString" && id === "line_style") {
 				apply_preset(val);
 			}
-			if(type === "Polygon" && id === "polygon_style"){
+			if (type === "Polygon" && id === "polygon_style") {
 				apply_preset(val);
 			}
-			if(type === "Circle" && id === "circle_style"){
+			if (type === "Circle" && id === "circle_style") {
 				apply_preset(val);
 			}
-		})
+		});
 	});
 
 	$("#mapLoader").click(function() {
@@ -1266,13 +1273,11 @@ function display_locations(){
 	$(".circlecoord").blur(function() {
 		setCircleCoordinates();
 	});
-
 	$("#cir_radius").keyup(function() {
 		setCircleRadius();
 	});
-
 	// последняя функция процессора карты - загрузка карты по id из строки браузера #################################
-	if($("#maphash").val().length == 16) {
+	if ($("#maphash").val().length === 16) {
 		loadmap($("#maphash").val());
 		$("#mapName").val($("#maphash").val());
 	}else{
@@ -1281,19 +1286,21 @@ function display_locations(){
 }
 //######################################### конец процессора карты #####################################################
 //######################################################################################################################
-
 function lock_center() {
-	(isCenterSet) ? $(".mapcoord").attr('readonly','readonly') : $(".mapcoord").removeAttr('readonly');
-	(isCenterSet) ? $(this).html('Отслеживать центр').attr('title','Разрешить перемещать центр') : $(this).html('Фиксировать центр').attr('title','Не перемещать центр');
+	if (isCenterSet) {
+		$(".mapcoord").attr('readonly','readonly')
+		$(this).html('Отслеживать центр').attr('title','Разрешить перемещать центр')
+	}else{
+		$(".mapcoord").removeAttr('readonly');
+		$(this).html('Фиксировать центр').attr('title','Не перемещать центр');
+	}
 }
-
 // события не-карты
 $(".obj_sw").click(function() {
 	$("#current_obj_type").val(intId2GeoType[$(this).attr('pr')]);
 	$(".navigator-pane").addClass('hide');
 	$("#navigator-pane" + $(this).attr('pr')).removeClass('hide');
 });
-
 $(".mg-btn-list").click(function(src) {
 	select_current_found_object(src);
 });
@@ -1306,15 +1313,15 @@ $("#coordSetter").click(function() {
 $(".frame-switcher").click(function() {
 	var pfrm = parseInt($("#vp_frame").val()),
 		nfrm = 0;
-	if(pfrm >= 1){
-		nfrm = ($(this).attr("id") == "vp_fw") ? (pfrm + 1) : (pfrm > 1) ? (pfrm - 1) : pfrm ;
+	if (pfrm >= 1) {
+		nfrm = ($(this).attr("id") === 'vp_fw') ? (pfrm + 1) : (pfrm > 1) ? (pfrm - 1) : pfrm ;
 	}else{
 		nfrm = 1;
 	}
 	hide_frame(pfrm);
-	if(mframes[nfrm] === undefined){
+	if (mframes[nfrm] === undefined) {
 		mframes[nfrm] = new ymaps.GeoObjectArray();
-		if(confirm("Вы создаёте новый фрейм. Следует ли скопировать содержимое предыдущего фрейма в новый?")){
+		if (confirm("Вы создаёте новый фрейм. Следует ли скопировать содержимое предыдущего фрейма в новый?")) {
 			//или другой вариант - отослать команду на сервер и перезагрузить уже клонированный фрейм...
 			$.ajax({
 				url: controller + "/cloneframe",
@@ -1324,10 +1331,10 @@ $(".frame-switcher").click(function() {
 				},
 				dataType: "script",
 				type: "POST",
-				success: function(data){
+				success: function(data) {
 					place_freehand_objects(usermap);
 				},
-				error: function(data,stat,err){
+				error: function(data,stat,err) {
 					console.log([data,stat,err].join("\n"));
 				}
 			});
@@ -1352,44 +1359,44 @@ $("#linkFactory a").click(function(e) {
 		console.log("Текущая карта ещё не была обработана.");
 		return false;
 	}
-	if(mode === 1){
+	if (mode === 1) {
 		$("#mapLink").val("http://maps.korzhevdp.com" + controller + '/map/' + mp.ehash);
 		$("#mapLinkContainer").removeClass("hide");
 	}
-	if(mode === 2){
+	if (mode === 2) {
 		$("#mapLink").val("http://maps.korzhevdp.com" + controller + '/map/' + mp.uhash);
 		$("#mapLinkContainer").removeClass("hide");
 	}
-	if(mode === 3){
+	if (mode === 3) {
 		e.preventDefault();  //stop the browser
 		$.ajax({
 			url: controller + '/loadscript/' + mp.uhash,
 			dataType: "html",
 			type: "POST",
-			success: function(data){
+			success: function(data) {
 				window.location.href = controller + '/loadscript/' + mp.uhash;
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
-	if(mode === 4){
+	if (mode === 4) {
 		e.preventDefault();  //stop the browser
 		$.ajax({
 			url: controller + "/createframe/" + mp.uhash,
 			dataType: "text",
 			type: "POST",
-			success: function(data){
+			success: function(data) {
 				$("#mapLink").val("http://maps.korzhevdp.com" + controller + '/loadframe/' + mp.uhash);
 				$("#mapLinkContainer").removeClass("hide");
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				//console.log([data,stat,err].join("<br>"));
 			}
 		});
 	}
-	if(mode === 5){
+	if (mode === 5) {
 		e.preventDefault();
 		$.ajax({
 			url: controller + "/transfer",
@@ -1398,11 +1405,11 @@ $("#linkFactory a").click(function(e) {
 			},
 			dataType: "html",
 			type: "POST",
-			success: function(data){
+			success: function(data) {
 				$("#transferCode").html(data);
 				$("#transferM").modal("show");
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				//console.log([data,stat,err].join("<br>"));
 			}
 		});
@@ -1414,11 +1421,11 @@ $("#sessDestroy").click(function() {
 		url: controller + "/session_reset",
 		dataType: "script",
 		type: "POST",
-		success: function(data){
+		success: function(data) {
 			a_objects.removeAll();
 			e_objects.removeAll();
 		},
-		error: function(data,stat,err){
+		error: function(data,stat,err) {
 			console.log([data,stat,err].join("\n"));
 		}
 	});
@@ -1429,12 +1436,12 @@ $("#mapReset").click(function() {
 		url: controller + "/session_reset",
 		dataType: "html",
 		type: "POST",
-		success: function(data){
+		success: function(data) {
 			a_objects.removeAll();
 			e_objects.removeAll();
 			$("#mapSave, #ehashID, #SContainer").css('display',"block");
 		},
-		error: function(data,stat,err){
+		error: function(data,stat,err) {
 			//$("#consoleContent").html([data,stat,err].join("<br>"));
 		}
 	});
@@ -1445,41 +1452,60 @@ $("#linkClose").click(function() {
 });
 
 function styleAddToStorage(src) {
-	for (a in src){
-		ymaps.option.presetStorage.add(a, src[a]);
+	var a;
+	for (a in src) {
+		if (src.hasOwnProperty(a)) {
+			ymaps.option.presetStorage.add(a, src[a]);
+		}
 	}
 }
 
 function list_marker_styles() {
+	var a;
 	$("#m_style").append('<optgroup label="Объекты">');
 	for (a in yandex_styles) {
-		$("#m_style").append( yandex_styles[a] );
+		if (yandex_styles.hasOwnProperty(a)) {
+			$("#m_style").append( yandex_styles[a] );
+		}
 	}
 	$("#m_style").append('</optgroup><optgroup label="Маркеры">');
 	for (a in yandex_markers) {
-		$("#m_style").append( yandex_markers[a] );
+		if (yandex_markers.hasOwnProperty(a)) {
+			$("#m_style").append( yandex_markers[a] );
+		}
 	}
 	$("#m_style").append( '</optgroup><optgroup label="Пользовательские">');
 	for (a in style_src) {
-		$("#m_style").append('<option value="' + style_src[a][2] +'">' + style_src[a][3] + '</option>');
+		if (style_src.hasOwnProperty(a)) {
+			$("#m_style").append('<option value="' + style_src[a][2] +'">' + style_src[a][3] + '</option>');
+		}
 	}
 	$("#m_style").append('</optgroup>');
 }
 
 function list_route_styles() {
+	var a;
 	for (a in style_paths) {
-		$("#line_style").append('<option value="' + style_paths[a][2] +'">' + style_paths[a][4] + '</option>');
+		if (style_paths.hasOwnProperty(a)) {
+			$("#line_style").append('<option value="' + style_paths[a][2] +'">' + style_paths[a][4] + '</option>');
+		}
 	}
 }
 
 function list_polygon_styles() {
+	var a;
 	for (a in style_polygons) {
-		$("#polygon_style").append('<option value="' + style_polygons[a][5] +'">' + style_polygons[a][7] + '</option>');
+		if (style_polygons.hasOwnProperty(a)) {
+			$("#polygon_style").append('<option value="' + style_polygons[a][5] +'">' + style_polygons[a][7] + '</option>');
+		}
 	}
 }
 
 function list_circle_styles() {
+	var a;
 	for (a in style_circles) {
-		$("#circle_style").append('<option value="' + style_circles[a][7] +'">' + style_circles[a][9] + '</option>');
+		if (style_circles.hasOwnProperty(a)) {
+			$("#circle_style").append('<option value="' + style_circles[a][7] +'">' + style_circles[a][9] + '</option>');
+		}
 	}
 }
