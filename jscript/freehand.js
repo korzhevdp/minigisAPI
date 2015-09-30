@@ -609,14 +609,12 @@ function place_freehand_objects(source) {
 			}
 			if (src.p === 4) {
 				geometry = new ymaps.geometry.Circle([parseFloat(src.c.split(",")[0]), parseFloat(src.c.split(",")[1])], parseFloat(src.c.split(",")[2]));
-				object = new ymaps.Circle(geometry, properties, options);
+				object   = new ymaps.Circle(geometry, properties, options);
 			}
 			mframes[frm].add(object);
 		}
 	}
 	count_objects();
-	//console.log(mframes.length)
-
 	frameCounter = 1;
 	for (a in mframes) {
 		if (mframes.hasOwnProperty(a)) {
@@ -631,14 +629,9 @@ function place_freehand_objects(source) {
 		}
 	}
 	frm = (mframes[$("#vp_frame").val()] === undefined ) ?  mframes.length - 1 : $("#vp_frame").val();
-	//alert (frm)
 	while (mframes[frm].get(0)) {
 		a_objects.add(mframes[frm].get(0));
 	}
-	//map.geoObjects.add(a_objects);
-	//map.geoObjects.add(e_objects);
-
-	//console.log(a_objects.getLength());
 }
 
 function normalize_style(style, type) {
@@ -705,35 +698,6 @@ function action_listeners_add() {
 	$(".pastePropOpt").unbind().click(function() {
 		fromClipboard(this,1);
 	});
-
-	/*
-	$(".editX").unbind().click(function(e) {
-		e.preventDefault();
-		m = $(this).attr('ttl');
-		//console.log(m);
-		e_objects.each(function(item) {
-			//console.log([item.properties.get('ttl'), m].join(" -+- "));
-			if (item.properties.get('ttl') == m) {
-				map.balloon.close();
-				ex_objects.add(item);
-				item.balloon.open(item.geometry.getCoordinates());
-				CKEDITOR.appendTo( 'editXtgt',{
-					contentsCss: api_url + '/bootstrap/css/bootstrap.css',
-					skin : 'v2',
-					filebrowserBrowseUrl : '/dop/browser/images',
-					filebrowserUploadUrl : '/dop/uploader/files',
-					toolbar_Basic : [
-						[ 'Bold', 'Italic', '-', 'Format', 'Image', 'Table' ]
-					],
-					toolbar : 'Basic',
-					height:220,
-					format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;address;div;well',
-					format_well: { name: 'well', element : 'div', attributes : { 'class' : 'well well-small' } }
-				})
-			}
-		})
-	});
-	*/
 }
 
 function doDelete(src) {
