@@ -289,6 +289,15 @@ for (var i in style_rectangles){
 	};
 }
 
+function styleAddToStorage(src) {
+	var a;
+	for (a in src) {
+		if (src.hasOwnProperty(a)) {
+			ymaps.option.presetStorage.add(a, src[a]);
+		}
+	}
+}
+
 /*
 navigator.geolocation.getCurrentPosition(
     function(position) {

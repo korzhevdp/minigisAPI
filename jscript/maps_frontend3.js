@@ -1,11 +1,15 @@
 function init() {
 	"use strict";
 	// Encoding: UTF-8
-	var cursor,
+	var a,
+		cursor,
 		map,
+		layerTypes,
 		foreground,
 		background,
 		found = {},
+		tileServerID = parseInt(Math.random() * (4-1) + 1).toString(),
+		tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
 		showMode = 'direct',
 		maptypes = {
 			1: 'yandex#map',
@@ -42,7 +46,30 @@ function init() {
 		zoom:      mp.zoom,
 		type:      maptypes[mp.type],
 		behaviors: ['default', 'scrollZoom']
-	}, { /*autoFitToViewport: "always", restrictMapArea: true*/ });
+	}, {
+		projection: ymaps.projection.sphericalMercator
+		/*autoFitToViewport: "always",
+		restrictMapArea: true*/ 
+	});
+	
+	layerTypes = {
+		1: {
+			func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=" + mp.lang + "&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo";}, {tileTransparent: 1, zIndex:1000});},
+			folder: "",
+			label : "google#map",
+			name  : "Гуглотест",
+			layers: ["google#map"]
+		}
+	}
+	for (a in layerTypes) {
+		if (layerTypes.hasOwnProperty(a)) {
+			ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
+			ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
+				layerTypes[a].name, layerTypes[a].layers
+			));
+			//typeSelector.addMapType(layerTypes[a].label, a);
+		}
+	}
 
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(b_objects);
@@ -391,14 +418,23 @@ function init() {
 			mark_choices();
 		});
 	}
-	function styleAddToStorage(src) {
-		var a;
-		for (a in src) {
-			if (src.hasOwnProperty(a)) {
-				ymaps.option.presetStorage.add(a, src[a]);
-			}
+	$(".mapsw").click(function(){
+		if($(this).attr("id") == "toGoogle") {
+			map.setType("google#map");
+			$("#toGoogle").addClass("active");
+			$("#toYandex").removeClass("active");
 		}
-	}
+		if($(this).attr("id") == "toYandex") {
+			map.setType("yandex#map");
+			$("#toYandex").addClass("active");
+			$("#toGoogle").removeClass("active");
+		}
+	
+	})
+	map.setType("google#map");
+	$("#toGoogle").addClass("active");
+	$("#toYandex").removeClass("active");
+
 	styleAddToStorage(userstyles);
 	load_mapset(mp.mapset);
 }

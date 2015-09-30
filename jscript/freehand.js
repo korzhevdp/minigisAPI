@@ -31,7 +31,7 @@ var userstyles,
 		5 : "Rectangle"
 	},
 	mframes = [],
-	isCenterSet  = 1;
+	isCenterFixed  = 0;
 
 ymaps.ready(setup_environment);
 
@@ -276,7 +276,7 @@ function display_locations() {
 	*/
 
 	map.events.add('boundschange', function (data) {
-		if (!isCenterSet) {
+		if (!isCenterFixed) {
 			$("#vp_lon").val(data.get('newCenter')[0].toFixed(8)); // сохраняем в поле новое значение центра карты
 			$("#vp_lat").val(data.get('newCenter')[1].toFixed(8)); // сохраняем в поле новое значение центра карты
 			$("#map_center").val(data.get('newCenter').join(",")); // сохраняем в поле новое значение центра карты
@@ -393,14 +393,14 @@ function display_locations() {
 			doFinishAll();
 		}
 
-		ymaps.geocode(coords,{kind: ['house']})
+		ymaps.geocode(coords, {kind: ['house']})
 		.then(function(res) {
 			res.geoObjects.each(function (obj) {
 				names.push(obj.properties.get('name'));
 			});
 			valtz = names[0];
 		})
-		.then(function(coords) {
+		.then(function() {
 			decAddr = (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ');
 			properties.description = decAddr;
 			properties.hintContent = decAddr;
@@ -532,14 +532,14 @@ function display_locations() {
 
 
 	$("#m_style, #line_style, #polygon_style, #circle_style").change(function() {
-		//alert ($(this).val() + ' --- ' + $(this).attr("id"));
-		var id = $(this).attr("id"),
-			val = $(this).val(),
-			type;
+		var val = $(this).val();
 		e_objects.each(function(item) {
 			apply_preset(item, val);
 		});
 	});
+
+
+
 
 	$("#mapLoader").click(function() {
 		loadmap($("#mapName").val());
@@ -893,7 +893,6 @@ function traceNode(src) {
 	*/
 	var type   = src.geometry.getType(),
 		coords = src.geometry.getCoordinates(),
-		desc   = src.properties.get("description"),
 		cstyle = src.properties.get("attr"),
 		names  = [],
 		valtz,
@@ -940,8 +939,9 @@ function traceNode(src) {
 }
 
 function returnPreparedGeometry(item) {
-	var type = geoType2IntId[ item.geometry.getType() ],
+	var type ,
 		geometry;
+	type = geoType2IntId[ item.geometry.getType() ];
 	switch (type) {
 		case 1:
 			geometry = item.geometry.getCoordinates();
@@ -969,7 +969,7 @@ function sendObject(item) {
 		return false;
 	}
 	type = geoType2IntId[ item.geometry.getType() ];
-	geometry = returnPreparedGeometry();
+	geometry = returnPreparedGeometry(item);
 	$.ajax({
 		url: controller + "/save",
 		type: "POST",
@@ -1014,12 +1014,12 @@ function genListItem(ttl, name, address, pic) { //динамически ген�
 }
 
 function lock_center() {
-	if (isCenterSet) {
+	if (isCenterFixed) {
 		$(".mapcoord").attr('readonly','readonly');
-		$(this).html('Отслеживать центр').attr('title','Разрешить перемещать центр');
+		$("#mapFix").html('Отслеживать центр').attr('title','Разрешить перемещать центр');
 	}else{
 		$(".mapcoord").removeAttr('readonly');
-		$(this).html('Фиксировать центр').attr('title','Не перемещать центр');
+		$("#mapFix").html('Фиксировать центр').attr('title','Не перемещать центр');
 	}
 }
 
@@ -1187,7 +1187,7 @@ $(".obj_sw").click(function() {
 	$("#navigator-pane" + $(this).attr('pr')).removeClass('hide');
 });
 
-$(".mg-btn-list").click(function(src) {
+$(".mg-btn-list").click(function() {
 	console.log("Сделать поиск объекта!");
 	//select_current_found_object(src);
 });
@@ -1236,8 +1236,8 @@ $(".mapcoord").blur(function() {
 });
 
 $("#mapFix").click(function() {
-	isCenterSet = (isCenterSet) ? 0 : 1;
-	lock_center();
+	isCenterFixed = (isCenterFixed) ? 0 : 1;
+	//lock_center();
 });
 
 $("#linkFactory a").click(function(e) {
@@ -1338,15 +1338,6 @@ $("#linkClose").click(function() {
 	$("#mapLinkContainer").addClass("hide");
 });
 
-function styleAddToStorage(src) {
-	var a;
-	for (a in src) {
-		if (src.hasOwnProperty(a)) {
-			ymaps.option.presetStorage.add(a, src[a]);
-		}
-	}
-}
-
 function list_marker_styles() {
 	var a;
 	$("#m_style").append('<optgroup label="Объекты">');
@@ -1421,11 +1412,7 @@ function show_frame(frm) {
 	}
 	//map.geoObjects.add(a_objects);
 }
-// Nullers
-function nullPlacemarkTracer() {
-	$("#m_lon").val('');
-	$("#m_lat").val('');
-}
+/*
 // Fillers
 function style_list() {
 	var a;
@@ -1434,6 +1421,11 @@ function style_list() {
 			$("#m_style").append($('<option value="' + style_src[a][2] + '">' + style_src[a][3] + '</option>'));
 		}
 	}
+}
+// Nullers
+function nullPlacemarkTracer() {
+	$("#m_lon").val('');
+	$("#m_lat").val('');
 }
 // Carousel
 function carousel_destroy() {
@@ -1466,3 +1458,4 @@ function carousel_init() {
 		}
 	});
 }
+*/
