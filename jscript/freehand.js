@@ -64,7 +64,43 @@ function display_locations() {
 		lat          = (isNaN(ymaps.geolocation.latitude))  ? parseFloat(map_center.toString().split(",")[1]) : ymaps.geolocation.latitude,
 		current_zoom = ($("#current_zoom").val().length)    ? $("#current_zoom").val() : 15,
 		tileServerID = parseInt(Math.random() * (4-1) + 1).toString(),
-		tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" };
+		tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
+		genericBalloon = ymaps.templateLayoutFactory.createClass(
+			'<div class="ymaps_balloon row-fluid">' +
+			'<div class="gallery span2" id="l_photo" data-toggle="modal" picref=$[properties.ttl|0] href="#modal_pics">' +
+			'<img src="' + api_url + '/images/$[properties.img|nophoto.gif]" style="margin:3px;" ALT="мини" id="sm_src_pic">' +
+			'</div>' +
+			'<span style="margin-right:10px;font-weight:bold;">Название:</span> $[properties.name|без имени]<br>' +
+			'<span style="margin-right:30px;font-weight:bold;">Адрес:</span> $[properties.address|нет]<br>' +
+			'<span style="margin-right:10px;font-weight:bold;">Описание:</span> $[properties.description|без описания]<br>' +
+			'<div><a href="$[properties.link|#]" style="margin:3px;margin-top:16px;" class="btn btn-mini btn-block" target="_blank">Подробности здесь</a></div>' +
+			'<div class="pull-right" style="margin-top:20px;">' +
+			'<button type="button" class="btn btn-mini btn-primary sw-edit" ttl="$[properties.ttl|0]" style="margin-right:10px;">Редактировать </button>' +
+			'<button type="button" class="btn btn-mini btn-info balloonClose" style="margin-right:10px;">Закрыть</button>' +
+			'</div></div>'
+			),
+		iframeBalloon = ymaps.templateLayoutFactory.createClass(
+			'<div class="ymaps_balloon_iframed">' +
+			'<iframe src="$[properties.link|]" width="400" height="400" style="border:none;margin:0;padding:0;"></iframe>' +
+			'<div><a href="$[properties.link|#]" style="margin:3px;margin-top:16px;" class="btn btn-mini btn-block" target="_blank">Подробности здесь</a></div>' +
+			'<div class="pull-right" style="margin-top:20px;">' +
+			'<button type="button" class="btn btn-mini btn-primary sw-edit" ttl="$[properties.ttl|0]" style="margin-right:10px;">Редактировать </button>' +
+			'<button type="button" class="btn btn-mini btn-info balloonClose" style="margin-right:10px;">Закрыть</button>' +
+			'</div></div>'
+			),
+		editBalloon = ymaps.templateLayoutFactory.createClass(
+			'<div class="ymaps_balloonX row-fluid">' +
+			'<span class="span3" style="margin-left:0px;">Название:</span><input type="text" id="bal_name" class="span9 input-mini" value="$[properties.name|без имени]">'+
+			'<span class="span3" style="margin-left:0px;">Адрес:</span><input type="text" id="bal_addr" class="span9 input-mini" value="$[properties.address|нет]">' +
+			'<span class="span3" style="margin-left:0px;">Ссылка:</span><input type="text" id="bal_link" class="input-mini span9" placeholder="Ссылка на web-страницу или изображение" value="$[properties.link|#]">' +
+			'<span class="span3" style="margin-left:0px;">Описание:</span><textarea id="bal_desc" rows="6" cols="6" class="span12">$[properties.description|нет]</textarea>' +
+			'<!-- <a href="#" id="editX" class="btn btn-small btn-block editX" ttl="$[properties.ttl|0]">Расширенное редактирование</a> -->' +
+			'<div class="pull-right">' +
+			'<button type="button" class="btn btn-mini btn-primary sw-finish" ttl="$[properties.ttl|0]" style="margin-right:10px;">Готово</button>' +
+			'<button type="button" class="btn btn-mini btn-danger sw-del" ttl="$[properties.ttl|0]" style="margin-right:10px;">Удалить</button>' +
+			'<button type="button" class="btn btn-mini btn-info balloonClose">Закрыть</button>' +
+			'</div></div>'
+		);
 
 		//определение механизма пересчёта стандартной сетки тайлов в сетку тайлов Яндекс-карт (TMS)
 		//api_url = (typeof $("#api_url") != 'undefined' && $("#api_url").val().length) ? $("#api_url").val() : "http://api.korzhevdp.com",
@@ -210,57 +246,6 @@ function display_locations() {
 	typeSelector.removeMapType('yandex#publicMap');
 	//$(".ymaps-b-form-input__input").empty().attr("placeholder", ymaps.geolocation.city);
 
-	// ##### Шаблоны #####
-	var genericBalloon = ymaps.templateLayoutFactory.createClass(
-		'<div class="ymaps_balloon row-fluid">' +
-		'<div class="gallery span2" id="l_photo" data-toggle="modal" picref=$[properties.ttl|0] href="#modal_pics">' +
-		'<img src="' + api_url + '/images/$[properties.img|nophoto.gif]" style="margin:3px;" ALT="мини" id="sm_src_pic">' +
-		'</div>' +
-		'<span style="margin-right:10px;font-weight:bold;">Название:</span> $[properties.name|без имени]<br>' +
-		'<span style="margin-right:30px;font-weight:bold;">Адрес:</span> $[properties.address|нет]<br>' +
-		'<span style="margin-right:10px;font-weight:bold;">Описание:</span> $[properties.description|без описания]<br>' +
-		'<div><a href="$[properties.link|#]" style="margin:3px;margin-top:16px;" class="btn btn-mini btn-block" target="_blank">Подробности здесь</a></div>' +
-		'<div class="pull-right" style="margin-top:20px;">' +
-		'<button type="button" class="btn btn-mini btn-primary sw-edit" ttl="$[properties.ttl|0]" style="margin-right:10px;">Редактировать </button>' +
-		'<button type="button" class="btn btn-mini btn-info balloonClose" style="margin-right:10px;">Закрыть</button>' +
-		'</div></div>'
-		),
-		iframeBalloon = ymaps.templateLayoutFactory.createClass(
-		'<div class="ymaps_balloon_iframed">' +
-		'<iframe src="$[properties.link|]" width="400" height="400" style="border:none;margin:0;padding:0;"></iframe>' +
-		'<div><a href="$[properties.link|#]" style="margin:3px;margin-top:16px;" class="btn btn-mini btn-block" target="_blank">Подробности здесь</a></div>' +
-		'<div class="pull-right" style="margin-top:20px;">' +
-		'<button type="button" class="btn btn-mini btn-primary sw-edit" ttl="$[properties.ttl|0]" style="margin-right:10px;">Редактировать </button>' +
-		'<button type="button" class="btn btn-mini btn-info balloonClose" style="margin-right:10px;">Закрыть</button>' +
-		'</div></div>'
-		),
-		editBalloon = ymaps.templateLayoutFactory.createClass(
-		'<div class="ymaps_balloonX row-fluid">' +
-		'<span class="span3" style="margin-left:0px;">Название:</span><input type="text" id="bal_name" class="span9 input-mini" value="$[properties.name|без имени]">'+
-		'<span class="span3" style="margin-left:0px;">Адрес:</span><input type="text" id="bal_addr" class="span9 input-mini" value="$[properties.address|нет]">' +
-		'<span class="span3" style="margin-left:0px;">Ссылка:</span><input type="text" id="bal_link" class="input-mini span9" placeholder="Ссылка на web-страницу или изображение" value="$[properties.link|#]">' +
-		'<span class="span3" style="margin-left:0px;">Описание:</span><textarea id="bal_desc" rows="6" cols="6" class="span12">$[properties.description|нет]</textarea>' +
-		'<!-- <a href="#" id="editX" class="btn btn-small btn-block editX" ttl="$[properties.ttl|0]">Расширенное редактирование</a> -->' +
-		'<div class="pull-right">' +
-		'<button type="button" class="btn btn-mini btn-primary sw-finish" ttl="$[properties.ttl|0]" style="margin-right:10px;">Готово</button>' +
-		'<button type="button" class="btn btn-mini btn-danger sw-del" ttl="$[properties.ttl|0]" style="margin-right:10px;">Удалить</button>' +
-		'<button type="button" class="btn btn-mini btn-info balloonClose">Закрыть</button>' +
-		'</div></div>'
-		);
-	/*--B2
-	var editxBalloon = ymaps.templateLayoutFactory.createClass(
-	'<div class="ymaps_balloonX row-fluid">' +
-	'<div><span class="editx_label">Название:</span><input type="text" style="margin-left:5px;" id="bal_name" value="$[properties.name|без имени]"></div>'+
-	'<div><span class="editx_label">Адрес:</span><input type="text" style="margin-left:30px;" id="bal_addr" value="$[properties.address|нет]"></div>' +
-	'<div id="editXtgt"><span class="editx_label">Описание:</span></div>' +
-	'<a href="$[properties.link|ссылка]" style="margin-bottom:10px;"><u>Подробности здесь</u></a>' +
-	'<hr><div class="pull-right">' +
-	'<button type="button" class="btn btn-small btn-primary sw-finish" ttl="$[properties.ttl|0]" style="margin-right:10px;">Готово</button>' +
-	'<button type="button" class="btn btn-small btn-danger sw-del" ttl="$[properties.ttl|0]" style="margin-right:10px;">Удалить</button>' +
-	'<button type="button" class="btn btn-small btn-info balloonClose">Закрыть</button>' +
-	'</div></div>'
-	);
-	*/
 	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
 	ymaps.layout.storage.add('editing#balloonLayout', editBalloon);
 	ymaps.layout.storage.add('iframe#balloonLayout' , iframeBalloon);
@@ -276,12 +261,6 @@ function display_locations() {
 		balloonContentBodyLayout: 'editing#balloonLayout',
 		balloonWidth: 800
 	});
-	/*--B2
-	ex_objects.options.set({
-		balloonContentBodyLayout: 'editingx#balloonLayout',
-		//balloonMaxWidth: 300
-	});
-	*/
 	// ##### события #####
 	// карта
 
@@ -356,7 +335,6 @@ function display_locations() {
 
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(e_objects);
-	//map.geoObjects.add(ex_objects); //--B2
 	//sendMap();
 
 	//################################## выносные функции
@@ -462,30 +440,6 @@ function display_locations() {
 		count_objects();
 	}
 
-	function length_calc(src) {
-		/*
-			расчёт длины ломаной методом прибавления дельты.
-			в цикле прибавляется дельта дистанции между вершинами (WGS84)
-		*/
-		if (src.length < 2) {
-			return 0;
-		}
-		var routelength = 0,
-			next		= 0,
-			start		= [],
-			end			= [],
-			delta		= 0;
-		for (var i=0; i < (src.length - 1);i++) {
-			next  = (i + 1);
-			start = [ src[i][0],src[i][1] ];
-			end   = [ src[next][0],src[next][1] ];
-			delta = ymaps.coordSystem.geo.getDistance(start, end);
-			routelength += delta;
-		}
-		routelength = (isNaN(routelength)) ? 0 : routelength;
-		return routelength.toFixed(2);
-	}
-
 	function loadmap(name) {
 		$.ajax({
 			url: controller + "/loadmap",
@@ -532,33 +486,6 @@ function display_locations() {
 		});
 	}
 
-	function perimeter_calc(src) {
-		/*
-			расчёт длины периметра полигона методом прибавления дельты.
-			в цикле прибавляется дельта дистанции между вершинами (WGS84)
-			расчёт периметра геометрии, как сумма всех периметров геометрии, в том числе и внутренние границы
-		*/
-		if (src[0].length < 2) {
-			return 0;
-		}
-		var routelength = 0,
-			next = 0,
-			start = [],
-			end = [],
-			delta = 0;
-		for (var j = 0; j < src.length; j++) {
-			for (var i=0; i < (src[j].length - 1); i++) {
-				next = (i + 1);
-				start = src[j][i];
-				end = src[j][next];
-				delta = ymaps.coordSystem.geo.getDistance(start, end);
-				routelength += delta;
-			}
-		}
-		routelength = (isNaN(routelength)) ? 0 : routelength;
-		return routelength.toFixed(2);
-	}
-
 	function saveAll() {
 		/*
 		сохранение в базу данных
@@ -602,38 +529,7 @@ function display_locations() {
 		});
 	}
 
-	function setCircleCoordinates() {
-		/*
-			ручной ввод параметров центра геометрии круга из полей навигатора
-		*/
-		var ttl = parseInt($('#location_id').val(), 10);
-		e_objects.each(function(item) {
-			if (parseInt(item.properties.get('ttl'), 10) === ttl) {
-				item.geometry.setCoordinates([parseFloat($("#cir_lon").val()), parseFloat($("#cir_lat").val())]);
-				traceNode(item);
-			}
-		});
-	}
 
-	function setCircleRadius() {
-		/*
-			ручной ввод параметра радиуса геометрии круга из поля навигатора
-		*/
-		var ttl = parseInt($('#location_id').val(), 10);
-		e_objects.each(function(item) {
-			if (parseInt(item.properties.get('ttl'), 10) === ttl) {
-				item.geometry.setRadius(parseFloat($("#cir_radius").val()));
-				traceNode(item);
-			}
-		});
-	}
-
-	function setMapCoordinates() {
-		/*
-			ручной ввод параметров центра карты из полей навигатора
-		*/
-		map.setCenter([parseFloat($("#vp_lon").val()), parseFloat($("#vp_lat").val())], parseInt($("#current_zoom").val()));
-	}
 
 	$("#m_style, #line_style, #polygon_style, #circle_style").change(function() {
 		//alert ($(this).val() + ' --- ' + $(this).attr("id"));
@@ -1067,10 +963,12 @@ function sendObject(item) {
 	/*
 		отправка объекта на сервер
 	*/
-	var geometry;
+	var geometry,
+		type;
 	if (mp.id !== undefined && mp.id === 'void') {
 		return false;
 	}
+	type = geoType2IntId[ item.geometry.getType() ];
 	geometry = returnPreparedGeometry();
 	$.ajax({
 		url: controller + "/save",
@@ -1124,6 +1022,7 @@ function lock_center() {
 		$(this).html('Фиксировать центр').attr('title','Не перемещать центр');
 	}
 }
+
 function setPointCoordinates() {
 	/*
 		ручной ввод параметров геометрии точки из полей навигатора
@@ -1195,6 +1094,90 @@ function toClipboard(src) {
 		}
 	});
 	count_objects();
+}
+
+function length_calc(src) {
+	/*
+		расчёт длины ломаной методом прибавления дельты.
+		в цикле прибавляется дельта дистанции между вершинами (WGS84)
+	*/
+	if (src.length < 2) {
+		return 0;
+	}
+	var routelength = 0,
+		next		= 0,
+		start		= [],
+		end			= [],
+		delta		= 0;
+	for (var i=0; i < (src.length - 1);i++) {
+		next  = (i + 1);
+		start = [ src[i][0],src[i][1] ];
+		end   = [ src[next][0],src[next][1] ];
+		delta = ymaps.coordSystem.geo.getDistance(start, end);
+		routelength += delta;
+	}
+	routelength = (isNaN(routelength)) ? 0 : routelength;
+	return routelength.toFixed(2);
+}
+
+function perimeter_calc(src) {
+	/*
+		расчёт длины периметра полигона методом прибавления дельты.
+		в цикле прибавляется дельта дистанции между вершинами (WGS84)
+		расчёт периметра геометрии, как сумма всех периметров геометрии, в том числе и внутренние границы
+	*/
+	if (src[0].length < 2) {
+		return 0;
+	}
+	var routelength = 0,
+		next = 0,
+		start = [],
+		end = [],
+		delta = 0;
+	for (var j = 0; j < src.length; j++) {
+		for (var i=0; i < (src[j].length - 1); i++) {
+			next = (i + 1);
+			start = src[j][i];
+			end = src[j][next];
+			delta = ymaps.coordSystem.geo.getDistance(start, end);
+			routelength += delta;
+		}
+	}
+	routelength = (isNaN(routelength)) ? 0 : routelength;
+	return routelength.toFixed(2);
+}
+
+function setCircleCoordinates() {
+	/*
+		ручной ввод параметров центра геометрии круга из полей навигатора
+	*/
+	var ttl = parseInt($('#location_id').val(), 10);
+	e_objects.each(function(item) {
+		if (parseInt(item.properties.get('ttl'), 10) === ttl) {
+			item.geometry.setCoordinates([parseFloat($("#cir_lon").val()), parseFloat($("#cir_lat").val())]);
+			traceNode(item);
+		}
+	});
+}
+
+function setCircleRadius() {
+	/*
+		ручной ввод параметра радиуса геометрии круга из поля навигатора
+	*/
+	var ttl = parseInt($('#location_id').val(), 10);
+	e_objects.each(function(item) {
+		if (parseInt(item.properties.get('ttl'), 10) === ttl) {
+			item.geometry.setRadius(parseFloat($("#cir_radius").val()));
+			traceNode(item);
+		}
+	});
+}
+
+function setMapCoordinates() {
+	/*
+		ручной ввод параметров центра карты из полей навигатора
+	*/
+	map.setCenter([parseFloat($("#vp_lon").val()), parseFloat($("#vp_lat").val())], parseInt($("#current_zoom").val()));
 }
 
 // события не-карты
