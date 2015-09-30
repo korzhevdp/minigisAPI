@@ -45,6 +45,7 @@ function setup_environment() {
 function display_locations() {
 	var a,
 		cursor,
+		object,
 		layerTypes,
 		dX = [],
 		typeSelector,
@@ -282,6 +283,7 @@ function display_locations() {
 	*/
 	// ##### события #####
 	// карта
+
 	map.events.add('balloonopen', function () {
 		$('#upload_location').val($('#l_photo').attr('picref'));
 		action_listeners_add();
@@ -464,8 +466,8 @@ function display_locations() {
 			cache: false,
 			dataType: "html",
 			success: function(data) {
+				var newid = 'car_' + ($(".carousel").attr('id').split('_')[1]++);
 				$("#pic_collection").empty().append(data);
-				newid = 'car_' + ($(".carousel").attr('id').split('_')[1]++);
 				$(".carousel").attr('id', newid);
 				$('#' + newid).carousel();
 			},
@@ -487,7 +489,7 @@ function display_locations() {
 		});
 
 		$(".mg-btn-list").click(function() {
-			ttl = parseInt($(this).attr("ttl"), 10);
+			var ttl = parseInt($(this).attr("ttl"), 10);
 			a_objects.each(function(item) {
 				if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 					item.balloon.open(item.geometry.getCoordinates());
@@ -504,7 +506,7 @@ function display_locations() {
 	}
 
 	function doDelete(src) {
-		ttl = parseInt($(src).attr('ttl'), 10);
+		var ttl = parseInt($(src).attr('ttl'), 10);
 		e_objects.each(function(item) {
 			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 				e_objects.remove(item);
@@ -532,26 +534,24 @@ function display_locations() {
 	}
 
 	function doEdit(src) {
-		var ttl = ($(src).attr('ttl') === undefined) ? parseInt(src.properties.get('ttl'), 10) : parseInt($(src).attr('ttl'), 10);
+		var ttl;
+		ttl = ($(src).attr('ttl') === undefined) ? parseInt(src.properties.get('ttl'), 10) : parseInt($(src).attr('ttl'), 10);
 		$("#location_id").val(ttl); // здесь строка
 		map.balloon.close();
 		a_objects.each(function(item) {
-
+			var type;
 			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
 				e_objects.add(item);									// переводим объект в группу редактируемых
 				item.balloon.open(item.geometry.getCoordinates());
 				type = item.geometry.getType();							// получаем YM тип геометрии объекта
 				//console.log(item.properties.getAll().toSource());
 				//item.options.set({ zIndex: 1, zIndexActive: 1, zIndexDrag: 1, zIndexHover: 1, draggable: ((item.options.get('draggable') === 0) ? 1 : 0) });
-
 				if (e_objects.getLength() > 1) { // нет особого смысла задавать вручную координаты точек, если их для редактирования выбрано больше чем одна. Отключаем поля
 					$(".pointcoord, .circlecoord").prop('disabled', true);
 				}
-
 				if (type === "LineString" || type === "Polygon") {
 					item.editor.startEditing();
 				}
-
 				item.options.set({ draggable: 1, zIndex: 300, zIndexActive: 300, zIndexDrag: 300, zIndexHover: 300 });
 				openEditPane(type); // открываем требуемую панель редактора
 				traceNode(item);
@@ -587,7 +587,7 @@ function display_locations() {
 				sendObject(item);
 			}
 		});
-		if (e_objects.getLength() < 2) {
+		if (e_objects.getLength() === 1) {
 			$(".pointcoord, .circlecoord").removeAttr('disabled');
 		}
 	}
@@ -609,15 +609,14 @@ function display_locations() {
 		count_objects();
 	}
 
-
-
 	function draw_object(click) {
 		var geometry,
+			properties,
 			object,
+			decAddr,
 			names		= [],
 			valtz		= '',
 			coords		= click.get('coordPosition'),
-			decAddr,
 			selectors	= {
 				1 : '#m_style',
 				2 : '#line_style',
@@ -627,19 +626,20 @@ function display_locations() {
 			},
 			pr_type		= geoType2IntId[ $("#current_obj_type").val() ],
 			realStyle	= normalize_style( $(selectors[pr_type]).val(), pr_type ),
-			options		= ymaps.option.presetStorage.get(realStyle);
-			properties = {
-				attr        : realStyle,
-				frame       : parseInt($('#vp_frame').val()),
-				ttl         : ++object_gid,
-				name        : "Название",
-				img         : "nophoto.gif",
-				hintContent : '',
-				address     : '',
-				contact     : '',
-				description : ''
-			};
-
+			options;
+		options		= ymaps.option.presetStorage.get(realStyle);
+		properties	= {
+			attr        : realStyle,
+			frame       : parseInt($('#vp_frame').val()),
+			ttl         : ++object_gid,
+			name        : "Название",
+			img         : "nophoto.gif",
+			hintContent : '',
+			address     : '',
+			contact     : '',
+			description : ''
+		};
+		return false;
 		if ( mp !== undefined && mp.id !== undefined && mp.id === 'void') {
 			console.log("Рисование запрещено");
 			return false;
@@ -651,11 +651,10 @@ function display_locations() {
 		}
 
 		if (counter) {
-			if (confirm("На карте присутствуют редактируемые объекты.\nЗавершить их редактирование и создать новый объект?")) {
-				doFinishAll();
-			}else{
+			if (!confirm("На карте присутствуют редактируемые объекты.\nЗавершить их редактирование и создать новый объект?")) {
 				return false;
 			}
+			doFinishAll();
 		}
 
 		ymaps.geocode(coords,{kind: ['house']})
@@ -741,7 +740,9 @@ function display_locations() {
 		count_objects();
 	}
 
+
 	function genListItem(ttl, name, address, pic) { //динамически генерируемый чанк
+		var string;
 		string = '<div class="btn-group">' +
 			'<button class="btn btn-mini mg-btn-list" ttl=' + ttl + '>' +
 			'<img src="' + api_url + '/images/' + pic + '" alt="">' + 'Название: ' + name + '<br>' +
@@ -806,13 +807,13 @@ function display_locations() {
 				name: name
 			},
 			dataType: "script",
-			success: function(data) {
+			success: function() {
 				a_objects.removeAll();
 				e_objects.removeAll();
-				if (usermap === undefined && usermap.error === undefined) {
-					console.log(usermap.error);
-				}else{
+				if (usermap.error === undefined) {
 					place_freehand_objects(usermap);
+				}else{
+					console.log(usermap.error);
 				}
 				if (mp !== undefined) {
 					$("#mapSave, #ehashID, #SContainer").css('display', ((mp.id === 'void') ? 'none' : 'block'));
@@ -877,7 +878,7 @@ function display_locations() {
 	}
 
 	function openEditPane(type) {
-		intType = geoType2IntId[type];
+		var intType = geoType2IntId[type];
 		$("#current_obj_type").val(type);
 		$(".obj_sw").removeClass("active");
 		$(".obj_sw[pr=" + intType + "]").addClass("active");
@@ -925,9 +926,10 @@ function display_locations() {
 				5: 'rct#default'
 			},
 			test = ymaps.option.presetStorage.get(style);
+
 		if (test === undefined) {
-			style = ["twirl", prop.attr.split("#")[1]].join("#");
-			if (ymaps.option.presetStorage.get(style) === undefined) {
+			style = ["twirl", style.split("#")[1]].join("#");
+			if (ymaps.option.presetStorage.get(newstyle) === undefined) {
 				console.log("Стиль оформления отсутствует в хранилище. Применены умолчания.");
 				style = defaults[type];
 			}
@@ -937,9 +939,11 @@ function display_locations() {
 
 	function place_freehand_objects(source) {
 		var src,
-			b,
+			object,
+			geometry,
 			options,
 			properties,
+			b,
 			frm;
 		for (b in source) {
 			if (source.hasOwnProperty(b)) {
@@ -1288,8 +1292,8 @@ function display_locations() {
 //######################################################################################################################
 function lock_center() {
 	if (isCenterSet) {
-		$(".mapcoord").attr('readonly','readonly')
-		$(this).html('Отслеживать центр').attr('title','Разрешить перемещать центр')
+		$(".mapcoord").attr('readonly','readonly');
+		$(this).html('Отслеживать центр').attr('title','Разрешить перемещать центр');
 	}else{
 		$(".mapcoord").removeAttr('readonly');
 		$(this).html('Фиксировать центр').attr('title','Не перемещать центр');
