@@ -891,51 +891,73 @@ function traceNode(src) {
 	/*
 	заполнение полей навигатора характеристиками текущего редактируемого объекта
 	*/
-	var type   = src.geometry.getType(),
-		coords = src.geometry.getCoordinates(),
-		cstyle = src.properties.get("attr"),
-		names  = [],
-		valtz,
-		radius;
+	var type   = src.geometry.getType();
 	// заполнение в соответствии с типом геометрии объекта
 	switch (type) {
-		case "Point" :
-			// запрос адреса
-			ymaps.geocode(coords, { kind: ['house'] })
-			.then(function (res) {
-				res.geoObjects.each(function (obj) {
-					names.push(obj.properties.get('name'));
-				});
-				valtz = names[0];
-				valtz = (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ');
-				src.properties.set({ hintContent: valtz, address: valtz });
-				sendObject(src);
-				count_objects();
-			});
-			$("#m_lon").val(parseFloat(coords[0]).toFixed(8));
-			$("#m_lat").val(parseFloat(coords[1]).toFixed(8));
-			$("#m_style [value='" + cstyle + "']").attr("selected", "selected");
+		case "Point":
+			tracePoint(src);
 		break;
-		case "LineString" :
-			$("#line_vtx").html(src.geometry.getLength());
-			$("#line_len").html(length_calc(coords) + " м.");
-			$("#line_style [value='" + cstyle + "']").attr("selected", "selected");
+		case "LineString":
+			tracePolyline()src;
 		break;
-		case "Polygon" :
-			$("#polygon_vtx").html(coords[0].length - 1);
-			$("#polygon_len").html(perimeter_calc(coords) + " м.");
-			$("#polygon_style [value='" + cstyle + "']").attr("selected", "selected");
+		case "Polygon":
+			tracePolygon(src);
 		break;
-		case "Circle" :
-			radius = src.geometry.getRadius();
-			$("#cir_lon").val(coords[0].toFixed(8));
-			$("#cir_lat").val(coords[1].toFixed(8));
-			$("#cir_radius").val(radius);
-			$("#cir_len").html((radius * 2 * Math.PI).toFixed(2));
-			$("#cir_field").html((Math.pow(radius,2) * Math.PI).toFixed(2));
-			$('#circle_style [value="' + cstyle + '"]').attr("selected", "selected");
+		case "Circle":
+			traceCircle(src);
 		break;
 	}
+}
+
+function tracePoint(src) {
+	var names = [],
+		valtz,
+		coords = src.geometry.getCoordinates(),
+		cstyle = src.properties.get("attr");
+	if ($("#traceAddress").prop('checked')) {
+		ymaps.geocode(coords, { kind: ['house'] })
+		.then(function (res) {
+			res.geoObjects.each(function (obj) {
+				names.push(obj.properties.get('name'));
+			});
+			valtz = names[0];
+			valtz = (valtz === undefined || ![valtz].join(', ').length) ? "Нет адреса" : [valtz].join(', ');
+			src.properties.set({ hintContent: valtz, address: valtz });
+			sendObject(src);
+			count_objects();
+		});
+	}
+	$("#m_lon").val(parseFloat(coords[0]).toFixed(8));
+	$("#m_lat").val(parseFloat(coords[1]).toFixed(8));
+	$("#m_style [value='" + cstyle + "']").attr("selected", "selected");
+}
+
+function tracePolyline(src) {
+	var coords = src.geometry.getCoordinates(),
+		cstyle = src.properties.get("attr");
+	$("#line_vtx").html(src.geometry.getLength());
+	$("#line_len").html(length_calc(coords) + " м.");
+	$("#line_style [value='" + cstyle + "']").attr("selected", "selected");
+}
+
+function tracePolygon(src) {
+	var coords = src.geometry.getCoordinates(),
+		cstyle = src.properties.get("attr");
+	$("#polygon_vtx").html(coords[0].length - 1);
+	$("#polygon_len").html(perimeter_calc(coords) + " м.");
+	$("#polygon_style [value='" + cstyle + "']").attr("selected", "selected");
+}
+
+function traceCircle(src) {
+	var coords = src.geometry.getCoordinates(),
+		radius = src.geometry.getRadius(),
+		cstyle = src.properties.get("attr");
+	$("#cir_lon").val(coords[0].toFixed(8));
+	$("#cir_lat").val(coords[1].toFixed(8));
+	$("#cir_radius").val(radius);
+	$("#cir_len").html((radius * 2 * Math.PI).toFixed(2));
+	$("#cir_field").html((Math.pow(radius,2) * Math.PI).toFixed(2));
+	$('#circle_style [value="' + cstyle + '"]').attr("selected", "selected");
 }
 
 function returnPreparedGeometry(item) {
@@ -993,7 +1015,7 @@ function sendObject(item) {
 	});
 }
 
-function genListItem(ttl, name, address, pic) { //динамически генерируемый чанк
+function genListItem(ttl, name, address, pic) {
 	var string;
 	string = '<div class="btn-group">' +
 		'<button class="btn btn-mini mg-btn-list" ttl=' + ttl + '>' +

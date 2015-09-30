@@ -156,15 +156,6 @@ function init() {
 		});
 	}
 
-	function styleAddToStorage(src) {
-		var a;
-		for (a in src) {
-			if (src.hasOwnProperty(a)) {
-				ymaps.option.presetStorage.add(a, src[a]);
-			}
-		}
-	}
-
 	function place_aux_rct_points() {
 		var aux_geometry1 = e_objects.get(0).geometry.getCoordinates()[0],
 			aux_geometry2 = e_objects.get(0).geometry.getCoordinates()[1],

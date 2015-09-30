@@ -1,4 +1,4 @@
-$("#main_table").css("height", ($(window).height() - 50) + "px");
+$("#main_table").css("height", ($(window).height() - 54) + "px");
 $("#main_table").css("width", $(window).width() + "px");
 
 $('.grouplabel').click(function() {
@@ -32,9 +32,8 @@ $('#navup').click(function() {
 });
 
 $('#navdown').click(function() {
-	$('#navigator, #navheader').css('display', 'block');
+	$('#navigator, #navheader, #navup').css('display', 'block');
 	$(this).css('display', 'none');
-	$('#navup').css('display', 'block');
 	$('#SContainer').css('height', 400);
 });
 
