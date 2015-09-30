@@ -1,6 +1,7 @@
 /* jshint -W100 */
+/* jshint undef: true, unused: true */
+/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers */
 var userstyles,
-	ymaps,
 	map,
 	a_objects,
 	e_objects,
@@ -639,7 +640,7 @@ function display_locations() {
 			contact     : '',
 			description : ''
 		};
-		return false;
+
 		if ( mp !== undefined && mp.id !== undefined && mp.id === 'void') {
 			console.log("Рисование запрещено");
 			return false;
@@ -929,7 +930,7 @@ function display_locations() {
 
 		if (test === undefined) {
 			style = ["twirl", style.split("#")[1]].join("#");
-			if (ymaps.option.presetStorage.get(newstyle) === undefined) {
+			if (ymaps.option.presetStorage.get(style) === undefined) {
 				console.log("Стиль оформления отсутствует в хранилище. Применены умолчания.");
 				style = defaults[type];
 			}
@@ -944,6 +945,7 @@ function display_locations() {
 			options,
 			properties,
 			b,
+			frameCounter,
 			frm;
 		for (b in source) {
 			if (source.hasOwnProperty(b)) {
@@ -986,15 +988,15 @@ function display_locations() {
 		count_objects();
 		//console.log(mframes.length)
 
-		frc = 1;
+		frameCounter = 1;
 		for (a in mframes) {
 			if (mframes.hasOwnProperty(a)) {
-				if ( a > frc ) {
-					frc = a;
+				if ( a > frameCounter ) {
+					frameCounter = a;
 				}
 			}
 		}
-		for (a = 1; a <= frc; a++) {
+		for (a = 1; a <= frameCounter; a++) {
 			if (mframes[a] === undefined) {
 				mframes[a] = new ymaps.GeoObjectArray();
 			}
@@ -1019,7 +1021,7 @@ function display_locations() {
 			url: controller + "/savedb",
 			type: "POST",
 			dataType: "script",
-			success: function(data) {
+			success: function() {
 				a_objects.removeAll();
 				e_objects.removeAll();
 				place_freehand_objects(usermap);
@@ -1058,11 +1060,12 @@ function display_locations() {
 		/*
 			отправка объекта на сервер
 		*/
+		var type = geoType2IntId[ item.geometry.getType() ],
+			geometry;
 		if (mp !== undefined && mp.id !== undefined && mp.id === 'void') {
 			return false;
 		}
 		// конверсия строкового типа во внутренний
-		type = geoType2IntId[ item.geometry.getType() ];
 		switch (type) {
 			case 1:
 				geometry = item.geometry.getCoordinates();
