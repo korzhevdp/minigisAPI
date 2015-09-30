@@ -363,80 +363,7 @@ function display_locations() {
 
 	//################################## выносные функции
 
-	function action_listeners_add() {
 
-		$(".balloonClose").unbind().click(function() {
-			map.balloon.close();
-		});
-
-		if (mp !== undefined && typeof mp.id !== undefined && mp.id === 'void') {
-			$(".sw-edit").addClass("hide");
-			return false;
-		}
-
-		$(".sw-finish").unbind().click(function() {
-			doFinish(this);
-			nullTracers();
-			counter = 0;
-			map.balloon.close();
-			count_objects();
-		});
-
-		$(".sw-edit").unbind().click(function() {
-			doEdit(this);
-			count_objects();
-			counter = 1;
-		});
-
-		$(".sw-del").unbind().click(function() {
-			doDelete(this);
-			nullTracers();
-			counter = 0;
-			map.balloon.close();
-			count_objects();
-		});
-
-		$(".copyProp").unbind().click(function() {
-			toClipboard(this);
-		});
-
-		$(".pasteProp").unbind().click(function() {
-			fromClipboard(this,0);
-		});
-
-		$(".pastePropOpt").unbind().click(function() {
-			fromClipboard(this,1);
-		});
-
-		/*
-		$(".editX").unbind().click(function(e) {
-			e.preventDefault();
-			m = $(this).attr('ttl');
-			//console.log(m);
-			e_objects.each(function(item) {
-				//console.log([item.properties.get('ttl'), m].join(" -+- "));
-				if (item.properties.get('ttl') == m) {
-					map.balloon.close();
-					ex_objects.add(item);
-					item.balloon.open(item.geometry.getCoordinates());
-					CKEDITOR.appendTo( 'editXtgt',{
-						contentsCss: api_url + '/bootstrap/css/bootstrap.css',
-						skin : 'v2',
-						filebrowserBrowseUrl : '/dop/browser/images',
-						filebrowserUploadUrl : '/dop/uploader/files',
-						toolbar_Basic : [
-							[ 'Bold', 'Italic', '-', 'Format', 'Image', 'Table' ]
-						],
-						toolbar : 'Basic',
-						height:220,
-						format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;address;div;well',
-						format_well: { name: 'well', element : 'div', attributes : { 'class' : 'well well-small' } }
-					})
-				}
-			})
-		});
-		*/
-	}
 
 	function apply_preset(src) {
 		e_objects.each(function(item) {
@@ -472,38 +399,11 @@ function display_locations() {
 				$(".carousel").attr('id', newid);
 				$('#' + newid).carousel();
 			},
-			error: function(a,b) {
+			error: function(data, stat, err) {
 				console.log("При поиске изображений произошла ошибка на сервере");
+				console.log([ data, stat, err ]);
 			}
 		});
-	}
-
-	function count_objects() {
-		$("#ResultBody, #nowEdited").empty();
-		//console.log(a_objects.getLength())
-		a_objects.each(function(item) {
-			$("#ResultBody").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
-		});
-		//console.log(e_objects.getLength())
-		e_objects.each(function(item) {
-			$("#nowEdited").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
-		});
-
-		$(".mg-btn-list").click(function() {
-			var ttl = parseInt($(this).attr("ttl"), 10);
-			a_objects.each(function(item) {
-				if (parseInt(item.properties.get("ttl"), 10) === ttl) {
-					item.balloon.open(item.geometry.getCoordinates());
-				}
-			});
-			e_objects.each(function(item) {
-				if (parseInt(item.properties.get("ttl"), 10) === ttl) {
-					item.balloon.open( item.geometry.getCoordinates() );
-					openEditPane( item.geometry.getType() );
-				}
-			});
-		});
-		action_listeners_add();
 	}
 
 	function doDelete(src) {
@@ -524,12 +424,11 @@ function display_locations() {
 				ttl: ttl
 			},
 			type: "POST",
-			success: function(data) {
-				//console.log(data);
-				//$("#consoleContent").html(data);
+			success: function() {
+				console.log("The object is to be believed deleted");
 			},
-			error: function(data,stat,err) {
-				//$("#consoleContent").html([data,stat,err].join("<br>"));
+			error: function(data, stat, err) {
+				console.log([ data, stat, err ]);
 			}
 		});
 	}
@@ -741,41 +640,6 @@ function display_locations() {
 		count_objects();
 	}
 
-
-	function genListItem(ttl, name, address, pic) { //динамически генерируемый чанк
-		var string;
-		string = '<div class="btn-group">' +
-			'<button class="btn btn-mini mg-btn-list" ttl=' + ttl + '>' +
-			'<img src="' + api_url + '/images/' + pic + '" alt="">' + 'Название: ' + name + '<br>' +
-			'Адрес: ' + address +
-			'</button>' +
-			'<button class="btn dropdown-toggle" data-toggle="dropdown" style="height:55px;">' +
-			'<span class="caret"></span>' +
-			'</button>'+
-			'<ul class="dropdown-menu">' +
-				'<li><a href="#" class="copyProp" ttl=' + ttl + '><i class="icon-upload"></i> Скопировать свойства</a></li>' +
-				'<li><a href="#" class="pasteProp" ttl=' + ttl + ' title="Вставить свойства"><i class="icon-download"></i> Вставить свойства</a></li>' +
-				'<li><a href="#" class="pastePropOpt" ttl=' + ttl + ' title="Вставить свойства и оформление"><i class="icon-download-alt"></i> Вставить всё</a></li>' +
-				'<li><a href="#" class="sw-del" ttl=' + ttl + '><i class="icon-trash"></i> Удалить объект</a></li>' +
-			'</ul>' +
-		'</div>';
-		return string;
-	}
-
-	function hide_frame(frame) {
-		/*
-			функция переключения фрейма
-			фреймы пока упразднены, с их наследием надо разобраться
-		*/
-		mframes[frame].removeAll();
-		while(a_objects.get(0)) {
-			mframes[frame].add(a_objects.get(0));
-		}
-		while(e_objects.get(0)) {
-			mframes[frame].add(e_objects.get(0));
-		}
-	}
-
 	function length_calc(src) {
 		/*
 			расчёт длины ломаной методом прибавления дельты.
@@ -823,9 +687,8 @@ function display_locations() {
 				count_objects();
 				lock_center();
 			},
-			error: function(data,stat,err) {
-				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				console.log([data,stat,err].join("\n"));
+			error: function(data, stat, err) {
+				console.log([ data, stat, err ]);
 			}
 		});
 	}
@@ -838,20 +701,16 @@ function display_locations() {
 			url: controller + "/get_session",
 			dataType: "script",
 			type: "POST",
-			success: function(data) {
+			success: function() {
 				place_freehand_objects(usermap);
 			},
-			error: function(data,stat,err) {
-				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				console.log([data,stat,err].join("\n"));
+			error: function(data, stat, err) {
+				console.log([ data, stat, err ]);
 			}
 		});
 	}
 
-	function nullPlacemarkTracer() {
-		$("#m_lon").val('');
-		$("#m_lat").val('');
-	}
+
 
 	function nullTracers() {
 		/*
@@ -918,100 +777,6 @@ function display_locations() {
 		return routelength.toFixed(2);
 	}
 
-	function normalize_style(style, type) {
-		var defaults   = {
-				1: 'twirl#redDotIcon',
-				2: 'routes#default',
-				3: 'area#default',
-				4: 'circle#default',
-				5: 'rct#default'
-			},
-			test = ymaps.option.presetStorage.get(style);
-
-		if (test === undefined) {
-			style = ["twirl", style.split("#")[1]].join("#");
-			if (ymaps.option.presetStorage.get(style) === undefined) {
-				console.log("Стиль оформления отсутствует в хранилище. Применены умолчания.");
-				style = defaults[type];
-			}
-		}
-		return style;
-	}
-
-	function place_freehand_objects(source) {
-		var src,
-			object,
-			geometry,
-			options,
-			properties,
-			b,
-			frameCounter,
-			frm;
-		for (b in source) {
-			if (source.hasOwnProperty(b)) {
-				src = source[b];
-				options = ymaps.option.presetStorage.get(normalize_style(src.a, src.p));
-				frm = (src.frame === undefined) ? 1 : parseInt(src.frame);
-				properties = {
-					attr        : src.a,
-					description : src.d,
-					address     : src.b,
-					hintContent : src.n + ' ' + src.d,
-					img         : src.img,
-					frame       : frm,
-					link        : src.l,
-					name        : src.n,
-					ttl         : b
-				};
-				if (mframes[frm] === undefined) {
-					mframes[frm] = new ymaps.GeoObjectArray();
-				}
-				if (src.p === 1) {
-					geometry = src.c.split(",");
-					object   = new ymaps.Placemark(geometry, properties, options);
-				}
-				if (src.p === 2) {
-					geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.c);
-					object   = new ymaps.Polyline(geometry, properties, options);
-				}
-				if (src.p === 3) {
-					geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.c);
-					object   = new ymaps.Polygon(geometry, properties, options);
-				}
-				if (src.p === 4) {
-					geometry = new ymaps.geometry.Circle([parseFloat(src.c.split(",")[0]), parseFloat(src.c.split(",")[1])], parseFloat(src.c.split(",")[2]));
-					object = new ymaps.Circle(geometry, properties, options);
-				}
-				mframes[frm].add(object);
-			}
-		}
-		count_objects();
-		//console.log(mframes.length)
-
-		frameCounter = 1;
-		for (a in mframes) {
-			if (mframes.hasOwnProperty(a)) {
-				if ( a > frameCounter ) {
-					frameCounter = a;
-				}
-			}
-		}
-		for (a = 1; a <= frameCounter; a++) {
-			if (mframes[a] === undefined) {
-				mframes[a] = new ymaps.GeoObjectArray();
-			}
-		}
-		frm = (mframes[$("#vp_frame").val()] === undefined ) ?  mframes.length - 1 : $("#vp_frame").val();
-		//alert (frm)
-		while (mframes[frm].get(0)) {
-			a_objects.add(mframes[frm].get(0));
-		}
-		//map.geoObjects.add(a_objects);
-		//map.geoObjects.add(e_objects);
-
-		//console.log(a_objects.getLength());
-	}
-
 	function saveAll() {
 		/*
 		сохранение в базу данных
@@ -1027,9 +792,8 @@ function display_locations() {
 				place_freehand_objects(usermap);
 				count_objects();
 			},
-			error: function(data,stat,err) {
-				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				console.log([data,stat,err].join("\n"));
+			error: function(data, stat, err) {
+				console.log([ data, stat, err ]);
 			}
 		});
 	}
@@ -1047,11 +811,11 @@ function display_locations() {
 				zoom: map.getZoom()
 			},
 			datatype: "text",
-			success: function(data) {
+			success: function() {
 				console.log("Data sent");
 			},
-			error: function(data,stat,err) {
-				console.log([data,stat,err].join("\n"));
+			error: function(data, stat, err) {
+				console.log([ data, stat, err ]);
 			}
 		});
 	}
@@ -1095,12 +859,11 @@ function display_locations() {
 				name:		item.properties.get('name'),
 				frame:		parseInt($("#vp_frame").val())
 			},
-			success: function(data) {
+			success: function() {
 				//$("#consoleContent").html(data);
 			},
-			error: function(data,stat,err) {
-				//$("#consoleContent").html([data,stat,err].join("<br>"));
-				console.log([data,stat,err].join("\n"));
+			error: function(data, stat, err) {
+				console.log([ data, stat, err ]);
 			}
 		});
 	}
@@ -1136,36 +899,6 @@ function display_locations() {
 			ручной ввод параметров центра карты из полей навигатора
 		*/
 		map.setCenter([parseFloat($("#vp_lon").val()), parseFloat($("#vp_lat").val())], parseInt($("#current_zoom").val()));
-	}
-
-	function setPointCoordinates() {
-		/*
-			ручной ввод параметров геометрии точки из полей навигатора
-		*/
-		var ttl = parseInt(item.properties.get('ttl'), 10);
-		e_objects.each(function(item) {
-			if (parseInt(item.properties.get('ttl'), 10) === ttl) {
-				item.geometry.setCoordinates([parseFloat($("#m_lon").val()), parseFloat($("#m_lat").val())]);
-			}
-		});
-	}
-
-	function show_frame(frm) {
-		/*
-			функция переключения фрейма
-		*/
-		while(mframes[frm].get(0)) {
-			a_objects.add(mframes[frm].get(0));
-		}
-		//map.geoObjects.add(a_objects);
-	}
-
-	function style_list() {
-		for (a in style_src) {
-			if (style_src.hasOwnProperty(a)) {
-				$("#m_style").append($('<option value="' + style_src[a][2] + '">' + style_src[a][3] + '</option>'));
-			}
-		}
 	}
 
 	function toClipboard(src) {
@@ -1205,14 +938,15 @@ function display_locations() {
 		var type   = src.geometry.getType(),
 			coords = src.geometry.getCoordinates(),
 			desc   = src.properties.get("description"),
-			cstyle = src.properties.get("attr");
+			cstyle = src.properties.get("attr"),
+			names  = [],
+			radius;
 		// заполнение в соответствии с типом геометрии объекта
 		switch (type) {
 			case "Point" :
 				// запрос адреса
-				ymaps.geocode(coords,{ kind: ['house'] })
+				ymaps.geocode(coords, { kind: ['house'] })
 				.then(function (res) {
-					names = [];
 					res.geoObjects.each(function (obj) {
 						names.push(obj.properties.get('name'));
 					});
@@ -1250,7 +984,8 @@ function display_locations() {
 
 	$("#m_style, #line_style, #polygon_style, #circle_style").change(function() {
 		var id = $(this).attr("id"),
-			val = $(this).val();
+			val = $(this).val(),
+			type;
 		e_objects.each(function(item) {
 			type = item.geometry.getType();
 			if (type === "Point" && id === "m_style") {
@@ -1293,6 +1028,224 @@ function display_locations() {
 }
 //######################################### конец процессора карты #####################################################
 //######################################################################################################################
+
+function place_freehand_objects(source) {
+	var src,
+		object,
+		geometry,
+		options,
+		properties,
+		b,
+		frameCounter,
+		frm;
+	for (b in source) {
+		if (source.hasOwnProperty(b)) {
+			src = source[b];
+			options = ymaps.option.presetStorage.get(normalize_style(src.a, src.p));
+			frm = (src.frame === undefined) ? 1 : parseInt(src.frame);
+			properties = {
+				attr        : src.a,
+				description : src.d,
+				address     : src.b,
+				hintContent : src.n + ' ' + src.d,
+				img         : src.img,
+				frame       : frm,
+				link        : src.l,
+				name        : src.n,
+				ttl         : b
+			};
+			if (mframes[frm] === undefined) {
+				mframes[frm] = new ymaps.GeoObjectArray();
+			}
+			if (src.p === 1) {
+				geometry = src.c.split(",");
+				object   = new ymaps.Placemark(geometry, properties, options);
+			}
+			if (src.p === 2) {
+				geometry = new ymaps.geometry.LineString.fromEncodedCoordinates(src.c);
+				object   = new ymaps.Polyline(geometry, properties, options);
+			}
+			if (src.p === 3) {
+				geometry = new ymaps.geometry.Polygon.fromEncodedCoordinates(src.c);
+				object   = new ymaps.Polygon(geometry, properties, options);
+			}
+			if (src.p === 4) {
+				geometry = new ymaps.geometry.Circle([parseFloat(src.c.split(",")[0]), parseFloat(src.c.split(",")[1])], parseFloat(src.c.split(",")[2]));
+				object = new ymaps.Circle(geometry, properties, options);
+			}
+			mframes[frm].add(object);
+		}
+	}
+	count_objects();
+	//console.log(mframes.length)
+
+	frameCounter = 1;
+	for (a in mframes) {
+		if (mframes.hasOwnProperty(a)) {
+			if ( a > frameCounter ) {
+				frameCounter = a;
+			}
+		}
+	}
+	for (a = 1; a <= frameCounter; a++) {
+		if (mframes[a] === undefined) {
+			mframes[a] = new ymaps.GeoObjectArray();
+		}
+	}
+	frm = (mframes[$("#vp_frame").val()] === undefined ) ?  mframes.length - 1 : $("#vp_frame").val();
+	//alert (frm)
+	while (mframes[frm].get(0)) {
+		a_objects.add(mframes[frm].get(0));
+	}
+	//map.geoObjects.add(a_objects);
+	//map.geoObjects.add(e_objects);
+
+	//console.log(a_objects.getLength());
+}
+
+function normalize_style(style, type) {
+	var defaults   = {
+			1: 'twirl#redDotIcon',
+			2: 'routes#default',
+			3: 'area#default',
+			4: 'circle#default',
+			5: 'rct#default'
+		},
+		test = ymaps.option.presetStorage.get(style);
+
+	if (test === undefined) {
+		style = ["twirl", style.split("#")[1]].join("#");
+		if (ymaps.option.presetStorage.get(style) === undefined) {
+			console.log("Стиль оформления отсутствует в хранилище. Применены умолчания.");
+			style = defaults[type];
+		}
+	}
+	return style;
+}
+
+function action_listeners_add() {
+
+	$(".balloonClose").unbind().click(function() {
+		map.balloon.close();
+	});
+
+	if (mp !== undefined && typeof mp.id !== undefined && mp.id === 'void') {
+		$(".sw-edit").addClass("hide");
+		return false;
+	}
+
+	$(".sw-finish").unbind().click(function() {
+		doFinish(this);
+		nullTracers();
+		counter = 0;
+		map.balloon.close();
+		count_objects();
+	});
+
+	$(".sw-edit").unbind().click(function() {
+		doEdit(this);
+		count_objects();
+		counter = 1;
+	});
+
+	$(".sw-del").unbind().click(function() {
+		doDelete(this);
+		nullTracers();
+		counter = 0;
+		map.balloon.close();
+		count_objects();
+	});
+
+	$(".copyProp").unbind().click(function() {
+		toClipboard(this);
+	});
+
+	$(".pasteProp").unbind().click(function() {
+		fromClipboard(this,0);
+	});
+
+	$(".pastePropOpt").unbind().click(function() {
+		fromClipboard(this,1);
+	});
+
+	/*
+	$(".editX").unbind().click(function(e) {
+		e.preventDefault();
+		m = $(this).attr('ttl');
+		//console.log(m);
+		e_objects.each(function(item) {
+			//console.log([item.properties.get('ttl'), m].join(" -+- "));
+			if (item.properties.get('ttl') == m) {
+				map.balloon.close();
+				ex_objects.add(item);
+				item.balloon.open(item.geometry.getCoordinates());
+				CKEDITOR.appendTo( 'editXtgt',{
+					contentsCss: api_url + '/bootstrap/css/bootstrap.css',
+					skin : 'v2',
+					filebrowserBrowseUrl : '/dop/browser/images',
+					filebrowserUploadUrl : '/dop/uploader/files',
+					toolbar_Basic : [
+						[ 'Bold', 'Italic', '-', 'Format', 'Image', 'Table' ]
+					],
+					toolbar : 'Basic',
+					height:220,
+					format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;address;div;well',
+					format_well: { name: 'well', element : 'div', attributes : { 'class' : 'well well-small' } }
+				})
+			}
+		})
+	});
+	*/
+}
+
+function count_objects() {
+	$("#ResultBody, #nowEdited").empty();
+	//console.log(a_objects.getLength())
+	a_objects.each(function(item) {
+		$("#ResultBody").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
+	});
+	//console.log(e_objects.getLength())
+	e_objects.each(function(item) {
+		$("#nowEdited").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
+	});
+
+	$(".mg-btn-list").click(function() {
+		var ttl = parseInt($(this).attr("ttl"), 10);
+		a_objects.each(function(item) {
+			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
+				item.balloon.open(item.geometry.getCoordinates());
+			}
+		});
+		e_objects.each(function(item) {
+			if (parseInt(item.properties.get("ttl"), 10) === ttl) {
+				item.balloon.open( item.geometry.getCoordinates() );
+				openEditPane( item.geometry.getType() );
+			}
+		});
+	});
+	action_listeners_add();
+}
+
+function genListItem(ttl, name, address, pic) { //динамически генерируемый чанк
+	var string;
+	string = '<div class="btn-group">' +
+		'<button class="btn btn-mini mg-btn-list" ttl=' + ttl + '>' +
+		'<img src="' + api_url + '/images/' + pic + '" alt="">' + 'Название: ' + name + '<br>' +
+		'Адрес: ' + address +
+		'</button>' +
+		'<button class="btn dropdown-toggle" data-toggle="dropdown" style="height:55px;">' +
+		'<span class="caret"></span>' +
+		'</button>'+
+		'<ul class="dropdown-menu">' +
+			'<li><a href="#" class="copyProp" ttl=' + ttl + '><i class="icon-upload"></i> Скопировать свойства</a></li>' +
+			'<li><a href="#" class="pasteProp" ttl=' + ttl + ' title="Вставить свойства"><i class="icon-download"></i> Вставить свойства</a></li>' +
+			'<li><a href="#" class="pastePropOpt" ttl=' + ttl + ' title="Вставить свойства и оформление"><i class="icon-download-alt"></i> Вставить всё</a></li>' +
+			'<li><a href="#" class="sw-del" ttl=' + ttl + '><i class="icon-trash"></i> Удалить объект</a></li>' +
+		'</ul>' +
+	'</div>';
+	return string;
+}
+
 function lock_center() {
 	if (isCenterSet) {
 		$(".mapcoord").attr('readonly','readonly');
@@ -1302,14 +1255,22 @@ function lock_center() {
 		$(this).html('Фиксировать центр').attr('title','Не перемещать центр');
 	}
 }
+function setPointCoordinates() {
+	/*
+		ручной ввод параметров геометрии точки из полей навигатора
+	*/
+	e_objects.get(0).geometry.setCoordinates([parseFloat($("#m_lon").val()), parseFloat($("#m_lat").val())]);
+}
 // события не-карты
 $(".obj_sw").click(function() {
 	$("#current_obj_type").val(intId2GeoType[$(this).attr('pr')]);
 	$(".navigator-pane").addClass('hide');
 	$("#navigator-pane" + $(this).attr('pr')).removeClass('hide');
 });
+
 $(".mg-btn-list").click(function(src) {
-	select_current_found_object(src);
+	console.log("Сделать поиск объекта!");
+	//select_current_found_object(src);
 });
 
 //	### Atomic actions
@@ -1338,11 +1299,11 @@ $(".frame-switcher").click(function() {
 				},
 				dataType: "script",
 				type: "POST",
-				success: function(data) {
+				success: function() {
 					place_freehand_objects(usermap);
 				},
-				error: function(data,stat,err) {
-					console.log([data,stat,err].join("\n"));
+				error: function(data, stat, err) {
+					console.log([ data, stat, err ]);
 				}
 			});
 		}
@@ -1380,11 +1341,11 @@ $("#linkFactory a").click(function(e) {
 			url: controller + '/loadscript/' + mp.uhash,
 			dataType: "html",
 			type: "POST",
-			success: function(data) {
+			success: function() {
 				window.location.href = controller + '/loadscript/' + mp.uhash;
 			},
-			error: function(data,stat,err) {
-				console.log([data,stat,err].join("\n"));
+			error: function(data, stat, err) {
+				console.log([ data, stat, err ]);
 			}
 		});
 	}
@@ -1394,12 +1355,12 @@ $("#linkFactory a").click(function(e) {
 			url: controller + "/createframe/" + mp.uhash,
 			dataType: "text",
 			type: "POST",
-			success: function(data) {
+			success: function() {
 				$("#mapLink").val("http://maps.korzhevdp.com" + controller + '/loadframe/' + mp.uhash);
 				$("#mapLinkContainer").removeClass("hide");
 			},
-			error: function(data,stat,err) {
-				//console.log([data,stat,err].join("<br>"));
+			error: function(data, stat, err) {
+				console.log([ data, stat, err ]);
 			}
 		});
 	}
@@ -1416,8 +1377,8 @@ $("#linkFactory a").click(function(e) {
 				$("#transferCode").html(data);
 				$("#transferM").modal("show");
 			},
-			error: function(data,stat,err) {
-				//console.log([data,stat,err].join("<br>"));
+			error: function(data, stat, err) {
+				console.log([ data, stat, err ]);
 			}
 		});
 	}
@@ -1428,12 +1389,12 @@ $("#sessDestroy").click(function() {
 		url: controller + "/session_reset",
 		dataType: "script",
 		type: "POST",
-		success: function(data) {
+		success: function() {
 			a_objects.removeAll();
 			e_objects.removeAll();
 		},
-		error: function(data,stat,err) {
-			console.log([data,stat,err].join("\n"));
+		error: function(data, stat, err) {
+			console.log([ data, stat, err ]);
 		}
 	});
 });
@@ -1443,13 +1404,13 @@ $("#mapReset").click(function() {
 		url: controller + "/session_reset",
 		dataType: "html",
 		type: "POST",
-		success: function(data) {
+		success: function() {
 			a_objects.removeAll();
 			e_objects.removeAll();
 			$("#mapSave, #ehashID, #SContainer").css('display',"block");
 		},
-		error: function(data,stat,err) {
-			//$("#consoleContent").html([data,stat,err].join("<br>"));
+		error: function(data, stat, err) {
+			console.log([ data, stat, err ]);
 		}
 	});
 });
@@ -1516,3 +1477,42 @@ function list_circle_styles() {
 		}
 	}
 }
+// Still unused FX
+// Frame Control
+function hide_frame(frame) {
+	/*
+		функция переключения фрейма
+		фреймы пока упразднены, с их наследием надо разобраться
+	*/
+	mframes[frame].removeAll();
+	while(a_objects.get(0)) {
+		mframes[frame].add(a_objects.get(0));
+	}
+	while(e_objects.get(0)) {
+		mframes[frame].add(e_objects.get(0));
+	}
+}
+
+function show_frame(frm) {
+	/*
+		функция переключения фрейма
+	*/
+	while(mframes[frm].get(0)) {
+		a_objects.add(mframes[frm].get(0));
+	}
+	//map.geoObjects.add(a_objects);
+}
+// Nullers
+function nullPlacemarkTracer() {
+	$("#m_lon").val('');
+	$("#m_lat").val('');
+}
+// Fillers
+function style_list() {
+	for (a in style_src) {
+		if (style_src.hasOwnProperty(a)) {
+			$("#m_style").append($('<option value="' + style_src[a][2] + '">' + style_src[a][3] + '</option>'));
+		}
+	}
+}
+
