@@ -5,6 +5,7 @@ var userstyles,
 	map,
 	a_objects,
 	e_objects,
+	counter      = 0,
 	api_url       = 'http://api.korzhevdp.com',
 	controller    = '/freehand',
 	mp = {},
@@ -55,7 +56,6 @@ function display_locations() {
 		valtz,
 		coords,
 		forIFrame    = 0,
-		counter      = 0,
 		object_gid   = $("#gCounter").val(),
 		current_type = $("#current_type").val(),
 		map_center   = $("#map_center").val(),
@@ -462,42 +462,6 @@ function display_locations() {
 		count_objects();
 	}
 
-	function fromClipboard(src, wst) {
-		/*
-		вставка данных из локального буфера обмена
-		*/
-		var ttl = parseInt($(src).attr('ttl'), 10);
-		e_objects.each(function(item) {
-			if (ttl === parseInt(item.properties.get('ttl'), 10)) {
-				item.properties.set({
-					name        : clipboard.name,
-					address     : clipboard.address,
-					description : clipboard.description,
-					hintContent : clipboard.name + ' ' + clipboard.address
-				});
-				if (wst === 1 && item.geometry.getType() === clipboard.gtype) {
-					item.options.set(ymaps.option.presetStorage.get(normalize_style(clipboard.preset)));
-					item.properties.set({ preset: clipboard.preset });
-				}
-			}
-		});
-		a_objects.each(function(item) {
-			if (ttl === parseInt(item.properties.get('ttl'), 10)) {
-				item.properties.set({
-					name        :	clipboard.name,
-					address     :	clipboard.address,
-					description :	clipboard.description,
-					hintContent :	clipboard.name + ' ' + clipboard.address
-				});
-				if (wst === 1 && item.geometry.getType() === clipboard.gtype) {
-					item.options.set(ymaps.option.presetStorage.get(normalize_style(clipboard.preset)));
-					item.properties.set({ preset: clipboard.preset });
-				}
-			}
-		});
-		count_objects();
-	}
-
 	function length_calc(src) {
 		/*
 			расчёт длины ломаной методом прибавления дельты.
@@ -671,36 +635,6 @@ function display_locations() {
 		map.setCenter([parseFloat($("#vp_lon").val()), parseFloat($("#vp_lat").val())], parseInt($("#current_zoom").val()));
 	}
 
-	function toClipboard(src) {
-		/*
-			помещение данных в локальный буфер обмена
-		*/
-		var ttl = parseInt($(src).attr('ttl'), 10);
-		e_objects.each(function(item) {
-			if (ttl === parseInt(item.properties.get('ttl'), 10)) {
-				clipboard = {
-					name:			item.properties.get('name'),
-					address:		item.properties.get('address'),
-					description:	item.properties.get('description'),
-					preset:			item.properties.get('preset'),
-					gtype:			item.geometry.getType()
-				};
-			}
-		});
-		a_objects.each(function(item) {
-			if (ttl === parseInt(item.properties.get('ttl'), 10)) {
-				clipboard = {
-					name:			item.properties.get('name'),
-					address:		item.properties.get('address'),
-					description:	item.properties.get('description'),
-					preset:			item.properties.get('preset'),
-					gtype:			item.geometry.getType()
-				};
-			}
-		});
-		count_objects();
-	}
-
 	$("#m_style, #line_style, #polygon_style, #circle_style").change(function() {
 		//alert ($(this).val() + ' --- ' + $(this).attr("id"));
 		var id = $(this).attr("id"),
@@ -743,7 +677,7 @@ function place_freehand_objects(source) {
 		geometry,
 		options,
 		properties,
-		b,
+		b, a,
 		frameCounter,
 		frm;
 	for (b in source) {
@@ -1066,6 +1000,7 @@ function traceNode(src) {
 		desc   = src.properties.get("description"),
 		cstyle = src.properties.get("attr"),
 		names  = [],
+		valtz,
 		radius;
 	// заполнение в соответствии с типом геометрии объекта
 	switch (type) {
@@ -1109,7 +1044,8 @@ function traceNode(src) {
 }
 
 function returnPreparedGeometry(item) {
-	var type = geoType2IntId[ item.geometry.getType() ];
+	var type = geoType2IntId[ item.geometry.getType() ],
+		geometry;
 	switch (type) {
 		case 1:
 			geometry = item.geometry.getCoordinates();
@@ -1194,6 +1130,73 @@ function setPointCoordinates() {
 	*/
 	e_objects.get(0).geometry.setCoordinates([parseFloat($("#m_lon").val()), parseFloat($("#m_lat").val())]);
 }
+
+function fromClipboard(src, wst) {
+	/*
+	вставка данных из локального буфера обмена
+	*/
+	var ttl = parseInt($(src).attr('ttl'), 10);
+	e_objects.each(function(item) {
+		if (ttl === parseInt(item.properties.get('ttl'), 10)) {
+			item.properties.set({
+				name        : clipboard.name,
+				address     : clipboard.address,
+				description : clipboard.description,
+				hintContent : clipboard.name + ' ' + clipboard.address
+			});
+			if (wst === 1 && item.geometry.getType() === clipboard.gtype) {
+				item.options.set(ymaps.option.presetStorage.get(normalize_style(clipboard.preset)));
+				item.properties.set({ preset: clipboard.preset });
+			}
+		}
+	});
+	a_objects.each(function(item) {
+		if (ttl === parseInt(item.properties.get('ttl'), 10)) {
+			item.properties.set({
+				name        :	clipboard.name,
+				address     :	clipboard.address,
+				description :	clipboard.description,
+				hintContent :	clipboard.name + ' ' + clipboard.address
+			});
+			if (wst === 1 && item.geometry.getType() === clipboard.gtype) {
+				item.options.set(ymaps.option.presetStorage.get(normalize_style(clipboard.preset)));
+				item.properties.set({ preset: clipboard.preset });
+			}
+		}
+	});
+	count_objects();
+}
+
+function toClipboard(src) {
+	/*
+		помещение данных в локальный буфер обмена
+	*/
+	var ttl = parseInt($(src).attr('ttl'), 10);
+	e_objects.each(function(item) {
+		if (ttl === parseInt(item.properties.get('ttl'), 10)) {
+			clipboard = {
+				name:			item.properties.get('name'),
+				address:		item.properties.get('address'),
+				description:	item.properties.get('description'),
+				preset:			item.properties.get('preset'),
+				gtype:			item.geometry.getType()
+			};
+		}
+	});
+	a_objects.each(function(item) {
+		if (ttl === parseInt(item.properties.get('ttl'), 10)) {
+			clipboard = {
+				name:			item.properties.get('name'),
+				address:		item.properties.get('address'),
+				description:	item.properties.get('description'),
+				preset:			item.properties.get('preset'),
+				gtype:			item.geometry.getType()
+			};
+		}
+	});
+	count_objects();
+}
+
 // события не-карты
 $(".obj_sw").click(function() {
 	$("#current_obj_type").val(intId2GeoType[$(this).attr('pr')]);
