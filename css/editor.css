@@ -30,7 +30,6 @@ span.m_divider {
 	margin-top:4px;"
 }
 #lib-btn {
-	margin-left:3px;
 	margin-top:3px;
 }
 .brand img {
@@ -58,6 +57,70 @@ body {
 	margin:0px;
 	border:1px solid #c6c6c6;
 }
+
+body.altEditor .leftColumn {
+	width:280px;
+	background-color: #eee;
+	vertical-align:top;
+	padding-top:5px;
+	padding-left:10px;
+	padding-right:15px;
+	border:1px solid #bbb;
+}
+
+body.altEditor .rightColumn {
+	vertical-align : top;
+	padding:0px;
+}
+
+body.altEditor .editorTable {
+	width: 100%;
+	height:581px;
+}
+
+
+body.altEditor #YMapsID {
+	width:100%;
+	height:500px;
+	border:1px solid #c6c6c6;
+	margin-left:-2px;
+}
+
+body.altEditor .pointcoord {
+	width: 260px;
+	margin:0px;
+}
+
+body.altEditor .typeControl {
+	margin-bottom: 15px;
+}
+
+body.altEditor .nav {
+	margin-bottom: 0px;
+}
+
+body.altEditor .nav li {
+	width: 110px;
+}
+
+body.altEditor .nav {
+	margin-bottom: 0px;
+}
+
+body.altEditor .propPage fieldset {
+	width:550px;
+}
+
+body.altEditor .typeControl select{
+	width: 210px;
+}
+
+body.altEditor #saveBtn {
+	margin:0px;
+	float:none;
+}
+
+
 .right-controls {
 	width:270px;
 }
@@ -76,7 +139,8 @@ body {
 	margin:0px;
 	height:25px;
 }
-.displayMain, .displayPage {
+button.displayMain, 
+button.displayPage {
 	height:30px;
 	width:20px;
 }
@@ -101,6 +165,15 @@ body {
 	display:block;
 	float:left;
 }
+
+.altEditorHeader {
+	margin-left: 25px;
+}
+
+.altEditorHeader .btn-group {
+	margin-right: 25px;
+}
+
 #propPage label input[type=checkbox] {
 	margin-top: -4px;
 }

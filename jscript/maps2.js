@@ -23,18 +23,18 @@ function init() {
 		cursor,
 		genericBalloon = ymaps.templateLayoutFactory.createClass(
 			'<h4 class="balloonHeader">$[properties.name|нет описания]&nbsp;&nbsp;&nbsp;&nbsp;<small>$[properties.description|нет описания]</small></h4>' +
-				'<div id="mainPage">' +
+				'<div id="mainPage" class="mainPage">' +
 					'<div class="input-prepend">'  +
 						'<span class="add-on">Название:</span>' +
 						'<input type="text" id="f_name" value="$[properties.name|нет данных]" placeholder="Введите название">' +
 					'</div><br>' +
 					'<div class="input-prepend">' +
 						'<span class="add-on">Адрес:</span>' +
-						'<input type="text" id="f_address" value="$[properties.address|нет данных]" placeholder="Введите адрес">' +
+						'<input type="text" id="f_address" class="l_addr" value="$[properties.address|нет данных]" placeholder="Введите адрес">' +
 					'</div><br>' +
 					'<div class="input-prepend">' +
 						'<span class="add-on">Оформление:</span>' +
-						'<select name="style" id="f_style" class="span11"></select>' +
+						'<select name="style" id="f_style" class="span11 styles"></select>' +
 					'</div><br>' +
 					'<div class="input-prepend">' +
 						'<span class="add-on">Контакты:</span>' +
@@ -45,7 +45,7 @@ function init() {
 						'<input type="checkbox" id="f_act" style="vertical-align:middle" value="on">' +
 					'</div>' +
 				'</div>' +
-				'<div id="propPage">тест</div>' +
+				'<div id="propPage" class="propPage">тест</div>' +
 				'<hr style="margin:3px;">' +
 				'<div class="input-prepend pageButtons">' +
 					'<label class="add-on" title="Кнопки прехода к страницам свойств">Страницы</label>' +
@@ -133,6 +133,7 @@ function init() {
 				}
 			);
 			address = (names[0] !== "undefined") ? [names[0]].join(', ') : "Нет адреса";
+			$(".l_addr").val(address);
 			if(map.balloon.isOpen() && $("#f_address") !== undefined){
 				$("#f_address").val(address);
 			} else {
@@ -153,6 +154,7 @@ function init() {
 				}
 			);
 			prop.address = (names[0] !== "undefined") ? [names[0]].join(', ') : "Нет адреса";
+			$("#l_addr").val(prop.address);
 		});
 	}
 
@@ -275,6 +277,49 @@ function init() {
 			break;
 		}
 		//$(".console pre").html(prop.toSource());
+	}
+	
+	function save_properties(){
+		var cb = [],
+			te = {},
+			se = {},
+			ta = {},
+			senddata;
+		prop.address     = ($("#f_address").val() === undefined) ? $("#l_addr").val() : $("#f_address").val();
+		prop.name        = ($("#f_name").val()    === undefined) ? $("#l_name").val() : $("#f_name").val();
+		prop.attr        = ($("#f_style").val()   === undefined) ? $("#l_attr").val() : $("#f_style").val();
+		prop.contact     = ($("#f_cont").val()    === undefined) ? $("#l_cont").val() : $("#f_cont").val();
+		$("#propPage input[type=checkbox]:checked").each(function () {
+			cb.push($(this).val());
+		});
+		$("#propPage input[type=text]").each(function () {
+			te[$(this).attr("ref")] = $(this).val();
+		});
+		$("#propPage textarea").each(function () {
+			ta[$(this).attr("ref")] = $(this).val();
+		});
+		$("#propPage select").each(function () {
+			se[$(this).attr("ref")] = $(this).val();
+		});
+		senddata = prop;
+		senddata.check = cb;
+		senddata.ta    = ta;
+		senddata.te    = te;
+		senddata.se    = se;
+		$.ajax({
+			url: "/editor/saveprops",
+			type: "POST",
+			data: senddata,
+			dataType: 'script',
+			success: function () {
+				$("#saveBtn").removeClass("btn-warning").addClass("btn-primary").html("Сохранить!");
+				prop.ttl = data.ttl;
+				map.balloon.close();
+			},
+			error: function (data, stat, err) {
+				console.log([ data, stat, err ].join("\n"));
+			}
+		});
 	}
 
 	function switch_panel() {
@@ -531,18 +576,19 @@ function init() {
 		var a;
 		for (a in src) {
 			if (src.hasOwnProperty(a)) {
-				$('#f_style').append('<option value="' + src[a][id] + '">' + src[a][name] + '</option>');
+				$('.styles').append('<option value="' + src[a][id] + '">' + src[a][name] + '</option>');
 			}
 		}
 	}
 
-	function init_balloon_controls() {
+	function composeStyleDropdowns(type, style) {
 		// TODO!!!
 		// разобраться с наборами стилей!!!
-		switch (prop.pr) {
+		$(".styles").empty();
+		switch (type) {
 		case 1:
 			makeSelect(style_src, 2, 3);
-			$("#f_style").append(yandex_styles.join("\n")).append(yandex_markers.join("\n"));
+			$(".styles").append(yandex_styles.join("\n")).append(yandex_markers.join("\n"));
 			break;
 		case 2:
 			makeSelect(style_paths, 2, 4);
@@ -557,31 +603,16 @@ function init() {
 			makeSelect(style_rectangles, 5, 7);
 			break;
 		}
-		$('#f_style option[value="' + prop.attr + '"]').attr('selected', 'selected'); // повторно пробегаем :(
-
-		$("#f_style").change(function () {
-			prop.attr = $(this).val();
-			e_objects.get(0).options.set(ymaps.option.presetStorage.get(normalize_style(prop.attr)))
+		$('.styles option[value="' + style + '"]').attr('selected', 'selected'); // повторно пробегаем :(
+		// навешиваем действие
+		$(".styles").change(function () {
+			prop.attr = normalize_style($(this).val());
+			e_objects.get(0).options.set(ymaps.option.presetStorage.get(prop.attr));
+			$('.styles option[value="' + prop.attr + '"]').attr('selected', 'selected');
 		});
-
-		$("#f_address").val(prop.address);
-		$("#f_name").val(prop.name);
-		$("#f_style").val(prop.attr);
-		$("#f_cont").val(prop.contact);
-
-		$("#f_act").prop('checked', prop.active);
-
-		$("#f_act").click(function () {
-			prop.active = $(this).prop('checked') ? 1 :0 ;
-		});
-
-		$("#mainPage").css('display', 'block');
-
-		$(".displayMain").click(function () {
-			$("#propPage").css('display', 'none');
-			$("#mainPage").css('display', 'block');
-		});
-
+	}
+	
+	function listen_page_caller() {
 		$(".displayPage").click(function () {
 			var page = $(this).attr("ref").split("/");
 			$.ajax({
@@ -594,7 +625,7 @@ function init() {
 				type     : "POST",
 				dataType : 'html',
 				success  : function (data) {
-					$("#propPage").html(data);
+					$("#propPage, .propPage").html(data);
 					$("#propPage").css('display', 'block');
 					$("#mainPage").css('display', 'none');
 				},
@@ -603,61 +634,29 @@ function init() {
 				}
 			});
 		});
+		$(".displayMain").click(function () {
+			$(".propPage").css('display', 'none');
+			$(".mainPage").css('display', 'block');
+		});
+	}
 
-		$("#updDataBtn").click(function () {
-			var cb = [],
-				te = {},
-				se = {},
-				ta = {},
-				senddata;
-			prop.address     = $("#f_address").val();
-			prop.name        = $("#f_name").val();
-			prop.attr        = $("#f_style").val();
-			prop.contact     = $("#f_cont").val();
-			$("#propPage input[type=checkbox]:checked").each(function () {
-				cb.push($(this).val());
-			});
-			$("#propPage input:text").each(function () {
-				te[$(this).attr("ref")] = $(this).val();
-			});
-			$("#propPage textarea").each(function () {
-				ta[$(this).attr("ref")] = $(this).val();
-			});
-			$("#propPage select").each(function () {
-				se[$(this).attr("ref")] = $(this).val();
-			});
-			senddata = prop;
-			senddata.check = cb;
-			senddata.ta    = ta;
-			senddata.te    = te;
-			senddata.se    = se;
-			$.ajax({
-				url: "/editor/saveprops",
-				type: "POST",
-				data: senddata,
-				dataType: 'script',
-				success: function () {
-					$("#saveBtn").removeClass("btn-warning").addClass("btn-primary").html("Сохранить!");
-					prop.ttl = data.ttl;
-					map.balloon.close();
-				},
-				error: function (data, stat, err) {
-					console.log([ data, stat, err ].join("\n"));
-				}
-			});
+	function init_balloon_controls() {
+		composeStyleDropdowns(prop.pr, prop.attr);
+		listen_page_caller();
+		$("#f_address").val(prop.address);
+		$("#f_name").val(prop.name);
+		$("#f_style").val(prop.attr);
+		$("#f_cont").val(prop.contact);
+		$("#f_act").prop('checked', prop.active);
+		$("#f_act").click(function () {
+			prop.active = $(this).prop('checked') ? 1 :0 ;
 		});
 
+		$("#mainPage").css('display', 'block');
 		$("#closeBalloonBtn").click(function () {
-			//console.log (22);
 			e_objects.get(0).options.set(ymaps.option.presetStorage.get(normalize_style(prop.attr)));
 			map.balloon.close();
 		});
-		/*
-		$("#XD47").click(function () {
-			get_context();
-			describe_set(related);
-		});
-		*/
 	}
 
 	// События пользовательского интерфейса и ввода данных
@@ -694,12 +693,15 @@ function init() {
 				$('#type [value="' + prop.type + '"]').attr("selected", "selected");
 			}
 		}
+		composeStyleDropdowns(prop.pr, prop.attr);
+		listen_page_caller();
 		if(e_objects.getLength()) {
-			e_objects.get(0).options.set(ymaps.option.presetStorage.get(normalize_style(prop.attr)));
+			e_objects.get(0).options.set(ymaps.option.presetStorage.get(prop.attr));
 		}
 	});
 
 	$("#saveBtn").click(function () {
+		/*
 		$.ajax({
 			url: "/editor/saveobject",
 			type: "POST",
@@ -715,6 +717,9 @@ function init() {
 				console.log([ data, stat, err ].join("\n"));
 			}
 		});
+		*/
+		save_properties();
+
 	});
 
 	$("#setCenter").click(function () {
@@ -871,9 +876,6 @@ function init() {
 	});
 
 	//# собственно код
-
-	styleAddToStorage(userstyles);
-
 
 	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
 
@@ -1100,6 +1102,11 @@ function init() {
 		zIndex: 520,
 		cursor: 'pointer'
 	});
+
+	styleAddToStorage(userstyles);
+	prop.attr = normalize_style(prop.attr);
+	composeStyleDropdowns(prop.pr, prop.attr);
+	listen_page_caller();
 
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(e_objects);

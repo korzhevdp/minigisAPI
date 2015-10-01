@@ -1,6 +1,7 @@
 /* jshint -W100 */
 /* jshint undef: true, unused: true */
-/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons */
+/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
+	'use strict'
 var userstyles,
 	map,
 	a_objects,
@@ -529,17 +530,12 @@ function display_locations() {
 		});
 	}
 
-
-
 	$("#m_style, #line_style, #polygon_style, #circle_style").change(function() {
 		var val = $(this).val();
 		e_objects.each(function(item) {
 			apply_preset(item, val);
 		});
 	});
-
-
-
 
 	$("#mapLoader").click(function() {
 		loadmap($("#mapName").val());
@@ -805,15 +801,12 @@ function doFinishAll() {
 
 function count_objects() {
 	$("#ResultBody, #nowEdited").empty();
-	//console.log(a_objects.getLength())
 	a_objects.each(function(item) {
 		$("#ResultBody").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
 	});
-	//console.log(e_objects.getLength())
 	e_objects.each(function(item) {
 		$("#nowEdited").append(genListItem(item.properties.get('ttl'), item.properties.get('name'), item.properties.get('address'), gIcons[ item.geometry.getType() ]));
 	});
-
 	$(".mg-btn-list").click(function() {
 		var ttl = parseInt($(this).attr("ttl"), 10);
 		a_objects.each(function(item) {
@@ -915,12 +908,14 @@ function tracePolygon(src) {
 function traceCircle(src) {
 	var coords = src.geometry.getCoordinates(),
 		radius = src.geometry.getRadius(),
-		cstyle = src.properties.get("attr");
-	$("#cir_lon").val(coords[0].toFixed(8));
-	$("#cir_lat").val(coords[1].toFixed(8));
+		cstyle = src.properties.get("attr"),
+		arc    = (radius * 2 * Math.PI).toFixed(2),
+		field  = (Math.pow(radius,2) * Math.PI).toFixed(2);
+	$("#cir_lon").val(coords[0]);
+	$("#cir_lat").val(coords[1]);
 	$("#cir_radius").val(radius);
-	$("#cir_len").html((radius * 2 * Math.PI).toFixed(2));
-	$("#cir_field").html((Math.pow(radius,2) * Math.PI).toFixed(2));
+	$("#cir_len").html(arc);
+	$("#cir_field").html(field);
 	$('#circle_style [value="' + cstyle + '"]').attr("selected", "selected");
 }
 
@@ -1327,15 +1322,9 @@ $("#linkClose").click(function() {
 function list_marker_styles() {
 	var a;
 	$("#m_style").append('<optgroup label="Объекты">');
-	for (a in yandex_styles) {
+	for (a in yandex_styles + yandex_markers) {
 		if (yandex_styles.hasOwnProperty(a)) {
 			$("#m_style").append( yandex_styles[a] );
-		}
-	}
-	$("#m_style").append('</optgroup><optgroup label="Маркеры">');
-	for (a in yandex_markers) {
-		if (yandex_markers.hasOwnProperty(a)) {
-			$("#m_style").append( yandex_markers[a] );
 		}
 	}
 	$("#m_style").append( '</optgroup><optgroup label="Пользовательские">');
