@@ -20,6 +20,10 @@ function init() {
 		nePolygons      = new ymaps.GeoObjectArray(),  // Вспомогательная коллекция 4
 		searchControl   = new ymaps.control.SearchControl({ provider: 'yandex#publicMap', boundedBy: [[40, 65], [42, 64]], strictBounds: 1 }),
 		related,
+		layerTypes,
+		a,
+		tileServerID = parseInt(Math.random() * (4-1) + 1).toString(),
+		tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
 		cursor,
 		genericBalloon = ymaps.templateLayoutFactory.createClass(
 			'<h4 class="balloonHeader">$[properties.name|нет описания]&nbsp;&nbsp;&nbsp;&nbsp;<small>$[properties.description|нет описания]</small></h4>' +
@@ -42,7 +46,7 @@ function init() {
 					'</div><br>' +
 					'<div class="input-prepend">' +
 						'<span class="add-on">Опубликован</span>' +
-						'<input type="checkbox" id="f_act" style="vertical-align:middle" value="on">' +
+						'<input type="checkbox" id="f_act" class="l_act" style="vertical-align:middle" value="on">' +
 					'</div>' +
 				'</div>' +
 				'<div id="propPage" class="propPage">тест</div>' +
@@ -634,9 +638,14 @@ function init() {
 				}
 			});
 		});
-		$(".displayMain").click(function () {
+		$(".displayMain").unbind().click(function () {
 			$(".propPage").css('display', 'none');
 			$(".mainPage").css('display', 'block');
+		});
+		$(".l_act").prop('checked', prop.active);
+		$(".l_act").unbind().click(function () {
+			prop.active = $(this).prop('checked') ? 1 :0 ;
+			$(".l_act").prop('checked', prop.active);
 		});
 	}
 
@@ -647,10 +656,7 @@ function init() {
 		$("#f_name").val(prop.name);
 		$("#f_style").val(prop.attr);
 		$("#f_cont").val(prop.contact);
-		$("#f_act").prop('checked', prop.active);
-		$("#f_act").click(function () {
-			prop.active = $(this).prop('checked') ? 1 :0 ;
-		});
+
 
 		$("#mainPage").css('display', 'block');
 		$("#closeBalloonBtn").click(function () {
@@ -888,7 +894,30 @@ function init() {
 		zoom:      current_zoom,	// Коэффициент масштабирования
 		type:      current_type,	// Тип карты
 		behaviors: ["default", "scrollZoom"]
+	}, {
+		projection: ymaps.projection.sphericalMercator
+		/*autoFitToViewport: "always",
+		restrictMapArea: true*/ 
 	});
+
+	layerTypes = {
+		1: {
+			func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=" + mp.lang + "&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo";}, {tileTransparent: 1, zIndex:1000});},
+			folder: "",
+			label : "google#map",
+			name  : "Гуглотест",
+			layers: ["google#map"]
+		}
+	}
+	for (a in layerTypes) {
+		if (layerTypes.hasOwnProperty(a)) {
+			ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
+			ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
+				layerTypes[a].name, layerTypes[a].layers
+			));
+			//typeSelector.addMapType(layerTypes[a].label, a);
+		}
+	}
 
 	cursor = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
@@ -1107,6 +1136,23 @@ function init() {
 	prop.attr = normalize_style(prop.attr);
 	composeStyleDropdowns(prop.pr, prop.attr);
 	listen_page_caller();
+
+	$(".mapsw").click(function(){
+		if($(this).attr("id") == "toGoogle") {
+			map.setType("google#map");
+			$("#toGoogle").addClass("active");
+			$("#toYandex").removeClass("active");
+		}
+		if($(this).attr("id") == "toYandex") {
+			map.setType("yandex#map");
+			$("#toYandex").addClass("active");
+			$("#toGoogle").removeClass("active");
+		}
+	
+	});
+	map.setType("google#map");
+	$("#toGoogle").addClass("active");
+	$("#toYandex").removeClass("active");
 
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(e_objects);

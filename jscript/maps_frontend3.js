@@ -430,7 +430,7 @@ function init() {
 			$("#toGoogle").removeClass("active");
 		}
 	
-	})
+	});
 	map.setType("google#map");
 	$("#toGoogle").addClass("active");
 	$("#toYandex").removeClass("active");
