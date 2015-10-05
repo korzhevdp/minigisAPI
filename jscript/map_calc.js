@@ -1,78 +1,173 @@
-ymaps.ready(init);
-
-function init () {
-	map = new ymaps.Map("fakemap", {
-		center: [0,0],
-		zoom: 10,// Коэффициент масштабирования
-	});
-	vobjects = new ymaps.GeoObjectArray();
-	$("#map_calc").click(function(){
-		var ids = [],
-			lid = $('#lid').val();
-		$('[type=checkbox]').each(function(){
-			ids.push($(this).attr('id').split("_")[1]);
+function listenDependencyCalcCalls() {
+	$(".map_calc").unbind().click(function() {
+		var ids = [];
+		$("#propPage input[type=checkbox]").prop('checked', false)
+		$("#propPage input[type=checkbox]").each(function() {
+			ids.push($(this).val());
 		});
-		str = (ids.join("_"));
 		$.ajax({
-			url: "/ajaxutils/dependencycalc/" + lid + "/" + str,
-			type: "POST",
-			dataType: "script",
-			success: function(){
-				var point_coord = [0,0],
-				pr_type = 1;
-				for (a in set){
-					if(a==0){
-						switch (set[a][1]){
-							case 1 :
-								point_coord = set[a][2].split(",");
-							break;
-							case 2 :
-								point_coord = new ymaps.geometry.LineString.fromEncodedCoordinates(set[a][2]).getCoordinates();
-								pr_type = 2;
-							break;
-							case 3 :
-								point_coord = new ymaps.geometry.Polygon.fromEncodedCoordinates(set[a][2]).getCoordinates();
-								pr_type = 2;
-							break;
-						}
-					}else{
-						vobjects.add(new ymaps.Polygon(new ymaps.geometry.Polygon.fromEncodedCoordinates(set[a][2]),
-						{ttl: set[a][0]},{}));
-					}
-				}
-				map.geoObjects.add(vobjects);
-
-				if(pr_type == 1){
-					vobjects.each(function(item){
-						if(item.geometry.contains(point_coord)) {
-							$('#param_' + item.properties.get('ttl')).attr('checked','checked');
-						}
-					});
-				}
-				if(pr_type == 2){
-					for (c in point_coord){
-						vobjects.each(function(item){
-							if(item.geometry.contains(point_coord[c])) {
-								$('#param_' + item.properties.get('ttl')).attr('checked','checked');
-							}
-						});
-					}
-				}
-				if(pr_type == 3){
-					for (c in point_coord){
-						vobjects.each(function(item){
-							if(item.geometry.contains(point_coord[0][c])) {
-								$('#param_' + item.properties.get('ttl')).attr('checked','checked');
-							}
-						});
-					}
-				}
-
+			url      : "/nodal/dependencycalc",
+			type     : "POST",
+			data     : {
+				lid  : prop.ttl,
+				ids  : ids
 			},
-			error: function(a,b,с){
-				alert(с);
+			dataType : "script",
+			success  : function() {
+				var a,
+					b;
+				for (a in data) {
+					//console.log(a);
+					if (data.hasOwnProperty(a)) {
+						ids = checkPointsInclusion(data[a].ym, a);
+						//console.log(ids);
+					}
+				}
+				nePolygons.removeAll();
+			},
+			error: function (data, stat, err) {
+				console.log([ data, stat, err ].join("\n"));
 			}
 		});
 	});
+}
 
+function checkPointsInclusion(data, id) {
+	var a,
+		c,
+		d,
+		includedIn = [],
+		src_geometry = e_objects.get(0).geometry.getCoordinates(),
+		polygon = new ymaps.Polygon(new ymaps.geometry.Polygon.fromEncodedCoordinates(data));
+
+	nePolygons.add(polygon);
+	if(prop.pr === 1){
+		if(polygon.geometry.contains(src_geometry)) {
+			$("#p" + id).prop('checked', true);
+		}
+	}
+
+	if(prop.pr === 2){
+		for (c in src_geometry){
+			if (src_geometry.hasOwnProperty(c)) {
+				if (polygon.geometry.contains(src_geometry[c])) {
+					$("#p" + id).prop('checked', true);
+				}
+			}
+		}
+	}
+
+	if(prop.pr === 3){
+		for (c in src_geometry) {
+			if (src_geometry.hasOwnProperty(c)) {
+				for (d in src_geometry[c]){
+					if (src_geometry[c].hasOwnProperty(d)) {
+						if(polygon.geometry.contains(src_geometry[c][d])) {
+							$("#p" + id).prop('checked', true);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Nodal 2.0 Section
+function length_calc() { // imho deprecated передаётся объект геометрии от источника - object.geometry
+	var src         = e_objects.get(0).geometry.getCoordinates(),
+		i,
+		routelength = 0,
+		next        = 0,
+		start       = [],
+		end         = [],
+		delta       = 0;
+	if (src.length < 2) {
+		$(".f_len").html(0);
+	}
+	for (i = 0; i < (src.length - 1); i += 1) {
+		next         = (i + 1);
+		start        = [ src[i][0], src[i][1] ];
+		end          = [ src[next][0], src[next][1] ];
+		delta        = ymaps.coordSystem.geo.getDistance(start, end);
+		routelength += delta;
+	}
+	routelength = (isNaN(routelength)) ? 0 : routelength.toFixed(2);
+	$(".f_len").html(routelength);
+	$(".f_vtx").html(e_objects.get(0).geometry.getLength());
+}
+
+function field_calc() { //передаётся объект геометрии от источника - object.geometry площадь круга на плоскости
+	var rads = e_objects.get(0).geometry.getRadius(),
+		length = Math.PI * 2 * rads,
+		field = Math.PI * rads * rads;
+		//console.log(rads);
+	$("#cir_raduis").html(rads);
+	$("#cir_len").html(length.toFixed(3));
+	$("#cir_field").html(field.toFixed(3));
+	$("#cir_raduis").html(rads);
+}
+
+function perimeter_calc() { //передаётся объект геометрии от источника - object.geometry
+	var src = e_objects.get(0).geometry.getCoordinates(),
+		routelength = 0,
+		next        = 0,
+		start       = [],
+		end         = [],
+		delta       = 0,
+		vtx_count   = 0,
+		j,
+		i;
+	if (src[0].length < 2) {
+		return "0";
+	}
+	for (j = 0; j < src.length; j += 1) {
+		vtx_count += src[j].length;
+		for (i = 0; i < (src[j].length - 1); i += 1) {
+			next         = (i + 1);
+			start        = src[j][i];
+			end          = src[j][next];
+			delta        = ymaps.coordSystem.geo.getDistance(start, end);
+			routelength += delta;
+		}
+	}
+	routelength = (isNaN(routelength)) ? 0 : routelength;
+	$(".f_len").html(routelength.toFixed(2));
+	$(".f_vtx").html(vtx_count - 1);
+	return true;
+}
+// ######################################################
+// geocoder Section
+function request_geocode_toMapPoint(coords) { // запрос геокодеру по координатам точечного объекта. (массив из объекта геометрии)
+	ymaps.geocode(coords, { kind: ['house']}).then(function (result) {
+		var names = [],
+			address;
+		result.geoObjects.each(
+			function (object) {
+				names.push(object.properties.get('name'));
+			}
+		);
+		address = (names[0] !== "undefined") ? [names[0]].join(', ') : "Нет адреса";
+		$(".l_addr").val(address);
+		if(map.balloon.isOpen() && $("#f_address") !== undefined){
+			$("#f_address").val(address);
+		} else {
+			map.balloon.open(coords, {
+				contentBody: '<div class="ymaps_balloon"><input type="text" value="' + [ parseFloat(coords[0]).toFixed(8), parseFloat(coords[1]).toFixed(8) ].join(', ') + '"><br>' + address + '</div>'
+			});
+		}
+	});
+}
+
+function request_geocode_toPointObject(coords) { // запрос геокодеру по координатам точечного объекта. (массив из объекта геометрии)
+	ymaps.geocode(coords, { kind: ['house']}).then(function (result) {
+		var names = [],
+			address;
+		result.geoObjects.each(
+			function (object) {
+				names.push(object.properties.get('name'));
+			}
+		);
+		prop.address = (names[0] !== "undefined") ? [names[0]].join(', ') : "Нет адреса";
+		$("#l_addr").val(prop.address);
+	});
 }

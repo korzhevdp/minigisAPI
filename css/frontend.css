@@ -229,4 +229,54 @@ div.stdViewContent h5,
 div.stdViewContent h6 {
 	color: #999;
 }
+.control-group{
+	display:block;
+}
+.control-group textarea{
+	width: 349px;
+	height: 50px;
+}
+.pre-label{
+	width:200px !important;
+}
 
+label.add-on{
+	font-size:12px !important;
+	display:inline-block !important;
+	width:120px !important;
+	text-align:left !important;
+	text-indent:5px;
+	margin-bottom:2px;
+}
+
+.input-prepend {
+	margin-bottom:0px;
+	line-height:16px;
+}
+.input-prepend input[type=checkbox]{
+	margin-top : 9px;
+	margin-left: 20px;
+}
+.input-prepend input[type=text],
+.input-prepend input[type=password] {
+	font-size : 12px !important;
+	height    : 26px;
+	width     : 346px;
+	padding   : 1px 8px;
+}
+.commentForm{
+	width : 700px;
+	padding-left:15px;
+	margin-bottom:60px;
+}
+.commentForm textarea{
+	height: 130px;
+
+}
+.commentForm small{
+	display:block;
+	clear:both;
+	margin-top: 4px;
+	color: #aaa;
+	margin-left: 220px;
+}

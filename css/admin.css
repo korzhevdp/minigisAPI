@@ -226,3 +226,47 @@ div.semanticControls{
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
+#payTable *{
+	font-size: .8rem;
+}
+#payTable input,
+#payTable select{
+	margin:0px;
+}
+#payTable input,
+#payTable select option{
+	padding:2px;
+}
+
+#payTable .type{
+	width:200px;
+}
+
+#payTable .name{
+	width:190px;
+}
+
+#payTable .paidtill{
+	width:140px;
+}
+
+#payTable .last{
+	width:100px;
+}
+
+#payTable .author{
+	width:80px;
+}
+
+#payTable input.datepicker{
+	width:100px;
+}
+
+#payTable select {
+	width:200px;
+	height: 26px;
+}
+#payTable input[type=checkbox]{
+	margin-right:5px;
+	margin-top:4px;
+}

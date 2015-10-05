@@ -1,7 +1,11 @@
+var map,
+	a_objects,
+	e_objects,
+	v_objects,
+	nePolygons;
 function init() {
 	'use strict';
-	var map,
-		maptypes        = { 1: 'yandex#map', 2: 'yandex#satellite', 3: 'google#map', 4: 'osm#map' },
+	var maptypes        = { 1: 'yandex#map', 2: 'yandex#satellite', 3: 'google#map', 4: 'osm#map' },
 		map_center      = prop.map_center,
 		current         = 0,
 		//current         = (typeof current !== 'undefined') ? current : prop.ttl,
@@ -14,10 +18,6 @@ function init() {
 		bas_index_array = [],
 		lon             = map_center[0],
 		lat             = map_center[1],
-		a_objects       = new ymaps.GeoObjectArray(),  // Вспомогательная коллекция (точки управления фигурами - прямоугольник, круг)
-		e_objects       = new ymaps.GeoObjectArray(),  // Вспомогательная коллекция (редактируемые объекты)
-		v_objects       = new ymaps.GeoObjectArray(),  // Вспомогательная коллекция (опорные точки и объекты)
-		nePolygons      = new ymaps.GeoObjectArray(),  // Вспомогательная коллекция 4
 		searchControl   = new ymaps.control.SearchControl({ provider: 'yandex#publicMap', boundedBy: [[40, 65], [42, 64]], strictBounds: 1 }),
 		related,
 		layerTypes,
@@ -59,108 +59,11 @@ function init() {
 				'<button type="button" class="btn btn-primary btn-mini" id="updDataBtn">Применить</button>' +
 				'<button type="reset" class="btn btn-mini" id="closeBalloonBtn">Отмена</button>'
 		);
-
+		a_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (точки управления фигурами - прямоугольник, круг)
+		e_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (редактируемые объекты)
+		v_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (опорные точки и объекты)
+		nePolygons      = new ymaps.GeoObjectArray();  // Вспомогательная коллекция 4
 //######################################### выносные функций, чтобы не загромождать код базовых функций
-
-	// Nodal 2.0 Section
-	function length_calc() { // imho deprecated передаётся объект геометрии от источника - object.geometry
-		var src         = e_objects.get(0).geometry.getCoordinates(),
-			i,
-			routelength = 0,
-			next        = 0,
-			start       = [],
-			end         = [],
-			delta       = 0;
-		if (src.length < 2) {
-			$(".f_len").html(0);
-		}
-		for (i = 0; i < (src.length - 1); i += 1) {
-			next         = (i + 1);
-			start        = [ src[i][0], src[i][1] ];
-			end          = [ src[next][0], src[next][1] ];
-			delta        = ymaps.coordSystem.geo.getDistance(start, end);
-			routelength += delta;
-		}
-		routelength = (isNaN(routelength)) ? 0 : routelength.toFixed(2);
-		$(".f_len").html(routelength);
-		$(".f_vtx").html(e_objects.get(0).geometry.getLength());
-	}
-
-	function field_calc() { //передаётся объект геометрии от источника - object.geometry площадь круга на плоскости
-		var rads = e_objects.get(0).geometry.getRadius(),
-			length = Math.PI * 2 * rads,
-			field = Math.PI * rads * rads;
-			//console.log(rads);
-		$("#cir_raduis").html(rads);
-		$("#cir_len").html(length.toFixed(3));
-		$("#cir_field").html(field.toFixed(3));
-		$("#cir_raduis").html(rads);
-	}
-
-	function perimeter_calc() { //передаётся объект геометрии от источника - object.geometry
-		var src = e_objects.get(0).geometry.getCoordinates(),
-			routelength = 0,
-			next        = 0,
-			start       = [],
-			end         = [],
-			delta       = 0,
-			vtx_count   = 0,
-			j,
-			i;
-		if (src[0].length < 2) {
-			return "0";
-		}
-		for (j = 0; j < src.length; j += 1) {
-			vtx_count += src[j].length;
-			for (i = 0; i < (src[j].length - 1); i += 1) {
-				next         = (i + 1);
-				start        = src[j][i];
-				end          = src[j][next];
-				delta        = ymaps.coordSystem.geo.getDistance(start, end);
-				routelength += delta;
-			}
-		}
-		routelength = (isNaN(routelength)) ? 0 : routelength;
-		$(".f_len").html(routelength.toFixed(2));
-		$(".f_vtx").html(vtx_count - 1);
-		return true;
-	}
-	// ######################################################
-	// geocoder Section
-	function request_geocode_toMapPoint(coords) { // запрос геокодеру по координатам точечного объекта. (массив из объекта геометрии)
-		ymaps.geocode(coords, { kind: ['house']}).then(function (result) {
-			var names = [],
-				address;
-			result.geoObjects.each(
-				function (object) {
-					names.push(object.properties.get('name'));
-				}
-			);
-			address = (names[0] !== "undefined") ? [names[0]].join(', ') : "Нет адреса";
-			$(".l_addr").val(address);
-			if(map.balloon.isOpen() && $("#f_address") !== undefined){
-				$("#f_address").val(address);
-			} else {
-				map.balloon.open(coords, {
-					contentBody: '<div class="ymaps_balloon"><input type="text" value="' + [ parseFloat(coords[0]).toFixed(8), parseFloat(coords[1]).toFixed(8) ].join(', ') + '"><br>' + address + '</div>'
-				});
-			}
-		});
-	}
-
-	function request_geocode_toPointObject(coords) { // запрос геокодеру по координатам точечного объекта. (массив из объекта геометрии)
-		ymaps.geocode(coords, { kind: ['house']}).then(function (result) {
-			var names = [],
-				address;
-			result.geoObjects.each(
-				function (object) {
-					names.push(object.properties.get('name'));
-				}
-			);
-			prop.address = (names[0] !== "undefined") ? [names[0]].join(', ') : "Нет адреса";
-			$("#l_addr").val(prop.address);
-		});
-	}
 
 	function place_aux_rct_points() {
 		var aux_geometry1 = e_objects.get(0).geometry.getCoordinates()[0],
@@ -282,7 +185,7 @@ function init() {
 		}
 		//$(".console pre").html(prop.toSource());
 	}
-	
+
 	function save_properties(){
 		var cb = [],
 			te = {},
@@ -615,9 +518,9 @@ function init() {
 			$('.styles option[value="' + prop.attr + '"]').attr('selected', 'selected');
 		});
 	}
-	
-	function listen_page_caller() {
-		$(".displayPage").click(function () {
+
+	function addPropertyPagesAction(){
+		$(".displayPage").unbind().click(function () {
 			var page = $(this).attr("ref").split("/");
 			$.ajax({
 				url      : "/editor/get_property_page",
@@ -631,22 +534,52 @@ function init() {
 				success  : function (data) {
 					$("#propPage, .propPage").html(data);
 					$("#propPage").css('display', 'block');
-					$("#mainPage").css('display', 'none');
+					$(".mainPage, #shedule").css('display', 'none');
+					listenDependencyCalcCalls();
 				},
 				error: function (data, stat, err) {
 					console.log([ data, stat, err ].join("\n"));
 				}
 			});
 		});
+	}
+
+	function addMapPageAction() {
 		$(".displayMain").unbind().click(function () {
-			$(".propPage").css('display', 'none');
-			$(".mainPage").css('display', 'block');
+			$("#propPage, #shedule").css('display', 'none');
+			$("#mainPage").css('display', 'block');
 		});
+	}
+
+	function addShedulePageAction() {
+		// здесь будет выводиться расписание
+		$(".shedule").unbind().click(function () {
+			$("#propPage").css('display', 'none');
+			$("#shedule").css('display', 'block');
+		});
+	}
+
+	function addPublishLocationAction() {
 		$(".l_act").prop('checked', prop.active);
 		$(".l_act").unbind().click(function () {
 			prop.active = $(this).prop('checked') ? 1 :0 ;
 			$(".l_act").prop('checked', prop.active);
 		});
+	}
+
+	function addCommentLocationAction() {
+		$(".l_comm").prop('checked', prop.comments);
+		$(".l_comm").unbind().click(function () {
+			prop.comments = $(this).prop('checked') ? 1 :0 ;
+			$(".l_comm").prop('checked', prop.comments);
+		});
+	}
+	function listen_page_caller() {
+		addPropertyPagesAction();
+		addMapPageAction();
+		addShedulePageAction();
+		addPublishLocationAction();
+		addCommentLocationAction();
 	}
 
 	function init_balloon_controls() {
@@ -666,6 +599,16 @@ function init() {
 	}
 
 	// События пользовательского интерфейса и ввода данных
+
+	$("#l_name").keyup(function() {
+		$("#header_location_name").html($(this).val());
+	});
+
+	$("#type").change(function() {
+		$("#description").html($("#type option:selected").text())
+		prop.type = $(this).val();
+	});
+
 	$("#cir_setter").click(function () {
 		var geometry,
 			options,
@@ -725,7 +668,6 @@ function init() {
 		});
 		*/
 		save_properties();
-
 	});
 
 	$("#setCenter").click(function () {
@@ -757,7 +699,7 @@ function init() {
 			arr2.push($(this).val());
 		});
 		$.ajax({
-			url: "/ajaxutils/get_objects_by_type",
+			url: "/nodal/get_objects_by_type",
 			data: {
 				points  : arr,
 				ids     : arr2
@@ -779,7 +721,7 @@ function init() {
 		e.stopPropagation();
 		if ($("#tbodyn" + t + ":empty").length) {
 			$.ajax({
-				url: "/ajaxutils/get_object_list_by_type",
+				url: "/nodal/get_object_list_by_type",
 				data: {
 					type : t
 				},
@@ -897,7 +839,7 @@ function init() {
 	}, {
 		projection: ymaps.projection.sphericalMercator
 		/*autoFitToViewport: "always",
-		restrictMapArea: true*/ 
+		restrictMapArea: true*/
 	});
 
 	layerTypes = {
@@ -1148,7 +1090,7 @@ function init() {
 			$("#toYandex").addClass("active");
 			$("#toGoogle").removeClass("active");
 		}
-	
+
 	});
 	map.setType("google#map");
 	$("#toGoogle").addClass("active");
