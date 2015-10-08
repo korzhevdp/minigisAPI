@@ -38,8 +38,20 @@ function init() {
 				'<a href="$[properties.link|ссылка]" style="margin-bottom:10px;">Подробности здесь</a>' +
 				'</div>'
 		),
-		a_objects = new ymaps.GeoObjectCollection(),
-		b_objects = new ymaps.GeoObjectCollection();
+		paidBalloon = ymaps.templateLayoutFactory.createClass(
+			'<div class="ymaps_big_balloon">' +
+				'<div id="l_photo" data-toggle="modal" data-target="#modal_pics" loc=$[properties.ttl|0]>' +
+					'<img src="http://api.korzhevdp.com/images/$[properties.img|nophoto.jpg]" alt="мини" id="sm_src_pic">' +
+				'</div>' +
+				'<span class="tlabel">$[properties.type|тип не указан]</span> <span class="name">$[properties.name|без имени]</span><br>' +
+				'<span class="tlabel">Адрес:</span> <span class="addr">$[properties.description|не указан]</span><br>' +
+				'<span class="tlabel">Контакты:</span> <span class="cont">$[properties.contact|контактное лицо]<span><br><br>' +
+				'<a class="btn btn-link" href="$[properties.link|ссылка]" style="margin-bottom:10px;">Подробности здесь</a>' +
+				'</div>'
+		),
+		a_objects    = new ymaps.GeoObjectCollection(),
+		b_objects    = new ymaps.GeoObjectCollection(),
+		paid_objects = new ymaps.GeoObjectCollection();
 
 	map = new ymaps.Map("YMapsID", {
 		center:    mp.center,
@@ -73,13 +85,28 @@ function init() {
 
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(b_objects);
+	map.geoObjects.add(paid_objects);
 
 	cursor = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
 
+
+	map.controls.add('mapTools').add(searchControl);
+	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
+	ymaps.layout.storage.add('paid#balloonLayout', paidBalloon);
+
 	//назначаем опции оверлеев в коллекции (в данном случае - балун)
 	a_objects.options.set({
 		balloonContentBodyLayout: 'generic#balloonLayout',
+		balloonMaxWidth: 400,// Максимальная ширина балуна в пикселах
+		balloonMinWidth: 400,
+		hasHint: 1,
+		hasBalloon: 1,
+		draggable: 0,
+	});
+	
+	paid_objects.options.set({
+		balloonContentBodyLayout: 'paid#balloonLayout',
 		balloonMaxWidth: 400,// Максимальная ширина балуна в пикселах
 		balloonMinWidth: 400,
 		hasHint: 1,
@@ -95,24 +122,7 @@ function init() {
 		hasBalloon: 1,
 		draggable: 0
 	});
-	map.controls.add('mapTools').add(searchControl);
-	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
 
-	//при открытии балунов на содержащуюся в них ссылку картинку назначается поведение элемента галереи
-	map.events.add('balloonopen', function () {
-		$('#upl_loc').val($('#l_photo').attr('loc'));
-	});
-	/*
-	//при закрытии балунов "карусели" отправляется событие "самый полный стоп"
-	map.events.add('balloonclose', function () {
-		$('.modal:has(.carousel)').on('shown', function () {
-			var $carousel = $(this).find('.carousel');
-			if ($carousel.data('carousel') && $carousel.data('carousel').sliding) {
-				$carousel.find('.active').trigger($.support.transition.end);
-			}
-		});
-	});
-	*/
 	function load_mapset(mapset) {
 
 		function place_objectsWF(source, layer, found) {
@@ -208,7 +218,11 @@ function init() {
 		function insertObject(source, ttl, layer){
 			var object = makeObject(source[ttl], ttl);
 			if (layer === 'a') {
-				a_objects.add(object);
+				if(source[ttl].attr.split("#")[0] === "paid"){
+					paid_objects.add(object);
+				} else {
+					a_objects.add(object);
+				}
 			}
 			if (layer === 'b') {
 				b_objects.add(object);
@@ -232,6 +246,43 @@ function init() {
 
 		function select_object(id) {
 			a_objects.each(function (item) {
+				var cr;
+				//console.log(item.properties.get('attr'));
+				item.options.set(ymaps.option.presetStorage.get(item.properties.get('attr')));
+				item.options.set('zIndex', 50);
+				if (parseInt(item.properties.get('ttl'), 10) === id) {
+					//console.log("Found");
+					switch (item.geometry.getType()) {
+					case 'Point':
+						//item.options.set(ymaps.option.presetStorage.get('user#here'));
+						map.setCenter(item.geometry.getCoordinates());
+						item.balloon.open(item.geometry.getCoordinates());
+						break;
+					case 'LineString':
+						item.options.set(ymaps.option.presetStorage.get('routes#current'));
+						map.setBounds(item.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+						item.balloon.open(item.geometry.getCoordinates()[0]);
+						break;
+					case 'Polygon':
+						item.options.set(ymaps.option.presetStorage.get('area#current'));
+						map.setBounds(item.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+						item.balloon.open(item.geometry.getCoordinates()[0]);
+						break;
+					case 'Circle':
+						item.options.set(ymaps.option.presetStorage.get('circle#current'));
+						map.setCenter(item.geometry.getCoordinates());
+						item.balloon.open(item.geometry.getCoordinates());
+						break;
+					case 'Rectangle':
+						item.options.set(ymaps.option.presetStorage.get('rct#current'));
+						map.setBounds(item.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+						cr = item.geometry.getCoordinates();
+						item.balloon.open([ (cr[0][0] + cr[1][0]) / 2, (cr[0][1] + cr[1][1]) / 2 ]);
+						break;
+					}
+				}
+			});
+			paid_objects.each(function (item) {
 				var cr;
 				//console.log(item.properties.get('attr'));
 				item.options.set(ymaps.option.presetStorage.get(item.properties.get('attr')));

@@ -111,8 +111,14 @@ body.altEditor .propPage fieldset {
 	width:550px;
 }
 
-body.altEditor .typeControl select{
+body.altEditor .typeControl select {
 	width: 210px;
+}
+
+#l_name,
+#l_addr,
+#l_cont {
+	width: 205px;
 }
 
 body.altEditor #saveBtn {

@@ -268,6 +268,8 @@ label.add-on{
 	width : 700px;
 	padding-left:15px;
 	margin-bottom:60px;
+	clear:both;
+	display:block
 }
 .commentForm textarea{
 	height: 130px;
@@ -279,4 +281,35 @@ label.add-on{
 	margin-top: 4px;
 	color: #aaa;
 	margin-left: 220px;
+}
+
+
+div.ymaps_big_balloon{
+	font-size: .9em;
+}
+
+div.ymaps_big_balloon #sm_src_pic{
+	width:370px;
+	height:150px;
+	clear:both;
+	display:block;
+}
+
+div.ymaps_big_balloon span.tlabel{
+	font-weight: bold;
+	color: #888888;
+}
+div.ymaps_big_balloon span.addr
+div.ymaps_big_balloon span.name
+div.ymaps_big_balloon span.cont{
+	color: #000000;
+}
+
+
+div.ymaps_big_balloon #l_photo{
+	float:left;
+	margin:3px;
+	cursor:pointer;
+	padding:2px;
+	background-color:#DDDDDD;
 }

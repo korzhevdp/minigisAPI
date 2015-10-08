@@ -479,37 +479,32 @@ function init() {
 	}
 
 	// User Interface Section
-	function makeSelect(src, id, name) {
-		var a;
-		for (a in src) {
-			if (src.hasOwnProperty(a)) {
-				$('.styles').append('<option value="' + src[a][id] + '">' + src[a][name] + '</option>');
+	function makeSelect(type) {
+		var a,
+			icon,
+			string;
+		$(".styles").empty();
+		for (a in userstyles) {
+			if (userstyles.hasOwnProperty(a)) {
+				if (userstyles[a].type === type && a.split("#")[0] !== 'paid') {
+					icon = (userstyles[a].iconUrl === undefined) ? "" : 'style="background-image:url(' + userstyles[a].iconUrl + ');background-repeat:no-repeat;background-size: 24px auto;text-indent:22px;"';
+					string   = '<option ' + icon + ' value="' + a + '">' + userstyles[a].title + '</option>';
+					$(".styles").append(string);
+				}
 			}
+		}
+		if(yandex_styles !== undefined) {
+			$(".styles").append(yandex_styles.join("\n"));
+		}
+		if(yandex_markers !== undefined) {
+			$(".styles").append(yandex_markers.join("\n"));
 		}
 	}
 
 	function composeStyleDropdowns(type, style) {
 		// TODO!!!
 		// разобраться с наборами стилей!!!
-		$(".styles").empty();
-		switch (type) {
-		case 1:
-			makeSelect(style_src, 2, 3);
-			$(".styles").append(yandex_styles.join("\n")).append(yandex_markers.join("\n"));
-			break;
-		case 2:
-			makeSelect(style_paths, 2, 4);
-			break;
-		case 3:
-			makeSelect(style_polygons, 5, 7);
-			break;
-		case 4:
-			makeSelect(style_circles, 7, 9);
-			break;
-		case 5:
-			makeSelect(style_rectangles, 5, 7);
-			break;
-		}
+		makeSelect(type);
 		$('.styles option[value="' + style + '"]').attr('selected', 'selected'); // повторно пробегаем :(
 		// навешиваем действие
 		$(".styles").change(function () {
@@ -1051,6 +1046,7 @@ function init() {
 	e_objects.options.set({
 		draggable: 1,
 		zIndex: 1001,
+		hasBalloon: 0,
 		balloonContentLayout: 'generic#balloonLayout',
 		balloonMaxWidth: 550,  // Максимальная ширина балуна в пикселах
 		balloonMinWidth: 550,  // Максимальная ширина балуна в пикселах

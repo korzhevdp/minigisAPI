@@ -107,6 +107,10 @@ label.add-on{
 	width:200px !important;
 }
 
+#attributes option {
+	height:24px;
+}
+
 option.lang_ru{
 	background-image  : url(http://api.korzhevdp.com/images/flag_ru.png);
 	background-repeat : no-repeat;
@@ -163,6 +167,10 @@ ul.accessgroups li label input[type=checkbox]{
 	border:0px;
 	margin-top:8px;
 	cursor:pointer;
+}
+
+#gis_edit_form {
+	padding-left:15px;
 }
 
 #gis_edit_form div {
@@ -269,4 +277,17 @@ div.semanticControls{
 #payTable input[type=checkbox]{
 	margin-right:5px;
 	margin-top:4px;
+}
+
+.commentControl {
+	font-size: .5rem;
+}
+
+div.commentEntry{
+	width: 600px;
+	font-size: .75rem;
+	margin-left: 15px;
+	clear:both;
+	border: 1px solid #E6E6E6;
+	padding:8px;
 }
