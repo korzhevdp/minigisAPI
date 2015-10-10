@@ -85,3 +85,17 @@ $('#modal_pics').on('shown', function(){
 		}
 	});
 });
+
+$('#moraleup').click(function () {
+	$.ajax({
+		url      : '/nodal/moraleup',
+		type     : "POST",
+		dataType : "html",
+		success  : function(data){ // and if you are lucky and sane response is received
+			$("#moralecounter").empty().html(data);
+		},
+		error    : function (data, stat, err) {
+			console.log([data, stat, err].join("<br>"));
+		}
+	});
+});

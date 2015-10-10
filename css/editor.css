@@ -216,3 +216,33 @@ div.console {
 #propPageContent{
 	margin-top:-15px;
 }
+
+div.shedule{
+	padding-left:15px;
+	padding-top: 10px;
+}
+
+#sheduleTable {
+	
+}
+
+#sheduleTable .lc{
+	width:110px;
+}
+
+#sheduleTable th{
+	vertical-align:middle;
+}
+
+#sheduleTable input[type=text]{
+	width:40px;
+	margin-left:4px;
+	margin-right:4px;
+	margin-top:2px;
+	margin-bottom:2px;
+
+}
+
+#h24 {
+	margin-top: -2px;
+}

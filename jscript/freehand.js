@@ -182,8 +182,15 @@ function display_locations() {
 		10: {
 			func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=ru&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo";}, {tileTransparent: 1, zIndex:1000});},
 			folder: "",
-			label : "satellite#google",
+			label : "map#google",
 			name  : "Гуглотест",
+			layers: ["map#google"]
+		},
+		12: {
+			func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=s&hl=ru&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo";}, {tileTransparent: 1, zIndex:1000});},
+			folder: "",
+			label : "satellite#google",
+			name  : "Гуглотест Спутник",
 			layers: ["satellite#google"]
 		},
 		11: {

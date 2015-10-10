@@ -19,6 +19,7 @@ function init() {
 		lon             = map_center[0],
 		lat             = map_center[1],
 		searchControl   = new ymaps.control.SearchControl({ provider: 'yandex#publicMap', boundedBy: [[40, 65], [42, 64]], strictBounds: 1 }),
+		saveType        = 'properties',
 		related,
 		layerTypes,
 		a,
@@ -186,7 +187,7 @@ function init() {
 		//$(".console pre").html(prop.toSource());
 	}
 
-	function save_properties(){
+	function save_properties() {
 		var cb = [],
 			te = {},
 			se = {},
@@ -222,6 +223,32 @@ function init() {
 				$("#saveBtn").removeClass("btn-warning").addClass("btn-primary").html("Сохранить!");
 				prop.ttl = data.ttl;
 				map.balloon.close();
+			},
+			error: function (data, stat, err) {
+				console.log([ data, stat, err ].join("\n"));
+			}
+		});
+	}
+
+	function save_shedule() {
+		var a,
+			lid = prop.ttl,
+			h24 = $("#h24").prop("checked"),
+			shedule = {}
+		for (a = 0; a <= 6 ; a++) {
+			shedule[a] = [ $("#ds" + a).val(), $("#bs" + a).val(), $("#be" + a).val(), $("#de" + a).val() ];
+		}
+		$.ajax({
+			url: "/editor/save_shedule",
+			type: "POST",
+			data: {
+				lid     : lid,
+				h24     : h24,
+				shedule : shedule
+			},
+			dataType: 'script',
+			success: function () {
+				//prop.ttl = data.ttl;
 			},
 			error: function (data, stat, err) {
 				console.log([ data, stat, err ].join("\n"));
@@ -541,14 +568,50 @@ function init() {
 
 	function addMapPageAction() {
 		$(".displayMain").unbind().click(function () {
+			saveType = "properties";
 			$("#propPage, #shedule").css('display', 'none');
 			$("#mainPage").css('display', 'block');
+		});
+	}
+
+	function get_shedule() {
+		var lid = prop.ttl;
+		$.ajax({
+			url: "/editor/get_shedule",
+			data: {
+				lid : lid
+			},
+			type: "POST",
+			dataType: 'script',
+			success: function () {
+				var a,
+					days_h24 = 0;
+				for (a in shedule ) {
+					if(shedule.hasOwnProperty(a)) {
+						$("#ds" + a).val(shedule[a][0]);
+						$("#bs" + a).val(shedule[a][1]);
+						$("#be" + a).val(shedule[a][2]);
+						$("#de" + a).val(shedule[a][3]);
+						if(shedule[a][0] === '00:00' && shedule[a][3] === '00:00'){
+							days_h24 += 1;
+						}
+					}
+				}
+				if(days_h24 >= 5){
+					$("#h24").prop("checked", true);
+				}
+			},
+			error: function (data, stat, err) {
+				console.log([ data, stat, err].join("\n"));
+			}
 		});
 	}
 
 	function addShedulePageAction() {
 		// здесь будет выводиться расписание
 		$(".shedule").unbind().click(function () {
+			saveType = "shedule";
+			get_shedule();
 			$("#propPage").css('display', 'none');
 			$("#shedule").css('display', 'block');
 		});
@@ -584,8 +647,6 @@ function init() {
 		$("#f_name").val(prop.name);
 		$("#f_style").val(prop.attr);
 		$("#f_cont").val(prop.contact);
-
-
 		$("#mainPage").css('display', 'block');
 		$("#closeBalloonBtn").click(function () {
 			e_objects.get(0).options.set(ymaps.option.presetStorage.get(normalize_style(prop.attr)));
@@ -662,7 +723,12 @@ function init() {
 			}
 		});
 		*/
-		save_properties();
+		if (saveType === 'properties') {
+			save_properties();
+		}
+		if (saveType === 'shedule') {
+			save_shedule();
+		}
 	});
 
 	$("#setCenter").click(function () {
@@ -821,7 +887,6 @@ function init() {
 	//# собственно код
 
 	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
-
 
 	$(".panels").addClass('hide');
 	$("#cpanel" + prop.pr).removeClass('hide');
@@ -1086,7 +1151,6 @@ function init() {
 			$("#toYandex").addClass("active");
 			$("#toGoogle").removeClass("active");
 		}
-
 	});
 	map.setType("google#map");
 	$("#toGoogle").addClass("active");
