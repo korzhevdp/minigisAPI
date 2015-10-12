@@ -145,7 +145,7 @@ body.altEditor #saveBtn {
 	margin:0px;
 	height:25px;
 }
-button.displayMain, 
+button.displayMain,
 button.displayPage {
 	height:30px;
 	width:20px;
@@ -223,7 +223,7 @@ div.shedule{
 }
 
 #sheduleTable {
-	
+
 }
 
 #sheduleTable .lc{
@@ -246,3 +246,54 @@ div.shedule{
 #h24 {
 	margin-top: -2px;
 }
+.imageGallery{
+	height:80px;
+	overflow:auto;
+}
+
+.imageGallery {
+	list-style-type: none;
+	margin:0px;
+	width:260px;
+}
+
+.imageGallery li{
+	float:  left;
+	clear:  none;
+	border: 2px solid #FFFFFF;
+	margin:2px;
+	cursor:pointer;
+}
+
+#dropZone {
+	color: #555;
+	font-size: 18px;
+	text-align: center;
+
+	width: 400px;
+	padding: 50px 0;
+	margin: 50px auto;
+
+	background: #eee;
+	border: 1px solid #ccc;
+
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+#dropZone.hover {
+	background: #ddd;
+	border-color: #aaa;
+}
+
+#dropZone.error {
+	background: #faa;
+	border-color: #f00;
+}
+
+#dropZone.drop {
+	background: #afa;
+	border-color: #0f0;
+}
+

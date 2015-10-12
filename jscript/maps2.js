@@ -222,6 +222,7 @@ function init() {
 			success: function () {
 				$("#saveBtn").removeClass("btn-warning").addClass("btn-primary").html("Сохранить!");
 				prop.ttl = data.ttl;
+				$("#uploadLID").val(data.ttl);
 				map.balloon.close();
 			},
 			error: function (data, stat, err) {
@@ -248,7 +249,8 @@ function init() {
 			},
 			dataType: 'script',
 			success: function () {
-				//prop.ttl = data.ttl;
+				prop.ttl = data.ttl;
+				$("#uploadLID").val(data.ttl);
 			},
 			error: function (data, stat, err) {
 				console.log([ data, stat, err ].join("\n"));
@@ -265,13 +267,11 @@ function init() {
 		var geometry,
 			options = ymaps.option.presetStorage.get(normalize_style(prop.attr)),
 			object;
-
 		if (prop === undefined) { // JSLint ругается, требует сравнивать напрямую
-			console.log('Отсутствует блок данных');
+			console.log('Отсутствует блок данных редактируемого объекта');
 			return false;
 		}
 		if (prop.coords === '0') { // JSLint ругается, требует сравнивать напрямую
-			//console.log('Режим нового объекта');
 			return false;
 		}
 
@@ -655,7 +655,6 @@ function init() {
 	}
 
 	// События пользовательского интерфейса и ввода данных
-
 	$("#l_name").keyup(function() {
 		$("#header_location_name").html($(this).val());
 	});
@@ -705,24 +704,11 @@ function init() {
 		}
 	});
 
+	$("#loadImage").click(function(){
+		$("#imageLoader").modal('show');
+	});
+
 	$("#saveBtn").click(function () {
-		/*
-		$.ajax({
-			url: "/editor/saveobject",
-			type: "POST",
-			data: prop,
-			dataType: 'script',
-			success: function () {
-				map.balloon.close();
-				prop.ttl = data.ttl;
-				$("#saveBtn").removeClass("btn-warning").addClass("btn-primary");
-				//console.log(prop.ttl);
-			},
-			error: function (data, stat, err) {
-				console.log([ data, stat, err ].join("\n"));
-			}
-		});
-		*/
 		if (saveType === 'properties') {
 			save_properties();
 		}
@@ -890,6 +876,8 @@ function init() {
 
 	$(".panels").addClass('hide');
 	$("#cpanel" + prop.pr).removeClass('hide');
+
+	$('.modal').modal({ show: 0 });
 
 	map = new ymaps.Map("YMapsID", {
 		center:    [lon, lat],		// Центр карты
