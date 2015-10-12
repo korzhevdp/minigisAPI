@@ -1,3 +1,7 @@
+/* jshint -W100 */
+/* jshint undef: true, unused: true */
+/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
+// Encoding: UTF-8
 //определение механизма пересчёта стандартной сетки тайлов в сетку тайлов Яндекс-карт
 dX = [];
 for (var a=0; a < 21; a++){ dX[a] = Math.pow(2, a) - 1; }

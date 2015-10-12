@@ -1,3 +1,6 @@
+/* jshint -W100 */
+/* jshint undef: true, unused: true */
+/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
 var a;
 $('#operation-menu li a').each(function(){
 	//alert(window.location.toString() + '   ' + $(this).attr('href'));
@@ -114,9 +117,4 @@ for (a in a_types){
 		trace_types($("#atype" + a_types[a]));
 	}
 }
-
-
-
-
-
 disable_layers();

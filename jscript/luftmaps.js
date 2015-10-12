@@ -1,4 +1,6 @@
-//######################################### ��������� ����� #########################################################
+/* jshint -W100 */
+/* jshint undef: true, unused: true */
+/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
 ymaps.ready(init);
 
 function init() {
@@ -21,7 +23,7 @@ function init() {
 	// сброс карты (это, типа, такой костыль ещё от старых карт - на всякий случай)
 	(typeof map != "undefined") ? map.destroy() : "";
 	//определение механизма пересчёта стандартной сетки тайлов в сетку тайлов Яндекс-карт
-	for (var a=10; a < 21; a++){ dX[a] = Math.pow(2, a) - 1; }
+	for (var a=0; a < 21; a++){ dX[a] = Math.pow(2, a) - 1; }
 	// реверс справочника слоёв + определение слоёв в цикле
 	for (a in layerTypes){
 		ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
@@ -175,7 +177,6 @@ function init() {
 	map.geoObjects.add(p_objects);
 	map.geoObjects.add(t_objects);
 
-	// ON UPDATE
 	p_objects.events.add('click', function (e){
 		e.stopPropagation();
 		map.balloon.close();
@@ -183,7 +184,6 @@ function init() {
 		fn  = e.get('target').properties.get('fname');
 		lo  = e.get('target').properties.get('uploadedby');
 		de  = e.get('target').properties.get('description');
-		//alert(config.url + dir + "/600/" + fn);
 		$("#picsOfLoc").empty();
 		for (a in imgs[dir]){
 			data = imgs[dir][a];
@@ -191,7 +191,6 @@ function init() {
 		}
 		$("#mainPic").attr("src", config.url + 'upload/' + dir + "/600/" + fn);
 		$("#author").html('<div class="pull-left" style="font-size:16px;margin-left:20px;">' + de + '</div>загружено: <u>' + lo + '</u>');
-		///////////////////////////////////
 		$("#picsOfLoc img").unbind().click(function(){
 			$("#mainPic").attr("src", $(this).attr("big"));
 			$("#author").html('<div class="pull-left" style="font-size:16px;margin-left:20px;">' + $(this).attr("comment") + '</div>загружено: <u>' + $(this).attr("postedby") + '</u>');

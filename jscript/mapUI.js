@@ -1,3 +1,6 @@
+/* jshint -W100 */
+/* jshint undef: true, unused: true */
+/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
 $("#main_table").css("height", ($(window).height() - 54) + "px");
 $("#main_table").css("width", $(window).width() + "px");
 
