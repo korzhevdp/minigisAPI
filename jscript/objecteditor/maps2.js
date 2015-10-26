@@ -1,3 +1,6 @@
+/* jshint -W100 */
+/* jshint undef: true, unused: true */
+/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
 var map,
 	a_objects,
 	e_objects,

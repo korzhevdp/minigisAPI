@@ -1,6 +1,6 @@
 /* jshint -W100 */
-/* jshint undef: true, unused: true */
-/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
+/* jshint undef: false, unused: true */
+/* globals e_objects, a_objects, prop, ne_objects, ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage, userstyles */
 
 function update_point_data() { // передаётся объект целиком
 	var src = e_objects.get(0).geometry.getCoordinates(),
@@ -45,7 +45,7 @@ function update_polygon_data() { // передаётся объект целик
 			coordcontour = [];
 			for (a in coordarray[c]) {
 				if (coordarray[c].hasOwnProperty(a)) {
-					coordcontour.push("[" + coordarray[c][a].join(",") + "]")
+					coordcontour.push("[" + coordarray[c][a].join(",") + "]");
 				}
 			}
 			coordstring.push("[" + coordcontour.join(",") + "]");
@@ -274,12 +274,12 @@ function init_balloon_controls() {
 // События пользовательского интерфейса и ввода данных
 
 $(".mapsw").click(function(){
-	if($(this).attr("id") == "toGoogle") {
+	if($(this).attr("id") === "toGoogle") {
 		map.setType("google#map");
 		$("#toGoogle").addClass("active");
 		$("#toYandex").removeClass("active");
 	}
-	if($(this).attr("id") == "toYandex") {
+	if($(this).attr("id") === "toYandex") {
 		map.setType("yandex#map");
 		$("#toYandex").addClass("active");
 		$("#toGoogle").removeClass("active");
@@ -291,7 +291,7 @@ $("#l_name").keyup(function() {
 });
 
 $("#type").change(function() {
-	$("#description").html($("#type option:selected").text())
+	$("#description").html($("#type option:selected").text());
 	prop.type = $(this).val();
 });
 
