@@ -1,100 +1,14 @@
 /* jshint -W100 */
 /* jshint undef: false, unused: true */
-/* globals ymaps, prop, mp, style_paths, styleAddToStorage, switch_panel, perimeter_calc */
+/* globals ymaps, prop, mp, styleAddToStorage, switch_panel, perimeter_calc */
+
 var map,
 	a_objects,
 	e_objects,
 	v_objects,
 	saveType = 'properties',
 	nePolygons;
-
-function init() {
-	'use strict';
-	var maptypes        = { 1: 'yandex#map', 2: 'yandex#satellite', 3: 'google#map', 4: 'osm#map' },
-		map_center      = prop.map_center,
-		current         = 0,
-		//current         = (typeof current !== 'undefined') ? current : prop.ttl,
-		current_zoom    = (prop.current_zoom !== undefined) ? prop.current_zoom : 15,
-		current_type    = (maptypes[prop.current_type] !== undefined) ? maptypes[prop.current_type] : 'yandex#satellite',
-		//v_counter       = 0, // счётчик кликов на опорных объектах
-		g2              = [], // заготовка переменной для геометрии фигур рисуемых по ВО
-		//count           = 0,
-		bas_path        = [],
-		bas_index_array = [],
-		lon             = map_center[0],
-		lat             = map_center[1],
-		searchControl   = new ymaps.control.SearchControl({ provider: 'yandex#publicMap', boundedBy: [[40, 65], [42, 64]], strictBounds: 1 }),
-		//related,
-		layerTypes,
-		a,
-		tileServerID = parseInt(Math.random() * (4-1) + 1).toString(),
-		//tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
-		cursor,
-		genericBalloon = ymaps.templateLayoutFactory.createClass(
-			'<h4 class="balloonHeader">$[properties.name|нет описания]&nbsp;&nbsp;&nbsp;&nbsp;<small>$[properties.description|нет описания]</small></h4>' +
-				'<div id="mainPage" class="mainPage">' +
-					'<div class="input-prepend">'  +
-						'<span class="add-on">Название:</span>' +
-						'<input type="text" id="f_name" value="$[properties.name|нет данных]" placeholder="Введите название">' +
-					'</div><br>' +
-					'<div class="input-prepend">' +
-						'<span class="add-on">Адрес:</span>' +
-						'<input type="text" id="f_address" class="l_addr" value="$[properties.address|нет данных]" placeholder="Введите адрес">' +
-					'</div><br>' +
-					'<div class="input-prepend">' +
-						'<span class="add-on">Оформление:</span>' +
-						'<select name="style" id="f_style" class="span11 styles"></select>' +
-					'</div><br>' +
-					'<div class="input-prepend">' +
-						'<span class="add-on">Контакты:</span>' +
-						'<input type="text" id="f_cont" value="$[properties.contact|нет данных]" placeholder="Укажите контактных лиц / телефоны" class="span11">' +
-					'</div><br>' +
-					'<div class="input-prepend">' +
-						'<span class="add-on">Опубликован</span>' +
-						'<input type="checkbox" id="f_act" class="l_act" style="vertical-align:middle" value="on">' +
-					'</div>' +
-				'</div>' +
-				'<div id="propPage" class="propPage">тест</div>' +
-				'<hr style="margin:3px;">' +
-				'<div class="input-prepend pageButtons">' +
-					'<label class="add-on" title="Кнопки прехода к страницам свойств">Страницы</label>' +
-					'$[properties.pagelist|нет данных]' +
-				'</div>' +
-				'<!--<button type="button" class="btn btn-primary btn-mini pull-right" id="XD47">XD47</button>-->' +
-				'<button type="button" class="btn btn-primary btn-mini" id="updDataBtn">Применить</button>' +
-				'<button type="reset" class="btn btn-mini" id="closeBalloonBtn">Отмена</button>'
-		);
-
-	
-	map = new ymaps.Map("YMapsID", {
-		center:    [lon, lat],		// Центр карты
-		zoom:      current_zoom,	// Коэффициент масштабирования
-		type:      current_type,	// Тип карты
-		behaviors: ["default", "scrollZoom"]
-	}, {
-		projection: ymaps.projection.sphericalMercator
-		/*autoFitToViewport: "always",
-		restrictMapArea: true*/
-	});
-	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
-	map.controls.add('zoomControl').add('typeSelector').add('mapTools').add(searchControl);
-	cursor = map.cursors.push('crosshair', 'arrow');
-	cursor.setKey('arrow');
-
-	map.setType("google#map");
-
-	add_collections();
-	setup_editor_collection();
-	setup_aux_collection();
-	set_map_events();
-	set_layers();
-	styleAddToStorage(userstyles);
-	place_object();
-	///////////////////////////////////////////////// MOVE
-	composeStyleDropdowns(prop.pr, prop.attr);
-	listen_page_caller();
-	//######################################### выносные функций, чтобы не загромождать код базовых функций
-}
+'use strict';
 
 function add_collections() {
 	a_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (точки управления фигурами - прямоугольник, круг)
@@ -303,16 +217,6 @@ function setup_virtual_collection() {
 	});
 }
 
-//# собственно код
-$(".panels").addClass('hide');
-$("#cpanel" + prop.pr).removeClass('hide');
-$('.modal').modal({ show: 0 });
-
-
-prop.attr = normalize_style(prop.attr);
-$("#toGoogle").addClass("active");
-$("#toYandex").removeClass("active");
-
 function place_aux_rct_points() {
 	var aux_geometry1 = e_objects.get(0).geometry.getCoordinates()[0],
 		aux_geometry2 = e_objects.get(0).geometry.getCoordinates()[1],
@@ -338,6 +242,7 @@ function place_object() {
 	var geometry,
 		options = ymaps.option.presetStorage.get(normalize_style(prop.attr)),
 		object;
+	console.log(1);
 	if (prop === undefined) { // JSLint ругается, требует сравнивать напрямую
 		console.log('Отсутствует блок данных редактируемого объекта');
 		return false;
@@ -345,7 +250,7 @@ function place_object() {
 	if (prop.coords === '0') { // JSLint ругается, требует сравнивать напрямую
 		return false;
 	}
-	console.log(1);
+
 	switch_panel();
 
 	if (prop.coords.length > 3) {
@@ -400,6 +305,7 @@ function place_object() {
 }
 
 function set_layers() {
+	var a;
 	layerTypes = {
 		1: {
 			func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=" + mp.lang + "&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo";}, {tileTransparent: 1, zIndex:1000});},
@@ -479,7 +385,7 @@ function draw_object_by_type(click) {
 		object,
 		coords,
 		basic_coords,
-		properties = { hasBalloon: 1, hasHint: 1, hintContent: prop.description, attr: prop.attr },
+		//properties = { hasBalloon: 1, hasHint: 1, hintContent: prop.description, attr: prop.attr },
 		options    = ymaps.option.presetStorage.get(normalize_style(prop.attr));
 	if (!e_objects.getLength()) {
 		switch (prop.pr) {
@@ -562,7 +468,6 @@ function normalize_style(style){
 }
 
 function init() {
-	'use strict';
 	var maptypes        = { 1: 'yandex#map', 2: 'yandex#satellite', 3: 'google#map', 4: 'osm#map' },
 		map_center      = prop.map_center,
 		current         = 0,
@@ -621,7 +526,7 @@ function init() {
 	e_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (редактируемые объекты)
 	v_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (опорные точки и объекты)
 	nePolygons      = new ymaps.GeoObjectArray();  // Вспомогательная коллекция 4
-	
+
 	map = new ymaps.Map("YMapsID", {
 		center:    [lon, lat],		// Центр карты
 		zoom:      current_zoom,	// Коэффициент масштабирования
@@ -629,10 +534,8 @@ function init() {
 		behaviors: ["default", "scrollZoom"]
 	}, {
 		projection: ymaps.projection.sphericalMercator
-		/*autoFitToViewport: "always",
-		restrictMapArea: true*/
 	});
-	
+
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(e_objects);
 	map.geoObjects.add(nePolygons);
@@ -642,6 +545,8 @@ function init() {
 	cursor = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
 	set_map_events();
+	prop.attr = normalize_style(prop.attr);
+	place_object();
 	//######################################### выносные функций, чтобы не загромождать код базовых функций
 }
 ymaps.ready(init);

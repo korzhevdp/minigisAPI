@@ -286,6 +286,13 @@ $(".mapsw").click(function(){
 	}
 });
 
+$(".panels").addClass('hide');
+$("#cpanel" + prop.pr).removeClass('hide');
+$('.modal').modal({ show: 0 });
+
+$("#toGoogle").addClass("active");
+$("#toYandex").removeClass("active");
+
 $("#l_name").keyup(function() {
 	$("#header_location_name").html($(this).val());
 });
