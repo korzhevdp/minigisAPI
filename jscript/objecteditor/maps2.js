@@ -255,7 +255,7 @@ function place_object() {
 
 	if (prop.coords.length > 3) {
 		if (prop.pr === 1) {
-			geometry = prop.coords.split(",");
+			geometry = { type: 'Point', coordinates: prop.coords.split(",") };
 			object   = new ymaps.Placemark(geometry, prop, options);
 		}
 
@@ -281,27 +281,29 @@ function place_object() {
 			]);
 			object   = new ymaps.Rectangle(geometry, prop, options);
 		}
-
 		e_objects.add(object);
-
-		if (prop.pr === 3 || prop.pr === 2) {
-			e_objects.get(0).editor.startEditing();
-			perimeter_calc(geometry);
-		}
-		if (prop.pr !== 1) {
-			map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
-		} else {
-			map.setCenter(prop.coords.split(","));
-			update_point_data(object);
-		}
-		if (prop.pr === 4) {
-			place_aux_circle_points();
-		}
-		if (prop.pr === 5) {
-			place_aux_rct_points();
-		}
+		make_environment();
 	}
 	return true;
+}
+
+function make_environment() {
+	if (prop.pr === 3 || prop.pr === 2) {
+		e_objects.get(0).editor.startEditing();
+		perimeter_calc(geometry);
+	}
+	if (prop.pr !== 1) {
+		map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+	} else {
+		map.setCenter(prop.coords.split(","));
+		update_point_data(object);
+	}
+	if (prop.pr === 4) {
+		place_aux_circle_points();
+	}
+	if (prop.pr === 5) {
+		place_aux_rct_points();
+	}
 }
 
 function set_layers() {
@@ -522,11 +524,6 @@ function init() {
 				'<button type="button" class="btn btn-primary btn-mini" id="updDataBtn">Применить</button>' +
 				'<button type="reset" class="btn btn-mini" id="closeBalloonBtn">Отмена</button>'
 		);
-	a_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (точки управления фигурами - прямоугольник, круг)
-	e_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (редактируемые объекты)
-	v_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (опорные точки и объекты)
-	nePolygons      = new ymaps.GeoObjectArray();  // Вспомогательная коллекция 4
-
 	map = new ymaps.Map("YMapsID", {
 		center:    [lon, lat],		// Центр карты
 		zoom:      current_zoom,	// Коэффициент масштабирования
@@ -535,6 +532,11 @@ function init() {
 	}, {
 		projection: ymaps.projection.sphericalMercator
 	});
+
+	a_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (точки управления фигурами - прямоугольник, круг)
+	e_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (редактируемые объекты)
+	v_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (опорные точки и объекты)
+	nePolygons      = new ymaps.GeoObjectArray();  // Вспомогательная коллекция 4
 
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(e_objects);
