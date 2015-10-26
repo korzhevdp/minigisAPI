@@ -1,6 +1,6 @@
 /* jshint -W100 */
-/* jshint undef: false, unused: true */
-/* globals e_objects, a_objects, prop, ne_objects, ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage, userstyles */
+/* jshint undef: true, unused: true */
+/* globals e_objects, a_objects, prop, ymaps, confirm, yandex_styles, yandex_markers, userstyles */
 
 function update_point_data() { // передаётся объект целиком
 	var src = e_objects.get(0).geometry.getCoordinates(),

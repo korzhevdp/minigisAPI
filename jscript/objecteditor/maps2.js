@@ -1,6 +1,6 @@
 /* jshint -W100 */
 /* jshint undef: true, unused: true */
-/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
+/* globals ymaps, prop, mp, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
 var map,
 	a_objects,
 	e_objects,
@@ -107,7 +107,7 @@ function init() {
 			name  : "Гуглотест",
 			layers: ["google#map"]
 		}
-	}
+	};
 
 	for (a in layerTypes) {
 		if (layerTypes.hasOwnProperty(a)) {
@@ -178,7 +178,7 @@ function init() {
 					a_objects.get(0).geometry.setCoordinates(startPoint);
 					a_objects.get(1).geometry.setCoordinates(endPoint);
 				}
-				update_object_data()
+				update_object_data();
 			}
 			break;
 		}
