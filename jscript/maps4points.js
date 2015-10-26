@@ -13,6 +13,8 @@ var sights,
 	folder,
 	objlayer      = 0,
 	localstyles   = {},
+	tileServerID = parseInt(Math.random() * (4-1) + 1).toString(),
+	tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
 	vectoropts    = { strokeColor: 'FF220099', strokeWidth: 2, strokeStyle: { style: 'solid' } },
 	simplemarker  = { iconImageHref: 'http://api.korzhevdp.com/images/marker.png', iconImageSize: [16, 16], iconImageOffset: [-8, -16] },
 	trustedmarker = { iconImageHref: 'http://api.korzhevdp.com/images/markery.png', iconImageSize: [16, 16], iconImageOffset: [-8, -16] },
@@ -260,6 +262,13 @@ function init() {
 					name  : "Молотовск-4 1942",
 					layers: ['yandex#satellite', "base27#arch", "base28#arch"]
 				},
+				28: {
+					func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=s&hl=ru&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo";}, {tileTransparent: 1, zIndex:1000});},
+					folder: "",
+					label : "google#map",
+					name  : "Гуглотест",
+					layers: ["google#map"]
+				}
 			}
 		};
 	// конец начальной конфигурации
@@ -309,30 +318,38 @@ function init() {
 		localstyles["1"].push('</optgroup>');
 		
 		localstyles["1"].push('<optgroup class="points" label="Пользовательские">');
+		/*
 		for (a in style_src){
 			localstyles["1"].push('<option value="' + style_src[a][2] +'">' + style_src[a][3] + '</option>');
 		}
+		*/
 		localstyles["1"].push('</optgroup>');
 
 		localstyles["2"] = [];
 		localstyles["2"].push('<optgroup label="Стили ломаных">');
+		/*
 		for (a in style_paths){
 			localstyles["2"].push('<option value="' + style_paths[a][2] +'">' + style_paths[a][4] + '</option>');
 		}
+		*/
 		localstyles["2"].push('</optgroup>');
 
 		localstyles["3"] = [];
 		localstyles["3"].push('<optgroup label="Стили полигона">');
+		/*
 		for (a in style_polygons){
 			localstyles["3"].push('<option value="' + style_polygons[a][5] +'">' + style_polygons[a][7] + '</option>');
 		}
+		*/
 		localstyles["3"].push('</optgroup>');
 
 		localstyles["4"] = [];
 		localstyles["4"].push('<optgroup id="s_circles" label="Стили круга">');
+		/*
 		for (a in style_circles){
 			localstyles["4"].push('<option value="' + style_circles[a][7] +'">' + style_circles[a][9] + '</option>');
 		}
+		*/
 		localstyles["4"].push('</optgroup>');
 	}
 	//###################################################################################

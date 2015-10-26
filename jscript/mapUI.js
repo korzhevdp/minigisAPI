@@ -71,9 +71,11 @@ $(".langMark").click(function(){
 
 $('#modal_pics').on('shown', function(){
 	$.ajax({
-		url      : "/ajaxutils/getimagelist/" + $('#l_photo').attr('loc'),
+		url      : "/nodal/getimagelist",
 		type     : "POST",
-		cache    : false,
+		data     : {
+			loc : $('#l_photo').attr('loc')
+		},
 		dataType : "html",
 		success  : function(data){ // и если повезло и ответ получен вменяемый
 			$("#p_coll").empty().append(data); // очищаем коллекцию картинок, вставляем новые

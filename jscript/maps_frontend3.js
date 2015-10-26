@@ -33,7 +33,7 @@ function init() {
 		genericBalloon = ymaps.templateLayoutFactory.createClass(
 			'<div class="ymaps_balloon">' +
 				'<div class="well" id="l_photo" data-toggle="modal" data-target="#modal_pics" loc=$[properties.ttl|0] style="float:left;margin:3px;cursor:pointer;padding:2px;background-color:#DDDDDD;">' +
-					'<img src="http://api.korzhevdp.com/images/$[properties.img|nophoto.gif]" alt="мини" id="sm_src_pic">' +
+					'<img src="[if properties.img]/uploads/mid/$[properties.ttl]/$[properties.img][else]http://api.korzhevdp.com/images/nophoto.gif[endif]" alt="мини" id="sm_src_pic">' +
 				'</div>' +
 				'<b>$[properties.type|тип не указан]:</b> $[properties.name|без имени]<br>' +
 				'<b>Адрес:</b> $[properties.description|не указан]<br>' +
@@ -44,7 +44,7 @@ function init() {
 		paidBalloon = ymaps.templateLayoutFactory.createClass(
 			'<div class="ymaps_big_balloon">' +
 				'<div id="l_photo" data-toggle="modal" data-target="#modal_pics" loc=$[properties.ttl|0]>' +
-					'<img src="http://api.korzhevdp.com/images/$[properties.img|nophoto.jpg]" alt="мини" id="sm_src_pic">' +
+					'<img src="[if properties.img]/uploads/mid/$[properties.ttl]/$[properties.img][else]http://api.korzhevdp.com/images/nophoto.gif[endif]" alt="мини" id="sm_src_pic">' +
 				'</div>' +
 				'<span class="tlabel">$[properties.type|тип не указан]</span> <span class="name">$[properties.name|без имени]</span><br>' +
 				'<span class="tlabel">Адрес:</span> <span class="addr">$[properties.description|не указан]</span><br>' +
@@ -425,7 +425,9 @@ function init() {
 						foreground = data;
 						place_objects(foreground, 'a');
 						add_search();
-						map.setBounds(a_objects.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 50});
+						if (a_objects.getLength()) {
+							map.setBounds(a_objects.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 50});
+						}
 						$("#iFound").tab("show");
 					},
 					error: function (data, stat, err) {

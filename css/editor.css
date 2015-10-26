@@ -217,24 +217,24 @@ div.console {
 	margin-top:-15px;
 }
 
-div.shedule{
+div.schedule{
 	padding-left:15px;
 	padding-top: 10px;
 }
 
-#sheduleTable {
+#scheduleTable {
 
 }
 
-#sheduleTable .lc{
+#scheduleTable .lc{
 	width:110px;
 }
 
-#sheduleTable th{
+#scheduleTable th{
 	vertical-align:middle;
 }
 
-#sheduleTable input[type=text]{
+#scheduleTable input[type=text]{
 	width:40px;
 	margin-left:4px;
 	margin-right:4px;
@@ -263,6 +263,18 @@ div.shedule{
 	border: 2px solid #FFFFFF;
 	margin:2px;
 	cursor:pointer;
+}
+
+li.locationImg{
+	position:relative;
+}
+
+li.locationImg i.icon-remove {
+	top: -3px;
+	right:-2px;
+	position:absolute;
+	background-color: #444;
+	opacity: .9;
 }
 
 #dropZone {
