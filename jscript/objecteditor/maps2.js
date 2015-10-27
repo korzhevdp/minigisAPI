@@ -1,14 +1,13 @@
 /* jshint -W100 */
 /* jshint undef: false, unused: true */
 /* globals ymaps, prop, mp, styleAddToStorage, switch_panel, perimeter_calc */
-
+'use strict';
 var map,
 	a_objects,
 	e_objects,
 	v_objects,
 	saveType = 'properties',
 	nePolygons;
-'use strict';
 
 function add_collections() {
 	a_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (точки управления фигурами - прямоугольник, круг)
@@ -152,17 +151,8 @@ function setup_virtual_collection() {
 			}
 			e_objects.add(object);
 			bas_path.push(currpoint);
-			if (prop.pr === 2 || prop.pr === 3) {
-				e_objects.get(0).editor.startEditing();
-			}
-			if (prop.pr === 4) {
-				place_aux_circle_points();
-			}
-			if (prop.pr === 5) {
-				place_aux_rct_points();
-			}
+			make_environment(object);
 		}
-
 		// операционная геометрия
 		for (a in bas_path) { // проверка массива координат по циклу:
 			// если текущая координата есть в массиве и она не является крайней (чтоб зациклить можно было)
@@ -203,11 +193,6 @@ function setup_virtual_collection() {
 		$("#l_coord_y_array").val(bas_path.join(","));
 		$("#l_coord_y_aux").val(bas_index_array.join(","));
 	});
-
-
-
-
-
 	v_objects.options.set({
 		hasHint: 1,
 		hasBalloon: 0,
@@ -242,7 +227,6 @@ function place_object() {
 	var geometry,
 		options = ymaps.option.presetStorage.get(normalize_style(prop.attr)),
 		object;
-	console.log(1);
 	if (prop === undefined) { // JSLint ругается, требует сравнивать напрямую
 		console.log('Отсутствует блок данных редактируемого объекта');
 		return false;
@@ -282,15 +266,15 @@ function place_object() {
 			object   = new ymaps.Rectangle(geometry, prop, options);
 		}
 		e_objects.add(object);
-		make_environment();
+		make_environment(object);
 	}
 	return true;
 }
 
-function make_environment() {
+function make_environment(object) {
 	if (prop.pr === 3 || prop.pr === 2) {
 		e_objects.get(0).editor.startEditing();
-		perimeter_calc(geometry);
+		perimeter_calc(e_objects.get(0).geometry);
 	}
 	if (prop.pr !== 1) {
 		map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
@@ -350,8 +334,6 @@ function place_objects(source) {
 					description : source[a].description,
 					ttl         : a
 				};
-
-				//alert(source[a].attributes + ' ' + normalize_style(source[a].attributes));
 				options    = ymaps.option.presetStorage.get(normalize_style(source[a].attributes));
 				if (pr === 1) {
 					geometry = { type: 'Point', coordinates: coords.split(",") };
@@ -387,7 +369,6 @@ function draw_object_by_type(click) {
 		object,
 		coords,
 		basic_coords,
-		//properties = { hasBalloon: 1, hasHint: 1, hintContent: prop.description, attr: prop.attr },
 		options    = ymaps.option.presetStorage.get(normalize_style(prop.attr));
 	if (!e_objects.getLength()) {
 		switch (prop.pr) {
@@ -395,7 +376,6 @@ function draw_object_by_type(click) {
 			geometry = { type: 'Point', coordinates: click.get('coordPosition') };
 			object   = new ymaps.Placemark(geometry, prop, options);
 			object.options.set({ draggable: 1 });
-
 			break;
 		case 2:
 			geometry = new ymaps.geometry.LineString([click.get('coordPosition')]);
@@ -418,25 +398,17 @@ function draw_object_by_type(click) {
 		}
 		e_objects.add(object);
 		update_object_data();
-		if (prop.pr === 2 || prop.pr === 3) {
-			e_objects.get(0).editor.startDrawing();
-		}
-		if (prop.pr === 4) {
-			place_aux_circle_points();
-		}
-		if (prop.pr === 5) {
-			place_aux_rct_points();
-		}
+		make_environment(object);
 		$("#saveBtn").removeClass("btn-primary").addClass("btn-warning");
 	}
 }
 
 function set_map_events() {
 	map.events.add('click', function (click) {
-		if (!e_objects.getLength()) {
-			draw_object_by_type(click);
-		} else {
+		if (e_objects.getLength()) {
 			return false;
+		} else {
+			draw_object_by_type(click);
 		}
 	});
 
@@ -465,7 +437,6 @@ function normalize_style(style){
 			style = defaults[prop.pr];
 		}
 	}
-	// String
 	return style;
 }
 
@@ -544,10 +515,13 @@ function init() {
 	map.geoObjects.add(v_objects);
 	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
 	map.controls.add('zoomControl').add('typeSelector').add('mapTools').add(searchControl);
-	cursor = map.cursors.push('crosshair', 'arrow');
+	setup_editor_collection();
+	setup_virtual_collection();
+	setup_virtual_collection();
+	prop.attr = normalize_style(prop.attr);
+	cursor    = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
 	set_map_events();
-	prop.attr = normalize_style(prop.attr);
 	place_object();
 	//######################################### выносные функций, чтобы не загромождать код базовых функций
 }
