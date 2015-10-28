@@ -1,11 +1,14 @@
 /* jshint -W100 */
 /* jshint undef: false, unused: true */
-/* globals ymaps, prop, mp, switch_panel, perimeter_calc, update_object_data, bas_path, bas_index_array, field_calc, g2 */
+/* globals ymaps, prop, mp, switch_panel, perimeter_calc, update_object_data, bas_path, bas_index_array, field_calc */
 'use strict';
 var map,
 	a_objects,
 	e_objects,
 	v_objects,
+	g2,
+	bas_path        = [],
+	bas_index_array = [],
 	saveType = 'properties',
 	nePolygons;
 
@@ -284,7 +287,9 @@ function make_environment(object) {
 
 function set_layers() {
 	var a,
-		layerTypes = {
+		tileServerID  = parseInt(Math.random() * (4-1) + 1).toString(),
+		tileServerLit = { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
+		layerTypes    = {
 			1: {
 				func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=" + mp.lang + "&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo"; }, { tileTransparent : 1, zIndex : 1000 }); },
 				folder: "",
@@ -382,16 +387,9 @@ function init() {
 		current_type    = (maptypes[prop.current_type] !== undefined) ? maptypes[prop.current_type] : 'yandex#satellite',
 		//v_counter       = 0, // счётчик кликов на опорных объектах
 		//count           = 0,
-		bas_path        = [],
-		bas_index_array = [],
 		lon             = map_center[0],
 		lat             = map_center[1],
 		searchControl   = new ymaps.control.SearchControl({ provider: 'yandex#publicMap', boundedBy: [[40, 65], [42, 64]], strictBounds: 1 }),
-		//related,
-		layerTypes,
-		a,
-		tileServerID = parseInt(Math.random() * (4-1) + 1).toString(),
-		//tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
 		cursor,
 		genericBalloon = ymaps.templateLayoutFactory.createClass(
 			'<h4 class="balloonHeader">$[properties.name|нет описания]&nbsp;&nbsp;&nbsp;&nbsp;<small>$[properties.description|нет описания]</small></h4>' +
@@ -432,9 +430,7 @@ function init() {
 		zoom:      current_zoom,	// Коэффициент масштабирования
 		type:      current_type,	// Тип карты
 		behaviors: ["default", "scrollZoom"]
-	}, {
-		projection: ymaps.projection.sphericalMercator
-	});
+	}, { projection: ymaps.projection.sphericalMercator });
 	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
 	map.controls.add('zoomControl').add('typeSelector').add('mapTools').add(searchControl);
 	add_collections();
