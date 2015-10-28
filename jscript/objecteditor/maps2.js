@@ -1,6 +1,6 @@
 /* jshint -W100 */
 /* jshint undef: false, unused: true */
-/* globals ymaps, prop, mp, styleAddToStorage, switch_panel, perimeter_calc */
+/* globals ymaps, prop, mp, styleAddToStorage, switch_panel, perimeter_calc, update_object_data, bas_path, bas_index_array, field_calc, g2 */
 'use strict';
 var map,
 	a_objects,
@@ -291,7 +291,7 @@ function make_environment(object) {
 }
 
 function set_layers() {
-	var a;
+	var a,
 	layerTypes = {
 		1: {
 			func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=" + mp.lang + "&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo";}, {tileTransparent: 1, zIndex:1000});},
@@ -515,13 +515,15 @@ function init() {
 	map.geoObjects.add(v_objects);
 	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
 	map.controls.add('zoomControl').add('typeSelector').add('mapTools').add(searchControl);
+	set_layers();
 	setup_editor_collection();
 	setup_virtual_collection();
-	setup_virtual_collection();
+	setup_aux_collection();
 	prop.attr = normalize_style(prop.attr);
 	cursor    = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
 	set_map_events();
+
 	place_object();
 	//######################################### выносные функций, чтобы не загромождать код базовых функций
 }
