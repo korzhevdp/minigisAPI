@@ -212,6 +212,10 @@ function switch_panel() {
 	$("#cpanel" + prop.pr).removeClass('hide');
 }
 
+function set_changed(){
+	$("#saveBtn").removeClass("btn-primary").addClass("btn-warning");
+}
+
 function save_properties() {
 	var cb = [],
 		te = {},
