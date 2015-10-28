@@ -6,7 +6,6 @@ var map,
 	a_objects,
 	e_objects,
 	v_objects,
-	g2,
 	saveType = 'properties',
 	nePolygons;
 
@@ -436,20 +435,13 @@ function init() {
 	}, {
 		projection: ymaps.projection.sphericalMercator
 	});
-	a_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (точки управления фигурами - прямоугольник, круг)
-	e_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (редактируемые объекты)
-	v_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (опорные точки и объекты)
-	nePolygons      = new ymaps.GeoObjectArray();  // Вспомогательная коллекция 4
-	map.geoObjects.add(a_objects);
-	map.geoObjects.add(e_objects);
-	map.geoObjects.add(nePolygons);
-	map.geoObjects.add(v_objects);
 	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
 	map.controls.add('zoomControl').add('typeSelector').add('mapTools').add(searchControl);
-	set_layers();
+	add_collections();
 	setup_editor_collection();
 	setup_virtual_collection();
 	setup_aux_collection();
+	set_layers();
 	prop.attr = normalize_style(prop.attr);
 	cursor    = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
