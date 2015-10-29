@@ -218,6 +218,7 @@ function getGeometry(type, coords) {
 }
 
 function getNewGeometry(type, coord) {
+	var basic_coords = coord;
 	switch (type) {
 	case 1:
 		return new ymaps.geometry.Point(coord);
@@ -228,7 +229,6 @@ function getNewGeometry(type, coord) {
 	case 4:
 		return new ymaps.geometry.Circle([coord, parseFloat($("#cir_radius").val()) ] );
 	case 5:
-		basic_coords = coord;
 		return new ymaps.geometry.Rectangle([ [basic_coords[0] - 0.01, basic_coords[1] - 0.01], [basic_coords[0] + 0.01, basic_coords[1] + 0.01] ]);
 	}
 }
