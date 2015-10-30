@@ -72,7 +72,7 @@ function setup_editor_collection() {
 		balloonMaxWidth: 550,  // Максимальная ширина балуна в пикселах
 		balloonMinWidth: 550,  // Максимальная ширина балуна в пикселах
 		balloonMaxHeight: 400, // Максимальная ширина балуна в пикселах
-		balloonMinHeight: 400 // Максимальная ширина балуна в пикселах
+		balloonMinHeight: 400  // Максимальная ширина балуна в пикселах
 	});
 }
 
@@ -104,44 +104,46 @@ function setup_aux_collection() {
 	});
 }
 
+function check_vertex_presence_in_geometry(bas_path, currpoint, gtype) {
+	var a;
+	for (a in bas_path) { // проверка массива координат по циклу:
+		// если текущая координата есть в массиве и она не является крайней (чтоб зациклить можно было)
+		if (bas_path.hasOwnProperty(a)) {
+			if ((currpoint.join(",") === bas_path[a].join(",") && a) || gtype === 'Сircle') {
+				bas_index_array.splice(a, 1); // удалить упоминание об этом индексе
+				bas_path.splice(a, 1); // удалить точку с этой координатой
+				return true;
+			}
+		}
+	}
+	return false
+}
+
 function setup_virtual_collection() {
 	v_objects.events.add('click', function (item) {
-		var tgeometry,
-			gtype,
+		var tgeometry = e_objects.get(0).geometry,
+			gtype     = tgeometry.getType(),
 			geometry,
-			options,
+			options   = ymaps.option.presetStorage.get(normalize_style(prop.attr)),
 			a,
 			m,
-			b = 0,
+			b,
 			object,
-			currindex,
-			currpoint;
+			currindex = parseInt(item.get('target').properties.get('ttl'), 10),
+			currpoint = item.get('target').geometry.getCoordinates();
 
-		tgeometry = e_objects.get(0).geometry;
-		options   = ymaps.option.presetStorage.get(normalize_style(prop.attr));
-		gtype     = tgeometry.getType();
-		currindex = parseInt(item.get('target').properties.get('ttl'), 10);
-		currpoint = item.get('target').geometry.getCoordinates();
 		if (!e_objects.getLength()) {
 			geometry = getNewGeometry(prop.pr, currpoint);
 			object   = getObject(geometry, prop, options);
 			e_objects.add(object);
 			bas_path.push(currpoint);
 			make_environment(object);
-			// операционная геометрия
-			for (a in bas_path) { // проверка массива координат по циклу:
-				// если текущая координата есть в массиве и она не является крайней (чтоб зациклить можно было)
-				if (bas_path.hasOwnProperty(a)) {
-					if ((currpoint.join(",") === bas_path[a].join(",") && a) || gtype === 'Сircle') {
-						bas_index_array.splice(a, 1); // удалить упоминание об этом индексе
-						bas_path.splice(a, 1); // удалить точку с этой координатой
-						b += 1;
-					}
-				}
-			}
+
+
+			b = check_vertex_presence_in_geometry(bas_path, currpoint, gtype);
 			if (!b) {//если по циклу координаты не нашлось
 				bas_index_array.push(currindex);//добавить в конец массива координат.
-				bas_path  = e_objects.get(0).geometry.getCoordinates();
+				bas_path  = tgeometry.getCoordinates();
 				if (gtype === "LineString") {
 					tgeometry.insert(tgeometry.getLength(), currpoint);
 					bas_path.push(currpoint);//добавить в конец массива координат.
@@ -200,52 +202,38 @@ function place_aux_circle_points() {
 }
 
 function getGeometry(type, coords) {
-	switch (type) {
-	case 1:
-		return new ymaps.geometry.Point(coords);
-	case 2:
-		return new ymaps.geometry.LineString.fromEncodedCoordinates(coords);
-	case 3:
-		return new ymaps.geometry.Polygon.fromEncodedCoordinates(coords);
-	case 4:
-		return new ymaps.geometry.Circle([parseFloat(coords[0]), parseFloat(coords[1])], parseFloat(coords[2]));
-	case 5:
-		return new ymaps.geometry.Rectangle([
-			[parseFloat(coords[0]), parseFloat(coords[1])],
-			[parseFloat(coords[2]), parseFloat(coords[3])]
-		]);
-	}
+	var geometries = {
+		1: function() { return new ymaps.geometry.Point(coords); },
+		2: function() { return new ymaps.geometry.LineString.fromEncodedCoordinates(coords); },
+		3: function() { return new ymaps.geometry.Polygon.fromEncodedCoordinates(coords); },
+		4: function() { return new ymaps.geometry.Circle([parseFloat(coords[0]), parseFloat(coords[1])], parseFloat(coords[2])); },
+		5: function() { return new ymaps.geometry.Rectangle([ [parseFloat(coords[0]), parseFloat(coords[1])], [parseFloat(coords[2]), parseFloat(coords[3])] ]); }
+	};
+	return geometries[type]();
 }
 
+
 function getNewGeometry(type, coord) {
-	var basic_coords = coord;
-	switch (type) {
-	case 1:
-		return new ymaps.geometry.Point(coord);
-	case 2:
-		return new ymaps.geometry.LineString([coord]);
-	case 3:
-		return new ymaps.geometry.Polygon([[coord]]);
-	case 4:
-		return new ymaps.geometry.Circle([coord, parseFloat($("#cir_radius").val()) ] );
-	case 5:
-		return new ymaps.geometry.Rectangle([ [basic_coords[0] - 0.01, basic_coords[1] - 0.01], [basic_coords[0] + 0.01, basic_coords[1] + 0.01] ]);
-	}
+	var basic_coords = coord,
+		geometries = {
+			1: function() { return new ymaps.geometry.Point(coord); },
+			2: function() { return new ymaps.geometry.LineString([coord]); },
+			3: function() { return new ymaps.geometry.Polygon([[coord]]); },
+			4: function() { return new ymaps.geometry.Circle([coord, parseFloat($("#cir_radius").val()) ] ); },
+			5: function() { return new ymaps.geometry.Rectangle([ [basic_coords[0] - 0.01, basic_coords[1] - 0.01], [basic_coords[0] + 0.01, basic_coords[1] + 0.01] ]); }
+		};
+	return geometries[type]();
 }
 
 function getObject(geometry, prop, options) {
-	switch (prop.pr) {
-	case 1:
-		return new ymaps.Placemark(geometry, prop, options);
-	case 2:
-		return new ymaps.Polyline(geometry, prop, options);
-	case 3:
-		return new ymaps.Polygon(geometry, prop, options);
-	case 4:
-		return new ymaps.Circle(geometry, prop, options);
-	case 5:
-		return new ymaps.Rectangle(geometry, prop, options);
-	}
+	var objects = {
+		1: function() { return new ymaps.Placemark(geometry, prop, options); },
+		2: function() { return new ymaps.Polyline(geometry,  prop, options); },
+		3: function() { return new ymaps.Polygon(geometry,   prop, options); },
+		4: function() { return new ymaps.Circle(geometry,    prop, options); },
+		5: function() { return new ymaps.Rectangle(geometry, prop, options); }
+	};
+	return objects[prop.pr]();
 }
 
 function place_object() {
@@ -290,18 +278,18 @@ function set_layers() {
 		tileServerID  = parseInt(Math.random() * (4-1) + 1).toString(),
 		tileServerLit = { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
 		layerTypes    = {
-			1: {
-				func  : function () {return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=" + mp.lang + "&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo"; }, { tileTransparent : 1, zIndex : 1000 }); },
-				folder: "",
-				label : "google#map",
-				name  : "Гуглотест",
-				layers: ["google#map"]
+			'google#map' : {
+				func   : function () { return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=" + mp.lang + "&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo"; }, { tileTransparent : 1, zIndex : 1000 }); },
+				folder : "",
+				label  : "google#map",
+				name   : "Гуглотест",
+				layers : ["google#map"]
 			}
 		};
 	for (a in layerTypes) {
 		if (layerTypes.hasOwnProperty(a)) {
-			ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
-			ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(layerTypes[a].name, layerTypes[a].layers));
+			ymaps.layer.storage.add(a, layerTypes[a].func);
+			ymaps.mapType.storage.add(a, new ymaps.MapType(layerTypes[a].name, layerTypes[a].layers));
 		}
 	}
 }
@@ -316,21 +304,19 @@ function place_objects(source) {
 		object;
 	for (a in source) {
 		if (source.hasOwnProperty(a)) {
-			if (source[a].coords.length > 3) {
-				coords     = source[a].coords;
-				pr         = parseInt(source[a].pr, 10);
-				properties = {
-					hasBalloon  : 0,
-					name        : source[a].loc_name,
-					hintContent : source[a].description,
-					description : source[a].description,
-					ttl         : a
-				};
-				geometry = getGeometry(pr, coords);
-				options    = ymaps.option.presetStorage.get(normalize_style(source[a].attributes));
-				object   = getObject(geometry, prop, options);
-				v_objects.add(object);
-			}
+			coords     = source[a].coords;
+			pr         = parseInt(source[a].pr, 10);
+			properties = {
+				hasBalloon  : 0,
+				name        : source[a].loc_name,
+				hintContent : source[a].description,
+				description : source[a].description,
+				ttl         : a
+			};
+			geometry = getGeometry(pr, coords);
+			options  = ymaps.option.presetStorage.get(normalize_style(source[a].attributes));
+			object   = getObject(geometry, prop, options);
+			v_objects.add(object);
 		}
 	}
 }
@@ -379,12 +365,12 @@ function normalize_style(style) {
 }
 
 function init() {
-	var maptypes        = { 1: 'yandex#map', 2: 'yandex#satellite', 3: 'google#map', 4: 'osm#map' },
+	var maptypes        = { 3: 'yandex#map', 2: 'yandex#satellite', 1: 'google#map', 4: 'osm#map' },
 		map_center      = prop.map_center,
 		current         = 0,
 		//current         = (typeof current !== 'undefined') ? current : prop.ttl,
 		current_zoom    = (prop.current_zoom !== undefined) ? prop.current_zoom : 15,
-		current_type    = (maptypes[prop.current_type] !== undefined) ? maptypes[prop.current_type] : 'yandex#satellite',
+		current_type    = (maptypes[prop.current_type] !== undefined) ? maptypes[prop.current_type] : 'yandex#map',
 		//v_counter       = 0, // счётчик кликов на опорных объектах
 		//count           = 0,
 		lon             = map_center[0],
@@ -425,6 +411,7 @@ function init() {
 				'<button type="button" class="btn btn-primary btn-mini" id="updDataBtn">Применить</button>' +
 				'<button type="reset" class="btn btn-mini" id="closeBalloonBtn">Отмена</button>'
 		);
+	set_layers();
 	map = new ymaps.Map("YMapsID", {
 		center:    [lon, lat],		// Центр карты
 		zoom:      current_zoom,	// Коэффициент масштабирования
@@ -437,7 +424,7 @@ function init() {
 	setup_editor_collection();
 	setup_virtual_collection();
 	setup_aux_collection();
-	set_layers();
+
 	prop.attr = normalize_style(prop.attr);
 	cursor    = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');

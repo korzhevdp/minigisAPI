@@ -21,7 +21,7 @@ function update_line_data() { // передаётся объект целико�
 		coordarray  = src.getCoordinates(),
 		coordstring = [],
 		a;
-	prop.coords = coords;
+		prop.coords = coords;
 	for (a in coordarray) {
 		if (coordarray.hasOwnProperty(a)) {
 			coordstring.push("[" + coordarray[a].join(",") + "]");
@@ -138,7 +138,7 @@ function composeStyleDropdowns(type, style) {
 	});
 }
 
-function addPropertyPagesAction(){
+function addPropertyPagesAction() {
 	$(".displayPage").unbind().click(function () {
 		var page = $(this).attr("ref").split("/");
 		saveType = "properties";
@@ -179,7 +179,6 @@ function addschedulePageAction() {
 		get_schedule();
 		$("#propPage").css('display', 'none');
 		$("#schedule").css('display', 'block');
-			alert(saveType);
 	});
 }
 
@@ -212,7 +211,7 @@ function switch_panel() {
 	$("#cpanel" + prop.pr).removeClass('hide');
 }
 
-function set_changed(){
+function set_changed() {
 	$("#saveBtn").removeClass("btn-primary").addClass("btn-warning");
 }
 
@@ -257,21 +256,6 @@ function save_properties() {
 		error: function (data, stat, err) {
 			console.log([ data, stat, err ].join("\n"));
 		}
-	});
-}
-
-// deprecated
-function init_balloon_controls() {
-	composeStyleDropdowns(prop.pr, prop.attr);
-	listen_page_caller();
-	$("#f_address").val(prop.address);
-	$("#f_name").val(prop.name);
-	$("#f_style").val(prop.attr);
-	$("#f_cont").val(prop.contact);
-	$("#mainPage").css('display', 'block');
-	$("#closeBalloonBtn").click(function () {
-		e_objects.get(0).options.set(ymaps.option.presetStorage.get(normalize_style(prop.attr)));
-		map.balloon.close();
 	});
 }
 
@@ -482,3 +466,8 @@ $(".nodeExport").click(function () {
 	$("#exportedNodes").html(coords.toSource());
 	$("#nodeExport").modal("show");
 });
+
+/// script specific actions
+
+listen_page_caller();
+composeStyleDropdowns(prop.pr, prop.attr);
