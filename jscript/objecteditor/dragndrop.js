@@ -7,21 +7,21 @@ var file,
 	xhr,
 	percent;
 
-$(document).ready(function() {
+$(document).ready(function () {
 	dropZone = $('#dropZone');
 	if (window.FileReader === undefined) {
 		dropZone.text('Не поддерживается браузером!');
 		dropZone.addClass('error');
 	}
-	dropZone[0].ondragover = function() {
+	dropZone[0].ondragover = function () {
 		dropZone.addClass('hover');
 		return false;
 	};
-	dropZone[0].ondragleave = function() {
+	dropZone[0].ondragleave = function () {
 		dropZone.removeClass('hover');
 		return false;
 	};
-	dropZone[0].ondrop = function(event) {
+	dropZone[0].ondrop = function (event) {
 		var fd;
 		event.preventDefault();
 		dropZone.removeClass('hover');
@@ -67,9 +67,9 @@ $(document).ready(function() {
 	}
 });
 
-$(function() {
+$(function () {
 	$( ".imageGallery" ).sortable({
-		stop: function( event, ui ) {
+		stop: function ( event, ui ) {
 			$.ajax({
 				url: "/editor/save_image_order",
 				type: "POST",
@@ -95,7 +95,7 @@ $(function() {
 });
 
 function set_deleter(){
-	$(".locationImg .icon-remove").click(function(){
+	$(".locationImg .icon-remove").click(function (){
 		ref = $(this).parent().attr("ref");
 		$.ajax({
 			url: "/editor/delete_image",

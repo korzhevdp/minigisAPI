@@ -2,10 +2,10 @@
 /* jshint undef: true, unused: true */
 /* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
 function listenDependencyCalcCalls() {
-	$(".map_calc").unbind().click(function() {
+	$(".map_calc").unbind().click(function () {
 		var ids = [];
 		$("#propPage input[type=checkbox]").prop('checked', false)
-		$("#propPage input[type=checkbox]").each(function() {
+		$("#propPage input[type=checkbox]").each(function () {
 			ids.push($(this).val());
 		});
 		$.ajax({
@@ -16,7 +16,7 @@ function listenDependencyCalcCalls() {
 				ids  : ids
 			},
 			dataType : "script",
-			success  : function() {
+			success  : function () {
 				var a,
 					b;
 				for (a in data) {

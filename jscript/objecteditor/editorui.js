@@ -261,7 +261,7 @@ function save_properties() {
 
 // События пользовательского интерфейса и ввода данных
 
-$(".mapsw").click(function(){
+$(".mapsw").click(function (){
 	if($(this).attr("id") === "toGoogle") {
 		map.setType("google#map");
 		$("#toGoogle").addClass("active");
@@ -281,11 +281,11 @@ $('.modal').modal({ show: 0 });
 $("#toGoogle").addClass("active");
 $("#toYandex").removeClass("active");
 
-$("#l_name").keyup(function() {
+$("#l_name").keyup(function () {
 	$("#header_location_name").html($(this).val());
 });
 
-$("#type").change(function() {
+$("#type").change(function () {
 	$("#description").html($("#type option:selected").text());
 	prop.type = $(this).val();
 });
@@ -330,7 +330,7 @@ $("#type").change(function () {
 	}
 });
 
-$("#loadImage").click(function(){
+$("#loadImage").click(function (){
 	$("#imageLoader").modal('show');
 });
 

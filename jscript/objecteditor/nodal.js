@@ -2,10 +2,10 @@
 /* jshint undef: true, unused: true */
 /* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
 function listenDependencyCalcCalls() {
-	$(".map_calc").unbind().click(function() {
+	$(".map_calc").unbind().click(function () {
 		var ids = [];
 		$("#propPage input[type=checkbox]").prop('checked', false)
-		$("#propPage input[type=checkbox]").each(function() {
+		$("#propPage input[type=checkbox]").each(function () {
 			ids.push($(this).val());
 		});
 		$.ajax({
@@ -16,7 +16,7 @@ function listenDependencyCalcCalls() {
 				ids  : ids
 			},
 			dataType : "script",
-			success  : function() {
+			success  : function () {
 				var a,
 					b;
 				for (a in data) {
@@ -44,14 +44,14 @@ function checkPointsInclusion(data, id) {
 		polygon = new ymaps.Polygon(new ymaps.geometry.Polygon.fromEncodedCoordinates(data));
 
 	nePolygons.add(polygon);
-	if(prop.pr === 1){
-		if(polygon.geometry.contains(src_geometry)) {
+	if (prop.pr === 1) {
+		if (polygon.geometry.contains(src_geometry)) {
 			$("#p" + id).prop('checked', true);
 		}
 	}
 
-	if(prop.pr === 2){
-		for (c in src_geometry){
+	if (prop.pr === 2) {
+		for (c in src_geometry) {
 			if (src_geometry.hasOwnProperty(c)) {
 				if (polygon.geometry.contains(src_geometry[c])) {
 					$("#p" + id).prop('checked', true);
@@ -60,12 +60,12 @@ function checkPointsInclusion(data, id) {
 		}
 	}
 
-	if(prop.pr === 3){
+	if (prop.pr === 3) {
 		for (c in src_geometry) {
 			if (src_geometry.hasOwnProperty(c)) {
 				for (d in src_geometry[c]){
 					if (src_geometry[c].hasOwnProperty(d)) {
-						if(polygon.geometry.contains(src_geometry[c][d])) {
+						if (polygon.geometry.contains(src_geometry[c][d])) {
 							$("#p" + id).prop('checked', true);
 						}
 					}
@@ -149,14 +149,14 @@ function request_geocode_toMapPoint(coords) { // запрос геокодеру по координатам
 				names.push(object.properties.get('name'));
 			}
 		);
-		address = (names[0] !== "undefined") ? [names[0]].join(', ') : "Нет адреса";
+		address = (names[0] === undefined) ? "Нет адреса" : [names[0]].join(', ') ;
 		$(".l_addr").val(address);
-		if(map.balloon.isOpen() && $("#f_address") !== undefined){
-			$("#f_address").val(address);
-		} else {
+		if (map.balloon.isOpen() && $("#f_address") === undefined) {
 			map.balloon.open(coords, {
-				contentBody: '<div class="ymaps_balloon"><input type="text" value="' + [ parseFloat(coords[0]).toFixed(8), parseFloat(coords[1]).toFixed(8) ].join(', ') + '"><br>' + address + '</div>'
+				contentBody: '<div class="ymaps_balloon"><input type="text" value="' + [ parseFloat(coords[0]).toFixed(10), parseFloat(coords[1]).toFixed(10) ].join(', ') + '"><br>' + address + '</div>'
 			});
+		} else {
+			$("#f_address").val(address);
 		}
 	});
 }
@@ -170,7 +170,7 @@ function request_geocode_toPointObject(coords) { // запрос геокодеру по координа
 				names.push(object.properties.get('name'));
 			}
 		);
-		prop.address = (names[0] !== "undefined") ? [names[0]].join(', ') : "Нет адреса";
+		prop.address = (names[0] === "undefined") ? "Нет адреса" : [names[0]].join(', ');
 		$("#l_addr").val(prop.address);
 	});
 }
@@ -183,7 +183,21 @@ function convert_to_vertexes() {
 			a,
 			b,
 			array;
-		if (gtype === 'LineString' || gtype === 'Polygon') {
+		if (gtype === 'LineString' ) {
+			array = item.geometry.getCoordinates();
+			for (a in array) {
+				if (array.hasOwnProperty(a)) {
+					k[i] = {
+						description : item.properties.get('description') + " вершина " + i,
+						coords      : array[a],
+						pr          : 1,
+						attributes  : 'system#blueflag'
+					};
+					i += 1;
+				}
+			}
+		}
+		if (gtype === 'Polygon') {
 			array = item.geometry.getCoordinates();
 			for (a in array) {
 				if (array.hasOwnProperty(a)) {
@@ -191,7 +205,7 @@ function convert_to_vertexes() {
 						if (array[a].hasOwnProperty(b)) {
 							k[i] = {
 								description : item.properties.get('description') + " вершина " + i,
-								coords      : array[a][b].join(","),
+								coords      : array[a][b],
 								pr          : 1,
 								attributes  : 'system#blueflag'
 							};

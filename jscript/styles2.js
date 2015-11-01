@@ -1189,14 +1189,71 @@ userstyles['user#sportsschool'] = {
 	title           : 'ДЮСШ',
 	type            : 1
 };
-userstyles['alert#fire'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
+userstyles['system#arrowldn'] = {
+	iconUrl         : '/gisicons/userstyles/layer_aspect_arrow.png',
+	iconImageHref   : '/gisicons/userstyles/layer_aspect_arrow.png',
+	iconSize        : [16,16],
+	iconImageSize   : [16,16],
+	iconImageOffset : [0,-16],
+	title           : 'Левый нижний',
+	type            : 's'
+};
+userstyles['system#arrowrup'] = {
+	iconUrl         : '/gisicons/userstyles/layer_aspect_arrow2.png',
+	iconImageHref   : '/gisicons/userstyles/layer_aspect_arrow2.png',
+	iconSize        : [16,16],
+	iconImageSize   : [16,16],
+	iconImageOffset : [-16,0],
+	title           : 'Правый верхний',
+	type            : 's'
+};
+userstyles['system#redflag'] = { //mk. 2
+	iconUrl         : '/gisicons/userstyles/flag_3.png',
+	iconImageHref   : '/gisicons/userstyles/flag_3.png',
+	iconSize        : [16,16],
+	iconImageSize   : [16,16],
+	iconAnchor      : [2,16],
+	iconImageOffset : [-3,-16],
+	title           : 'Красный флаг',
+	type            : 1
+};
+userstyles['system#blueflag'] = { //FatCow Icon Set
+	iconUrl         : '/gisicons/userstyles/flag_2.png',
+	iconImageHref   : '/gisicons/userstyles/flag_2.png',
+	iconSize        : [16,16],
+	iconImageSize   : [16,16],
+	iconAnchor      : [2,16],
+	iconImageOffset : [-3,-16],
+	title           : 'Синий флаг',
+	type            : 1
+};
+userstyles['system#greenflag'] = { //FatCow Icon Set
+	iconUrl         : '/gisicons/userstyles/flag_1.png',
+	iconImageHref   : '/gisicons/userstyles/flag_1.png',
+	iconSize        : [16,16],
+	iconImageSize   : [16,16],
+	iconImageOffset : [-3,-16],
+	iconAnchor      : [2,16],
+	title           : 'Зелёный флаг',
+	type            : 1
+};
+userstyles['system#arrowcen'] = { //FatCow Icon Set
+	iconUrl         : '/gisicons/userstyles/arrow_in.png',
+	iconImageHref   : '/gisicons/userstyles/arrow_in.png',
 	iconSize        : [32,32],
 	iconImageSize   : [32,32],
-	iconImageOffset : [-16,-32],
-	title           : 'Огонь',
-	type            : 1
+	iconImageOffset : [-16,-16],
+	title           : 'Центр',
+	type            : 's'
+};
+userstyles['system#arrowrad'] = { //FatCow Icon Set
+	iconUrl         : '/gisicons/userstyles/arrow_right.png',
+	iconImageHref   : '/gisicons/userstyles/arrow_right.png',
+	iconSize        : [32,32],
+	iconImageSize   : [32,32],
+	iconImageOffset : [-32,-16],
+	title           : 'Радиус',
+	type            : 's'
 };
 userstyles['alert#fire'] = {
 	iconUrl         : '/gisicons/userstyles/fire.png',
@@ -1205,15 +1262,6 @@ userstyles['alert#fire'] = {
 	iconImageSize   : [32,32],
 	iconImageOffset : [-16,-32],
 	title           : 'Огонь',
-	type            : 1
-};
-userstyles['alert#water'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
-	iconSize        : [32,32],
-	iconImageSize   : [32,32],
-	iconImageOffset : [-16,-32],
-	title           : 'Вода',
 	type            : 1
 };
 userstyles['alert#water'] = {
@@ -1234,15 +1282,6 @@ userstyles['alert#gas'] = {
 	title           : 'Газ',
 	type            : 1
 };
-userstyles['alert#gas'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
-	iconSize        : [32,32],
-	iconImageSize   : [32,32],
-	iconImageOffset : [-16,-32],
-	title           : 'Газ',
-	type            : 1
-};
 userstyles['alert#btu'] = {
 	iconUrl         : '/gisicons/userstyles/fire.png',
 	iconImageHref   : '/gisicons/userstyles/fire.png',
@@ -1250,24 +1289,6 @@ userstyles['alert#btu'] = {
 	iconImageSize   : [32,32],
 	iconImageOffset : [-16,-32],
 	title           : 'Теплоснабжение',
-	type            : 1
-};
-userstyles['alert#btu'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
-	iconSize        : [32,32],
-	iconImageSize   : [32,32],
-	iconImageOffset : [-16,-32],
-	title           : 'Теплоснабжение',
-	type            : 1
-};
-userstyles['nodal#b737'] = {
-	iconUrl         : '/gisicons/nodal.life/b737N.png',
-	iconImageHref   : '/gisicons/nodal.life/b737N.png',
-	iconSize        : [32,32],
-	iconImageSize   : [32,32],
-	iconImageOffset : [-16,-16],
-	title           : 'Боинг-737-500',
 	type            : 1
 };
 userstyles['nodal#b737'] = {
@@ -1288,15 +1309,6 @@ userstyles['user#fire'] = {
 	title           : 'Огонь',
 	type            : 1
 };
-userstyles['user#fire'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
-	iconSize        : [32,32],
-	iconImageSize   : [32,32],
-	iconImageOffset : [-16,-32],
-	title           : 'Огонь',
-	type            : 1
-};
 userstyles['user#anchor'] = {
 	iconUrl         : '/gisicons/luftmaps/anchor.png',
 	iconImageHref   : '/gisicons/luftmaps/anchor.png',
@@ -1304,24 +1316,6 @@ userstyles['user#anchor'] = {
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
 	title           : 'Пристань',
-	type            : 1
-};
-userstyles['user#anchor'] = {
-	iconUrl         : '/gisicons/luftmaps/anchor.png',
-	iconImageHref   : '/gisicons/luftmaps/anchor.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Пристань',
-	type            : 1
-};
-userstyles['user#church'] = {
-	iconUrl         : '/gisicons/luftmaps/church.png',
-	iconImageHref   : '/gisicons/luftmaps/church.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Церковь',
 	type            : 1
 };
 userstyles['user#church'] = {
@@ -1342,15 +1336,6 @@ userstyles['user#jews'] = {
 	title           : 'Евреи',
 	type            : 1
 };
-userstyles['user#jews'] = {
-	iconUrl         : '/gisicons/luftmaps/jew.png',
-	iconImageHref   : '/gisicons/luftmaps/jew.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Евреи',
-	type            : 1
-};
 userstyles['user#maid'] = {
 	iconUrl         : '/gisicons/luftmaps/maid.png',
 	iconImageHref   : '/gisicons/luftmaps/maid.png',
@@ -1358,24 +1343,6 @@ userstyles['user#maid'] = {
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
 	title           : 'Сестра милосердия',
-	type            : 1
-};
-userstyles['user#maid'] = {
-	iconUrl         : '/gisicons/luftmaps/maid.png',
-	iconImageHref   : '/gisicons/luftmaps/maid.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Сестра милосердия',
-	type            : 1
-};
-userstyles['user#police'] = {
-	iconUrl         : '/gisicons/luftmaps/policeman.png',
-	iconImageHref   : '/gisicons/luftmaps/policeman.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Полиция',
 	type            : 1
 };
 userstyles['user#police'] = {
@@ -1396,15 +1363,6 @@ userstyles['user#soldier'] = {
 	title           : 'Военные',
 	type            : 1
 };
-userstyles['user#soldier'] = {
-	iconUrl         : '/gisicons/luftmaps/soldier.png',
-	iconImageHref   : '/gisicons/luftmaps/soldier.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Военные',
-	type            : 1
-};
 userstyles['user#student'] = {
 	iconUrl         : '/gisicons/luftmaps/student.png',
 	iconImageHref   : '/gisicons/luftmaps/student.png',
@@ -1412,24 +1370,6 @@ userstyles['user#student'] = {
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
 	title           : 'Студент',
-	type            : 1
-};
-userstyles['user#student'] = {
-	iconUrl         : '/gisicons/luftmaps/student.png',
-	iconImageHref   : '/gisicons/luftmaps/student.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Студент',
-	type            : 1
-};
-userstyles['user#studentf'] = {
-	iconUrl         : '/gisicons/luftmaps/studentf.png',
-	iconImageHref   : '/gisicons/luftmaps/studentf.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Институтка',
 	type            : 1
 };
 userstyles['user#studentf'] = {
@@ -1450,15 +1390,6 @@ userstyles['user#tower'] = {
 	title           : 'Башня замка',
 	type            : 1
 };
-userstyles['user#tower'] = {
-	iconUrl         : '/gisicons/luftmaps/tower.png',
-	iconImageHref   : '/gisicons/luftmaps/tower.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Башня замка',
-	type            : 1
-};
 userstyles['user#transmit'] = {
 	iconUrl         : '/gisicons/luftmaps/transmit.png',
 	iconImageHref   : '/gisicons/luftmaps/transmit.png',
@@ -1466,24 +1397,6 @@ userstyles['user#transmit'] = {
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
 	title           : 'Передатчик',
-	type            : 1
-};
-userstyles['user#transmit'] = {
-	iconUrl         : '/gisicons/luftmaps/transmit.png',
-	iconImageHref   : '/gisicons/luftmaps/transmit.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Передатчик',
-	type            : 1
-};
-userstyles['user#wall'] = {
-	iconUrl         : '/gisicons/luftmaps/wall.png',
-	iconImageHref   : '/gisicons/luftmaps/wall.png',
-	iconSize        : [21,28],
-	iconImageSize   : [21,28],
-	iconImageOffset : [-11,-28],
-	title           : 'Стена',
 	type            : 1
 };
 userstyles['user#wall'] = {

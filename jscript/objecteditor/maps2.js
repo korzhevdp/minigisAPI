@@ -19,8 +19,8 @@ function add_collections() {
 	nePolygons      = new ymaps.GeoObjectArray();  // Вспомогательная коллекция 4
 	map.geoObjects.add(a_objects);
 	map.geoObjects.add(e_objects);
-	map.geoObjects.add(nePolygons);
 	map.geoObjects.add(v_objects);
+	map.geoObjects.add(nePolygons);
 }
 
 function setup_editor_collection() {
@@ -116,7 +116,7 @@ function check_vertex_presence_in_geometry(bas_path, currpoint, gtype) {
 			}
 		}
 	}
-	return false
+	return false;
 }
 
 function setup_virtual_collection() {
@@ -125,7 +125,6 @@ function setup_virtual_collection() {
 			gtype     = tgeometry.getType(),
 			geometry,
 			options   = ymaps.option.presetStorage.get(normalize_style(prop.attr)),
-			a,
 			m,
 			b,
 			object,
@@ -138,33 +137,32 @@ function setup_virtual_collection() {
 			e_objects.add(object);
 			bas_path.push(currpoint);
 			make_environment(object);
+		}
 
-
-			b = check_vertex_presence_in_geometry(bas_path, currpoint, gtype);
-			if (!b) {//если по циклу координаты не нашлось
-				bas_index_array.push(currindex);//добавить в конец массива координат.
-				bas_path  = tgeometry.getCoordinates();
-				if (gtype === "LineString") {
-					tgeometry.insert(tgeometry.getLength(), currpoint);
-					bas_path.push(currpoint);//добавить в конец массива координат.
-				}
-				if (gtype === "Polygon") {
-					m = tgeometry.getCoordinates()[0];
-					m[m.length - 1] = currpoint;
-					e_objects.get(0).geometry.setCoordinates([m]);
-					perimeter_calc();
-				}
-				if (gtype === "Circle") {
-					tgeometry.setRadius(ymaps.coordSystem.geo.getDistance(tgeometry.getCoordinates(), currpoint));
-					a_objects.get(1).geometry.setCoordinates(item.get('target').geometry.getCoordinates()); // костыль ???
-					field_calc();
-				}
-				if (gtype === "Rectangle") {
-					g2.push(currpoint);
-					if (g2.length === 2) {
-						tgeometry.setCoordinates(g2);
-						g2 = [];
-					}
+		b = check_vertex_presence_in_geometry(bas_path, currpoint, gtype);
+		if (!b) {//если по циклу координаты не нашлось
+			bas_index_array.push(currindex);//добавить в конец массива координат.
+			bas_path  = tgeometry.getCoordinates();
+			if (gtype === "LineString") {
+				tgeometry.insert(tgeometry.getLength(), currpoint);
+				bas_path.push(currpoint);//добавить в конец массива координат.
+			}
+			if (gtype === "Polygon") {
+				m = tgeometry.getCoordinates()[0];
+				m[m.length - 1] = currpoint;
+				e_objects.get(0).geometry.setCoordinates([m]);
+				perimeter_calc();
+			}
+			if (gtype === "Circle") {
+				tgeometry.setRadius(ymaps.coordSystem.geo.getDistance(tgeometry.getCoordinates(), currpoint));
+				a_objects.get(1).geometry.setCoordinates(item.get('target').geometry.getCoordinates()); // костыль ???
+				field_calc();
+			}
+			if (gtype === "Rectangle") {
+				g2.push(currpoint);
+				if (g2.length === 2) {
+					tgeometry.setCoordinates(g2);
+					g2 = [];
 				}
 			}
 			$("#l_coord_y_array").val(bas_path.join(","));
@@ -203,35 +201,34 @@ function place_aux_circle_points() {
 
 function getGeometry(type, coords) {
 	var geometries = {
-		1: function() { return new ymaps.geometry.Point(coords); },
-		2: function() { return new ymaps.geometry.LineString.fromEncodedCoordinates(coords); },
-		3: function() { return new ymaps.geometry.Polygon.fromEncodedCoordinates(coords); },
-		4: function() { return new ymaps.geometry.Circle([parseFloat(coords[0]), parseFloat(coords[1])], parseFloat(coords[2])); },
-		5: function() { return new ymaps.geometry.Rectangle([ [parseFloat(coords[0]), parseFloat(coords[1])], [parseFloat(coords[2]), parseFloat(coords[3])] ]); }
+		1: function () { return new ymaps.geometry.Point(coords); },
+		2: function () { return new ymaps.geometry.LineString.fromEncodedCoordinates(coords); },
+		3: function () { return new ymaps.geometry.Polygon.fromEncodedCoordinates(coords); },
+		4: function () { return new ymaps.geometry.Circle([parseFloat(coords[0]), parseFloat(coords[1])], parseFloat(coords[2])); },
+		5: function () { return new ymaps.geometry.Rectangle([ [parseFloat(coords[0]), parseFloat(coords[1])], [parseFloat(coords[2]), parseFloat(coords[3])] ]); }
 	};
 	return geometries[type]();
 }
 
-
 function getNewGeometry(type, coord) {
 	var basic_coords = coord,
 		geometries = {
-			1: function() { return new ymaps.geometry.Point(coord); },
-			2: function() { return new ymaps.geometry.LineString([coord]); },
-			3: function() { return new ymaps.geometry.Polygon([[coord]]); },
-			4: function() { return new ymaps.geometry.Circle([coord, parseFloat($("#cir_radius").val()) ] ); },
-			5: function() { return new ymaps.geometry.Rectangle([ [basic_coords[0] - 0.01, basic_coords[1] - 0.01], [basic_coords[0] + 0.01, basic_coords[1] + 0.01] ]); }
+			1: function () { return new ymaps.geometry.Point(coord); },
+			2: function () { return new ymaps.geometry.LineString([coord]); },
+			3: function () { return new ymaps.geometry.Polygon([[coord]]); },
+			4: function () { return new ymaps.geometry.Circle([coord, parseFloat($("#cir_radius").val()) ] ); },
+			5: function () { return new ymaps.geometry.Rectangle([ [basic_coords[0] - 0.01, basic_coords[1] - 0.01], [basic_coords[0] + 0.01, basic_coords[1] + 0.01] ]); }
 		};
 	return geometries[type]();
 }
 
 function getObject(geometry, prop, options) {
 	var objects = {
-		1: function() { return new ymaps.Placemark(geometry, prop, options); },
-		2: function() { return new ymaps.Polyline(geometry,  prop, options); },
-		3: function() { return new ymaps.Polygon(geometry,   prop, options); },
-		4: function() { return new ymaps.Circle(geometry,    prop, options); },
-		5: function() { return new ymaps.Rectangle(geometry, prop, options); }
+		1: function () { return new ymaps.Placemark(geometry, prop, options); },
+		2: function () { return new ymaps.Polyline(geometry,  prop, options); },
+		3: function () { return new ymaps.Polygon(geometry,   prop, options); },
+		4: function () { return new ymaps.Circle(geometry,    prop, options); },
+		5: function () { return new ymaps.Rectangle(geometry, prop, options); }
 	};
 	return objects[prop.pr]();
 }
@@ -275,8 +272,8 @@ function make_environment(object) {
 
 function set_layers() {
 	var a,
-		tileServerID  = parseInt(Math.random() * (4-1) + 1).toString(),
-		tileServerLit = { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
+		tileServerID  = parseInt((Math.random() * (4 - 1) + 1), 10).toString(),
+		tileServerLit = { "0": "a", "1": "b", "2": "c", "3": "d", "4": "e", "5": "f" },
 		layerTypes    = {
 			'google#map' : {
 				func   : function () { return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=" + mp.lang + "&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo"; }, { tileTransparent : 1, zIndex : 1000 }); },
@@ -307,8 +304,7 @@ function place_objects(source) {
 			coords     = source[a].coords;
 			pr         = parseInt(source[a].pr, 10);
 			properties = {
-				hasBalloon  : 0,
-				name        : source[a].loc_name,
+				name        : source[a].description,
 				hintContent : source[a].description,
 				description : source[a].description,
 				ttl         : a
@@ -339,9 +335,6 @@ function set_map_events() {
 	});
 	map.events.add('contextmenu', function (e) {
 		request_geocode_toMapPoint(e.get('coordPosition'));
-	});
-	map.events.add('balloonopen', function () {
-		init_balloon_controls();
 	});
 }
 
@@ -429,7 +422,9 @@ function init() {
 	cursor    = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
 	set_map_events();
+	styleAddToStorage(userstyles);
 	place_object();
 	//######################################### выносные функций, чтобы не загромождать код базовых функций
 }
+
 ymaps.ready(init);
