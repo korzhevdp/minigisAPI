@@ -172,16 +172,6 @@ function addMapPageAction() {
 	});
 }
 
-function addschedulePageAction() {
-	// здесь будет выводиться расписание
-	$(".schedule").unbind().click(function () {
-		saveType = "schedule";
-		get_schedule();
-		$("#propPage").css('display', 'none');
-		$("#schedule").css('display', 'block');
-	});
-}
-
 function addPublishLocationAction() {
 	$(".l_act").prop('checked', prop.active);
 	$(".l_act").unbind().click(function () {

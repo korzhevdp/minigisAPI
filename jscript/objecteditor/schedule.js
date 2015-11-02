@@ -25,7 +25,6 @@ function show_schedule(schedule) {
 	if (days_h24 === 7) {
 		$("#h724").removeClass("hide");
 	}
-	//alert(days_h24);
 }
 
 function get_schedule() {
