@@ -35,6 +35,88 @@ function listenDependencyCalcCalls() {
 	});
 }
 
+function check_vertex_presence_in_geometry(bas_path, currpoint, gtype) {
+	var a;
+	if ( gtype === "Point" ) {
+		return false;
+	}
+	for (a in bas_path) { // проверка массива координат по циклу:
+		// если текущая координата есть в массиве и она не является крайней (чтоб зациклить можно было)
+		if (bas_path.hasOwnProperty(a)) {
+			if ((currpoint.join(",") === bas_path[a].join(",") && a) || gtype === 'Сircle') {
+				bas_index_array.splice(a, 1); // удалить упоминание об этом индексе
+				bas_path.splice(a, 1); // удалить точку с этой координатой
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function setup_virtual_collection() {
+	v_objects.events.add('click', function (item) {
+		var tgeometry = e_objects.get(0).geometry,
+			gtype     = tgeometry.getType(),
+			geometry,
+			options   = ymaps.option.presetStorage.get(normalize_style(prop.attr)),
+			m,
+			b,
+			object,
+			currindex = parseInt(item.get('target').properties.get('ttl'), 10),
+			currpoint = item.get('target').geometry.getCoordinates();
+
+		if (!e_objects.getLength()) {
+			geometry = getNewGeometry(prop.pr, currpoint);
+			object   = getObject(geometry, prop, options);
+			e_objects.add(object);
+			bas_path.push(currpoint);
+			make_environment(object);
+		}
+		vFunctions = {
+			'Point': function() {
+				tgeometry.setCoordinates(item.get('target').geometry.getCoordinates());
+			},
+			'LineString': function () {
+				tgeometry.insert(tgeometry.getLength(), currpoint);
+				bas_path.push(currpoint);//добавить в конец массива координат.
+			},
+			'Polygon': function () {
+				m = tgeometry.getCoordinates()[0];
+				m[m.length - 1] = currpoint;
+				e_objects.get(0).geometry.setCoordinates([m]);
+				perimeter_calc();
+			},
+			'Circle': function () {
+				tgeometry.setRadius(ymaps.coordSystem.geo.getDistance(tgeometry.getCoordinates(), currpoint));
+				//a_objects.get(1).geometry.setCoordinates(item.get('target').geometry.getCoordinates()); // костыль ???
+				field_calc();
+			},
+			'Polygon': function () {
+				g2.push(currpoint);
+				if (g2.length === 2) {
+					tgeometry.setCoordinates(g2);
+					g2 = [];
+				}
+			}
+		}
+		b = check_vertex_presence_in_geometry(bas_path, currpoint, gtype);
+		if (!b) {//если по циклу координаты не нашлось
+			bas_index_array.push(currindex);//добавить в конец массива координат.
+			bas_path  = tgeometry.getCoordinates();
+			vFunctions[gtype]();
+			$("#l_coord_y_array").val(bas_path.join(","));
+			$("#l_coord_y_aux").val(bas_index_array.join(","));
+		}
+	});
+	v_objects.options.set({
+		hasHint: 1,
+		hasBalloon: 0,
+		draggable: 0,
+		zIndex: 520,
+		cursor: 'pointer'
+	});
+}
+
 function checkPointsInclusion(data, id) {
 	var a,
 		c,

@@ -1,8 +1,0 @@
-languages:
-  Ruby: true
-    JavaScript: true
-      PHP: true
-        Python: true
-        exclude_paths: 
-        - "jscript/leaflet/leaflet_styles.js"
-        - "jscript/leaflet/leaflet-src.js"
