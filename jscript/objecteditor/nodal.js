@@ -1,10 +1,10 @@
 /* jshint -W100 */
 /* jshint undef: true, unused: true */
-/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage, prop, g2, bas_path */
+/* globals data, ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage, prop, g2, bas_path */
 function listenDependencyCalcCalls() {
 	$(".map_calc").unbind().click(function () {
 		var ids = [];
-		$("#propPage input[type=checkbox]").prop('checked', false)
+		$("#propPage input[type=checkbox]").prop('checked', false);
 		$("#propPage input[type=checkbox]").each(function () {
 			ids.push($(this).val());
 		});
@@ -17,8 +17,7 @@ function listenDependencyCalcCalls() {
 			},
 			dataType : "script",
 			success  : function () {
-				var a,
-					b;
+				var a;
 				for (a in data) {
 					//console.log(a);
 					if (data.hasOwnProperty(a)) {
@@ -63,7 +62,34 @@ function setup_virtual_collection() {
 			b,
 			object,
 			currindex = parseInt(item.get('target').properties.get('ttl'), 10),
-			currpoint = item.get('target').geometry.getCoordinates();
+			currpoint = item.get('target').geometry.getCoordinates(),
+			vFunctions = {
+				'Point': function() {
+					tgeometry.setCoordinates(item.get('target').geometry.getCoordinates());
+				},
+				'LineString': function () {
+					tgeometry.insert(tgeometry.getLength(), currpoint);
+					bas_path.push(currpoint);//добавить в конец массива координат.
+				},
+				'Polygon': function () {
+					m = tgeometry.getCoordinates()[0];
+					m[m.length - 1] = currpoint;
+					e_objects.get(0).geometry.setCoordinates([m]);
+					perimeter_calc();
+				},
+				'Circle': function () {
+					tgeometry.setRadius(ymaps.coordSystem.geo.getDistance(tgeometry.getCoordinates(), currpoint));
+					//a_objects.get(1).geometry.setCoordinates(item.get('target').geometry.getCoordinates()); // костыль ???
+					field_calc();
+				},
+				'Rectangle': function () {
+					g2.push(currpoint);
+					if (g2.length === 2) {
+						tgeometry.setCoordinates(g2);
+						g2 = [];
+					}
+				}
+			};
 
 		if (!e_objects.getLength()) {
 			geometry = getNewGeometry(prop.pr, currpoint);
@@ -72,33 +98,7 @@ function setup_virtual_collection() {
 			bas_path.push(currpoint);
 			make_environment(object);
 		}
-		vFunctions = {
-			'Point': function() {
-				tgeometry.setCoordinates(item.get('target').geometry.getCoordinates());
-			},
-			'LineString': function () {
-				tgeometry.insert(tgeometry.getLength(), currpoint);
-				bas_path.push(currpoint);//добавить в конец массива координат.
-			},
-			'Polygon': function () {
-				m = tgeometry.getCoordinates()[0];
-				m[m.length - 1] = currpoint;
-				e_objects.get(0).geometry.setCoordinates([m]);
-				perimeter_calc();
-			},
-			'Circle': function () {
-				tgeometry.setRadius(ymaps.coordSystem.geo.getDistance(tgeometry.getCoordinates(), currpoint));
-				//a_objects.get(1).geometry.setCoordinates(item.get('target').geometry.getCoordinates()); // костыль ???
-				field_calc();
-			},
-			'Polygon': function () {
-				g2.push(currpoint);
-				if (g2.length === 2) {
-					tgeometry.setCoordinates(g2);
-					g2 = [];
-				}
-			}
-		}
+
 		b = check_vertex_presence_in_geometry(bas_path, currpoint, gtype);
 		if (!b) {//если по циклу координаты не нашлось
 			bas_index_array.push(currindex);//добавить в конец массива координат.
@@ -118,8 +118,7 @@ function setup_virtual_collection() {
 }
 
 function checkPointsInclusion(data, id) {
-	var a,
-		c,
+	var c,
 		d,
 		includedIn = [],
 		src_geometry = e_objects.get(0).geometry.getCoordinates(),
