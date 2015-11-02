@@ -1,6 +1,6 @@
 /* jshint -W100 */
 /* jshint undef: true, unused: true */
-/* globals data, ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage, prop, g2, bas_path */
+/* globals data, ymaps, prop, bas_path, e_objects, a_objects, v_objects, getObject, getNewGeometry */
 function listenDependencyCalcCalls() {
 	$(".map_calc").unbind().click(function () {
 		var ids = [];
@@ -56,6 +56,7 @@ function setup_virtual_collection() {
 	v_objects.events.add('click', function (item) {
 		var tgeometry = e_objects.get(0).geometry,
 			gtype     = tgeometry.getType(),
+			aux_geometry = [],
 			geometry,
 			options   = ymaps.option.presetStorage.get(normalize_style(prop.attr)),
 			m,
@@ -64,7 +65,7 @@ function setup_virtual_collection() {
 			currindex = parseInt(item.get('target').properties.get('ttl'), 10),
 			currpoint = item.get('target').geometry.getCoordinates(),
 			vFunctions = {
-				'Point': function() {
+				'Point': function () {
 					tgeometry.setCoordinates(item.get('target').geometry.getCoordinates());
 				},
 				'LineString': function () {
@@ -83,10 +84,10 @@ function setup_virtual_collection() {
 					field_calc();
 				},
 				'Rectangle': function () {
-					g2.push(currpoint);
-					if (g2.length === 2) {
-						tgeometry.setCoordinates(g2);
-						g2 = [];
+					aux_geometry.push(currpoint);
+					if (aux_geometry.length === 2) {
+						tgeometry.setCoordinates(aux_geometry);
+						aux_geometry = [];
 					}
 				}
 			};
@@ -120,7 +121,6 @@ function setup_virtual_collection() {
 function checkPointsInclusion(data, id) {
 	var c,
 		d,
-		includedIn = [],
 		src_geometry = e_objects.get(0).geometry.getCoordinates(),
 		polygon = new ymaps.Polygon(new ymaps.geometry.Polygon.fromEncodedCoordinates(data));
 
@@ -244,8 +244,7 @@ function request_geocode_toMapPoint(coords) { // запрос геокодеру
 
 function request_geocode_toPointObject(coords) { // запрос геокодеру по координатам точечного объекта. (массив из объекта геометрии)
 	ymaps.geocode(coords, { kind: ['house']}).then(function (result) {
-		var names = [],
-			address;
+		var names = [];
 		result.geoObjects.each(
 			function (object) {
 				names.push(object.properties.get('name'));
@@ -263,46 +262,52 @@ function convert_to_vertexes() {
 		var gtype = item.geometry.getType(),
 			a,
 			b,
-			array;
-		if (gtype === 'LineString' ) {
-			array = item.geometry.getCoordinates();
-			for (a in array) {
-				if (array.hasOwnProperty(a)) {
-					k[i] = {
-						description : item.properties.get('description') + " вершина " + i,
-						coords      : array[a],
-						pr          : 1,
-						attributes  : 'system#blueflag'
-					};
-					i += 1;
-				}
-			}
-		}
-		if (gtype === 'Polygon') {
-			array = item.geometry.getCoordinates();
-			for (a in array) {
-				if (array.hasOwnProperty(a)) {
-					for (b in array[a]) {
-						if (array[a].hasOwnProperty(b)) {
+			array,
+			vertexFunctions = {
+				'Point'     : function () { return false; },
+				'LineString': function () { 
+					array = item.geometry.getCoordinates();
+					for (a in array) {
+						if (array.hasOwnProperty(a)) {
 							k[i] = {
 								description : item.properties.get('description') + " вершина " + i,
-								coords      : array[a][b],
+								coords      : array[a],
 								pr          : 1,
 								attributes  : 'system#blueflag'
 							};
 							i += 1;
 						}
 					}
-				}
-			}
-		}
+				},
+				'Polygon'   : function () { 
+					array = item.geometry.getCoordinates();
+					for (a in array) {
+						if (array.hasOwnProperty(a)) {
+							for (b in array[a]) {
+								if (array[a].hasOwnProperty(b)) {
+									k[i] = {
+										description : item.properties.get('description') + " вершина " + i,
+										coords      : array[a][b],
+										pr          : 1,
+										attributes  : 'system#blueflag'
+									};
+									i += 1;
+								}
+							}
+						}
+					}
+				},
+				'Circle'    : function () { return false; },
+				'Rectangle' : function () { return false; },
+			};
+		vertexFunctions[gtype]();
 	});
 	place_objects(k);
 }
 
 
 // for further devel
-
+/*
 function describe_set() {
 	console.log(related[484]);
 }
@@ -324,3 +329,4 @@ function get_context() {
 		}
 	});
 }
+*/

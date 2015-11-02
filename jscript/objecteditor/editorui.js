@@ -80,25 +80,15 @@ function update_rectangle_data() { // передаётся объект цели
 
 function update_object_data() { // универсальный обновитель данных - самостоятельно берёт данные от редактируемого объекта
 	var geometry = e_objects.get(0).geometry,
-		type     = geometry.getType();
-	//console.log("update_object_data");
-	switch (type) {
-	case "Point":
-		update_point_data();
-		break;
-	case "LineString":
-		update_line_data();
-		break;
-	case "Polygon":
-		update_polygon_data();
-		break;
-	case "Circle":
-		update_circle_data();
-		break;
-	case "Rectangle":
-		update_rectangle_data();
-		break;
-	}
+		type     = geometry.getType(),
+		updateFunctions = {
+			"Point"      : update_point_data(),
+			"LineString" : update_line_data(),
+			"Polygon"    : update_polygon_data(),
+			"Circle"     : update_circle_data(),
+			"Rectangle"  : update_rectangle_data()
+		};
+	updateFunctions[type]();
 	//$(".console pre").html(prop.toSource());
 }
 
@@ -191,9 +181,19 @@ function addCommentLocationAction() {
 function listen_page_caller() {
 	addPropertyPagesAction();
 	addMapPageAction();
-	addschedulePageAction();
+	addSchedulePageAction();
 	addPublishLocationAction();
 	addCommentLocationAction();
+}
+
+function addSchedulePageAction() {
+	// здесь будет выводиться расписание
+	$(".schedule").unbind().click(function () {
+		saveType = "schedule";
+		get_schedule();
+		$("#propPage").css('display', 'none');
+		$("#schedule").css('display', 'block');
+	});
 }
 
 function switch_panel() {
@@ -252,12 +252,12 @@ function save_properties() {
 // События пользовательского интерфейса и ввода данных
 
 $(".mapsw").click(function (){
-	if($(this).attr("id") === "toGoogle") {
+	if ($(this).attr("id") === "toGoogle") {
 		map.setType("google#map");
 		$("#toGoogle").addClass("active");
 		$("#toYandex").removeClass("active");
 	}
-	if($(this).attr("id") === "toYandex") {
+	if ($(this).attr("id") === "toYandex") {
 		map.setType("yandex#map");
 		$("#toYandex").addClass("active");
 		$("#toGoogle").removeClass("active");
@@ -275,11 +275,6 @@ $("#l_name").keyup(function () {
 	$("#header_location_name").html($(this).val());
 });
 
-$("#type").change(function () {
-	$("#description").html($("#type option:selected").text());
-	prop.type = $(this).val();
-});
-
 $("#cir_setter").click(function () {
 	var geometry,
 		options,
@@ -290,22 +285,25 @@ $("#cir_setter").click(function () {
 		geometry = ymaps.geometry.Circle([ parseFloat($("#cir_lon").val()), parseFloat($("#cir_lat").val()) ], parseFloat($("#cir_radius").val()));
 		options  = ymaps.option.presetStorage.get(normalize_style(prop.attr));
 		object   = ymaps.Circle(geometry, prop, options);
-		center   = [parseFloat($("#cir_lon").val()), parseFloat($("#cir_lat").val())];
-		radius   = parseFloat($("#cir_radius").val());
 		e_objects.add(object);
-		e_objects.get(0).geometry.setCoordinates(center);
-		e_objects.get(0).geometry.setRadius(radius);
 	}
+	center   = [parseFloat($("#cir_lon").val()), parseFloat($("#cir_lat").val())];
+	radius   = parseFloat($("#cir_radius").val());
+	e_objects.get(0).geometry.setCoordinates(center);
+	e_objects.get(0).geometry.setRadius(radius);
 });
 
 $("#type").change(function () {
 	var ref = parseInt($("#type option:selected").attr('ref'), 10);
+
+
 	if (ref !== prop.pr) {
 		if (confirm("Такая смена типа объекта при сохранении приведёт к потере координат и необходимости нарисовать объект заново.\nВы желаете продолжить?")) {
 			prop.pr         = ref;
 			prop.decription = $("#type option:selected").html();
 			prop.attr       = normalize_style($("#type option:selected").attr('apply'));
-			prop.type       = $("#type option:selected").val();
+			prop.type       = $(this).val();
+			$("#description").html($("#type option:selected").text());
 			e_objects.removeAll();			//очищаем коллекцию РО
 			a_objects.removeAll();			//очищаем коллекцию ВО
 			switch_panel();
@@ -315,7 +313,7 @@ $("#type").change(function () {
 	}
 	composeStyleDropdowns(prop.pr, prop.attr);
 	listen_page_caller();
-	if(e_objects.getLength()) {
+	if (e_objects.getLength()) {
 		e_objects.get(0).options.set(ymaps.option.presetStorage.get(prop.attr));
 	}
 });
@@ -331,8 +329,8 @@ $("#saveBtn").click(function () {
 	if (saveType === 'schedule') {
 		save_schedule();
 	}
-
 });
+
 $("#setCenter").click(function () {
 	map.setCenter([ parseFloat($("#m_lon").val()), parseFloat($("#m_lat").val()) ]);
 });
@@ -419,7 +417,7 @@ $(".chopContour").click(function () {
 	// objecteditor/nodal.js
 	chopPolyline();
 });
-
+/*
 $(".nodeExport").click(function () {
 	var coords = e_objects.get(0).geometry.getCoordinates(),
 		type   = e_objects.get(0).geometry.getType(),
@@ -461,3 +459,4 @@ $(".nodeExport").click(function () {
 
 listen_page_caller();
 composeStyleDropdowns(prop.pr, prop.attr);
+*/

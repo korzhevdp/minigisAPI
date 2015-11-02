@@ -7,12 +7,12 @@ function show_schedule(schedule) {
 	var a,
 		days_h24 = 0;
 	for (a in schedule ) {
-		if(schedule.hasOwnProperty(a)) {
+		if (schedule.hasOwnProperty(a)) {
 			$("#ds" + a).val(schedule[a][0]);
 			$("#bs" + a).val(schedule[a][1]);
 			$("#be" + a).val(schedule[a][2]);
 			$("#de" + a).val(schedule[a][3]);
-			if(schedule[a][0] === '00:00' && schedule[a][3] === '23:59'){
+			if (schedule[a][0] === '00:00' && schedule[a][3] === '23:59'){
 				days_h24 += 1;
 			}
 		}
@@ -36,7 +36,7 @@ function get_schedule() {
 		},
 		type: "POST",
 		dataType: 'script',
-		success: function() {
+		success: function () {
 			show_schedule(schedule);
 		},
 		error: function (data, stat, err) {
@@ -62,7 +62,7 @@ function save_schedule() {
 			schedule : schedule
 		},
 		dataType: 'script',
-		success: function(){
+		success: function (){
 			show_schedule(schedule);
 		},
 		error: function (data, stat, err) {
@@ -71,13 +71,4 @@ function save_schedule() {
 	});
 }
 
-function addschedulePageAction() {
-	// здесь будет выводиться расписание
-	$(".schedule").unbind().click(function () {
-		saveType = "schedule";
-		get_schedule();
-		$("#propPage").css('display', 'none');
-		$("#schedule").css('display', 'block');
-	});
-}
 ///////////////
