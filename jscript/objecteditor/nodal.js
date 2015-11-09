@@ -1,6 +1,6 @@
 /* jshint -W100 */
 /* jshint undef: true, unused: true */
-/* globals data, ymaps, prop, bas_path, e_objects, a_objects, v_objects, getObject, getNewGeometry */
+/* globals data, ymaps, map, prop, bas_path, e_objects, a_objects, v_objects, getObject, nePolygons, getNewGeometry */
 function listenDependencyCalcCalls() {
 	$(".map_calc").unbind().click(function () {
 		var ids = [];
@@ -304,6 +304,77 @@ function convert_to_vertexes() {
 	});
 	place_objects(k);
 }
+
+function chopPolyline() {
+	var item = e_objects.get(0),
+		g,
+		i,
+		geometry,
+		options,
+		object;
+	if (item.geometry.getType() !== "LineString" && item.geometry.getType() !== "Polygon") {
+		console.log("wrong geometry type");
+		return false;
+	}
+
+	if (item.geometry.getType() === "LineString") {
+		g = item.geometry.getCoordinates();
+	} else {
+		// расширить на n многоугольников
+		g = item.geometry.getCoordinates()[0];
+	}
+	e_objects.remove(item);
+	for (i = 1; i < g.length; i += 1) {
+		//console.log("adding " + i);
+		geometry = new ymaps.geometry.LineString([ g[i - 1], g[i] ]);
+		options  = (g[i - 1] > g[i]) ? { strokeColor: '0000FFDD', strokeWidth: 4 } : { strokeColor: 'FF0000DD', strokeWidth: 4 };
+		object   = new ymaps.Polyline(geometry, {}, options);
+		e_objects.add(object);
+	}
+}
+
+$(".chopContour").click(function () {
+	// objecteditor/nodal.js
+	chopPolyline();
+});
+
+$(".nodeExport").click(function () {
+	var coords = e_objects.get(0).geometry.getCoordinates(),
+		type   = e_objects.get(0).geometry.getType(),
+		exportFunctions = {
+			'Point'      : function (coords) { return [coords[1].coords[0]]; },
+			'LineString' : function (coords) {
+				var a;
+				for (a in coords) {
+					if (coords.hasOwnProperty(a)) {
+						coords[a] = [ coords[a][1], coords[a][0] ];
+					}
+				}
+				return coords;
+			},
+			'Polygon'    : function (coords) {
+				var m,
+					a,
+					scoords;
+				for (m in coords) {
+					if (coords.hasOwnProperty(m)) {
+						scoords = coords[m];
+						for (a in scoords) {
+							if (scoords.hasOwnProperty(a)) {
+								coords[m][a] = [ scoords[a][1], scoords[a][0] ];
+							}
+						}
+					}
+				}
+				return coords;
+			},
+			'Circle'     : function (coords) { return [[coords[0][1], coords[0][0]], coords[1]]; }
+		};
+	coords = exportFunctions[type]();
+	$("#exportedNodes").html(coords.toSource());
+	$("#nodeExport").modal("show");
+});
+
 
 
 // for further devel

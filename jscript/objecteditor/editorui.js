@@ -40,6 +40,7 @@ function update_polygon_data() { // передаётся объект целик
 		coordcontour,
 		c,
 		a;
+
 	for (c in coordarray) {
 		if (coordarray.hasOwnProperty(c)) {
 			coordcontour = [];
@@ -73,7 +74,7 @@ function update_circle_data() { // передаётся объект целик�
 }
 
 function update_rectangle_data() { // передаётся объект целиком
-	var src    = e_objects.get(0).geometry.getCoordinates();
+	var src     = e_objects.get(0).geometry.getCoordinates();
 	prop.coords = prop.coords_array = prop.coords_aux = [src[0].join(","), src[1].join(",")].join(",");
 	//console.log(prop.toSource());
 }
@@ -82,11 +83,11 @@ function update_object_data() { // универсальный обновител
 	var geometry = e_objects.get(0).geometry,
 		type     = geometry.getType(),
 		updateFunctions = {
-			"Point"      : update_point_data(),
-			"LineString" : update_line_data(),
-			"Polygon"    : update_polygon_data(),
-			"Circle"     : update_circle_data(),
-			"Rectangle"  : update_rectangle_data()
+			"Point"      : function () { update_point_data(); },
+			"LineString" : function () { update_line_data(); },
+			"Polygon"    : function () { update_polygon_data(); },
+			"Circle"     : function () { update_circle_data(); },
+			"Rectangle"  : function () { update_rectangle_data(); }
 		};
 	updateFunctions[type]();
 	//$(".console pre").html(prop.toSource());
@@ -308,7 +309,7 @@ $("#type").change(function () {
 			a_objects.removeAll();			//очищаем коллекцию ВО
 			switch_panel();
 		} else {
-			$('#type [value="' + prop.type + '"]').attr("selected", "selected");
+			$('#type option[value="' + prop.type + '"]').attr("selected", "selected");
 		}
 	}
 	composeStyleDropdowns(prop.pr, prop.attr);
@@ -409,54 +410,11 @@ $("#toGeometry").click(function () { // конверсия опорных точ
 	convert_to_geometry();
 });
 
-$("#bas_points").change(function () { // запрос с сервера опорных точек для ломаных и полигонов
-	//bas_points_request($(this));
-});
 
-$(".chopContour").click(function () {
-	// objecteditor/nodal.js
-	chopPolyline();
-});
-/*
-$(".nodeExport").click(function () {
-	var coords = e_objects.get(0).geometry.getCoordinates(),
-		type   = e_objects.get(0).geometry.getType(),
-		scoords,
-		a,
-		m;
-	switch (type) {
-	case "Point":
-		coords = [coords[1].coords[0]];
-		break;
-	case "LineString":
-		for (a in coords) {
-			if (coords.hasOwnProperty(a)) {
-				coords[a] = [ coords[a][1], coords[a][0] ];
-			}
-		}
-		break;
-	case "Polygon":
-		for (m in coords) {
-			if (coords.hasOwnProperty(m)) {
-				scoords = coords[m];
-				for (a in scoords) {
-					if (scoords.hasOwnProperty(a)) {
-						coords[m][a] = [ scoords[a][1], scoords[a][0] ];
-					}
-				}
-			}
-		}
-		break;
-	case "Circle":
-		coords = [[coords[0][1], coords[0][1]], coords[1]];
-		break;
-	}
-	$("#exportedNodes").html(coords.toSource());
-	$("#nodeExport").modal("show");
-});
-
-/// script specific actions
 
 listen_page_caller();
 composeStyleDropdowns(prop.pr, prop.attr);
+
+/*
+/// script specific actions
 */

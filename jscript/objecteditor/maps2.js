@@ -43,7 +43,7 @@ function setup_editor_collection() {
 		case 'LineString':
 				update_object_data();
 			break;
-		case "Rectangle":
+		case 'Rectangle':
 			aux_geometry = object.geometry.getCoordinates();
 			if (a_objects.getLength() >= 2) {
 				a_objects.get(0).geometry.setCoordinates(aux_geometry[0]);
@@ -343,11 +343,11 @@ function init() {
 	setup_editor_collection();
 	setup_virtual_collection();
 	setup_aux_collection();
+	set_map_events();
 
 	prop.attr = normalize_style(prop.attr);
 	cursor    = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
-	set_map_events();
 	styleAddToStorage(userstyles);
 	place_object();
 	//######################################### выносные функций, чтобы не загромождать код базовых функций

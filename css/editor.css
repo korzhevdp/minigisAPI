@@ -295,8 +295,9 @@ li.locationImg i.icon-remove {
 }
 
 #dropZone.hover {
+	
 	background: #ddd;
-	border-color: #aaa;
+	border: 6px dashed #aaa;
 }
 
 #dropZone.error {
