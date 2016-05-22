@@ -503,7 +503,18 @@ function init_nav() {
 						"LineString" : function(object) { return object.geometry.getCoordinates()[0] },
 						"Polygon"    : function(object) { return object.geometry.getCoordinates()[0][0] },
 						"Circle"     : function(object) { return object.geometry.getCenter() }
+					};
+				function openB() {
+					clearInterval(openTimer);
+					object.balloon.open();
+					function closeB() {
+						clearInterval(closeTimer);
+						map.balloon.close();
+						return false;
 					}
+					closeTimer = setTimeout(closeB, 26000);
+					return false;
+				};
 				clearTimeout(lilCycle);
 				if (isDemoStopped) {
 					return false;
@@ -529,17 +540,6 @@ function init_nav() {
 							map.setBounds(object.geometry.getBounds(), { duration: 0, zoomMargin: 200 });
 						}
 					}
-					function openB() {
-						clearInterval(openTimer);
-						object.balloon.open();
-						function closeB() {
-							clearInterval(closeTimer);
-							map.balloon.close();
-							return false;
-						}
-						closeTimer = setTimeout(closeB, 26000);
-						return false;
-					}
 					openTimer = setTimeout(openB, 6000);
 					demoCounter++;
 					return true
@@ -547,7 +547,6 @@ function init_nav() {
 				demoCounter = 0;
 				lilCycle = setTimeout(centerOnObject, 30000);
 			}
-
 			centerOnObject();
 			if (isDemoStopped) {
 				clearTimeout(bigCycle);
