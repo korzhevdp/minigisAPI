@@ -309,4 +309,34 @@ li.locationImg i.icon-remove {
 	background: #afa;
 	border-color: #0f0;
 }
+.commutes {
+	display:none;
+}
 
+#commutes {
+	display:none;
+	padding: 15px;
+}
+#commutes input[type=text] {
+	width:30px;
+	margin-top:8px;
+}
+
+#commutes select {
+	width:250px;
+	margin-top:8px;
+}
+#trappedPoints {
+	width:450px;
+	list-style-type: none;
+}
+#trappedPoints li {
+	margin: 2px;
+	padding:6px;
+	border: 1px solid #D6D6D6;
+	width:450px;
+	list-style-type: none;
+}
+#trappedPoints li i.icon-remove {
+	cursor:pointer;
+}

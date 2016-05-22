@@ -21,30 +21,36 @@ function init() {
 	//###################################################################################
 
 	// сброс карты (это, типа, такой костыль ещё от старых карт - на всякий случай)
-	(typeof map != "undefined") ? map.destroy() : "";
+	//(map !== "undefined") ? map.destroy() : "";
 	//определение механизма пересчёта стандартной сетки тайлов в сетку тайлов Яндекс-карт
 	for (var a=0; a < 21; a++){ dX[a] = Math.pow(2, a) - 1; }
 	// реверс справочника слоёв + определение слоёв в цикле
 	for (a in layerTypes){
-		ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
-		ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
-			layerTypes[a].name, layerTypes[a].layers
-		));
-		typeSelector.addMapType(layerTypes[a].label, a);
-		//revLayerTypes[a] = {};
-		revLayerTypes[layerTypes[a].label] = a;
+		if (layerTypes.hasOwnProperty(a)){
+			ymaps.layer.storage.add(layerTypes[a].label, layerTypes[a].func);
+			ymaps.mapType.storage.add(layerTypes[a].label, new ymaps.MapType(
+				layerTypes[a].name, layerTypes[a].layers
+			));
+			typeSelector.addMapType(layerTypes[a].label, a);
+			//revLayerTypes[a] = {};
+			revLayerTypes[layerTypes[a].label] = a;
+		}
 	}
 
-	map = new ymaps.Map("YMapsID",
+	map = new ymaps.Map(
+		"YMapsID",
 		{center: config.mcenter, zoom: config.initZoom, type: config.layerTypes[0].label, behaviors: ["scrollZoom", "drag", "dblClickZoom"]},
-		{projection: config.proj, maxZoom: config.maxZoom, minZoom: config.minZoom },
+		{projection: config.proj, maxZoom: config.maxZoom, minZoom: config.minZoom, suppressMapOpenBlock: true, yandexMapAutoSwitch: false },
 		{}
 	);
+
 	cursor = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
 
 	for (a in config.layerTypes){
-		typeSelector.addMapType(config.layerTypes[a].label, a);
+		if (config.layerTypes.hasOwnProperty(a)){
+			typeSelector.addMapType(config.layerTypes[a].label, a);
+		}
 	}
 	typeSelector.removeMapType('yandex#publicMapHybrid');
 	typeSelector.removeMapType('yandex#hybrid');
@@ -58,11 +64,12 @@ function init() {
 	map.events.add('contextmenu', function (e){
 		coords = e.get('coordPosition');
 		ymaps.geocode(coords, { kind: ['house'] }).then(function (res) {
-			var names = [];
+			var names = [],
+				valtz;
 			res.geoObjects.each(function (obj) {
 				names.push(obj.properties.get('name'));
 			});
-			valtz = (names[0] != "undefined") ? [names[0]].join(', ') : "Нет адреса";
+			valtz = (names[0] !== undefined) ? [names[0]].join(', ') : "Нет адреса";
 			map.balloon.open(coords, {
 				content: '<small class="muted cHead"><img src="http://api.korzhevdp.com/images/marker.png" alt="координаты">&nbsp;&nbsp;'+
 				[ coords[0].toPrecision(config.precision), coords[1].toPrecision(config.precision)].join(', ') +
@@ -91,7 +98,6 @@ function init() {
 	});
 
 	map.events.add('typechange', function (e){
-		//alert(revLayerTypes.toSource());
 		cMapType = revLayerTypes[e.get('newType')];
 	});
 
@@ -99,7 +105,7 @@ function init() {
 		coords = e.get('balloon').getPosition();
 
 		$("#photoUp").unbind().click(function(){
-			leng = $("#upcenter :file").length
+			leng = $("#upcenter :file").length;
 			f10r = '<input type="file" class="f10r" name="file' + leng + '" id="file' + leng + '">';
 			$("#upcenter").append(f10r);
 			$("#file" + leng).click();
@@ -178,12 +184,13 @@ function init() {
 	map.geoObjects.add(t_objects);
 
 	p_objects.events.add('click', function (e){
+		var dir = e.get('target').properties.get('dir');
+			fn  = e.get('target').properties.get('fname');
+			lo  = e.get('target').properties.get('uploadedby');
+			de  = e.get('target').properties.get('description');
 		e.stopPropagation();
 		map.balloon.close();
-		dir = e.get('target').properties.get('dir');
-		fn  = e.get('target').properties.get('fname');
-		lo  = e.get('target').properties.get('uploadedby');
-		de  = e.get('target').properties.get('description');
+
 		$("#picsOfLoc").empty();
 		for (a in imgs[dir]){
 			data = imgs[dir][a];

@@ -1,11 +1,16 @@
 /* jshint -W100 */
 /* jshint undef: true, unused: true */
-/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
+/* globals ymaps */
 // Encoding: UTF-8
-//определение механизма пересчёта стандартной сетки тайлов в сетку тайлов Яндекс-карт
-dX = [];
-for (var a=0; a < 21; a++){ dX[a] = Math.pow(2, a) - 1; }
-var layerTypes = {
+//определение механизма пересчёта стандартной сетки тайлов в сетку тайлов Яндекс-карт (TMS)
+var a = 0,
+	maxZoom = 20,
+	dX = [],
+	layerTypes;
+for ( a; a <= maxZoom; a += 1 ){
+	dX[a] = Math.pow(2, a) - 1;
+}
+layerTypes = {
 	0: {
 		func  : function () {return new ymaps.Layer(function (tile, zoom) {return layerTypes[0].folder + zoom + '/' + tile[0] + '/' + (dX[zoom] - tile[1]) + '.png';}, {tileTransparent: 1, zIndex:1000});},
 		folder: "http://luft.korzhevdp.com/maps/1900/",
@@ -282,6 +287,5 @@ var layerTypes = {
 		name  : "Нарьян-Мар Центр HR",
 		localLayerID: 1,
 		layers: ['yandex#satellite', "base2#nm"]
-	}
-
+	};
 }

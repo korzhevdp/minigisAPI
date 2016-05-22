@@ -1,6 +1,6 @@
 /* jshint -W100 */
 /* jshint undef: false, unused: true */
-/* globals ymaps, prop, mp, switch_panel, perimeter_calc, update_object_data, bas_path, bas_index_array, field_calc */
+/* globals ymaps, prop, mp, switch_panel, perimeter_calc, update_object_data, styleAddToStorage, update_point_data, set_changed, request_geocode_toMapPoint, setup_virtual_collection, field_calc */
 'use strict';
 var map,
 	a_objects,
@@ -8,9 +8,11 @@ var map,
 	v_objects,
 	g2,
 	bas_path        = [],
-	bas_index_array = [],
-	saveType = 'properties',
-	nePolygons;
+	bas_index_array = prop.coords_aux,
+	saveType        = 'properties',
+	nePolygons,
+	undo            = [],
+	undoIterator    = undo.length;
 
 function add_collections() {
 	a_objects       = new ymaps.GeoObjectArray();  // Вспомогательная коллекция (точки управления фигурами - прямоугольник, круг)
@@ -25,45 +27,38 @@ function add_collections() {
 
 function setup_editor_collection() {
 	e_objects.events.add(['dragend', 'pixelgeometrychange'], function (event) {
-		var aux_geometry,
-			startPoint,
-			endPoint,
-			object       = e_objects.get(0),
-			type         = object.geometry.getType(),
-			direction    = [1, 0];
-		switch (type) {
-		case 'Point':
-			if (event.get('type') === 'dragend') {
-				update_object_data();
-			}
-			break;
-		case 'Polygon':
-				update_object_data();
-			break;
-		case 'LineString':
-				update_object_data();
-			break;
-		case 'Rectangle':
-			aux_geometry = object.geometry.getCoordinates();
-			if (a_objects.getLength() >= 2) {
-				a_objects.get(0).geometry.setCoordinates(aux_geometry[0]);
-				a_objects.get(1).geometry.setCoordinates(aux_geometry[1]);
-			}
-			break;
-		case 'Circle':
-			startPoint   = e_objects.get(0).geometry.getCoordinates();
-			endPoint     = ymaps.coordSystem.geo.solveDirectProblem(startPoint, direction, e_objects.get(0).geometry.getRadius()).endPoint;
-			if (event.get('type') === 'dragend') {
-				if (a_objects.getLength() >= 2) {
-					a_objects.get(0).geometry.setCoordinates(startPoint);
-					a_objects.get(1).geometry.setCoordinates(endPoint);
-				}
-				update_object_data();
-			}
-			break;
-		}
+		var object    = e_objects.get(0),
+			type      = object.geometry.getType(),
+			direction = [1, 0],
+			functions = {
+				'Point'     : function () { if (event.get('type') === 'dragend') { update_object_data(); } },
+				'LineString': function () { update_object_data(); },
+				'Polygon'   : function () { update_object_data(); },
+				'Circle'    : function () {
+					var startPoint = e_objects.get(0).geometry.getCoordinates(),
+						endPoint   = ymaps.coordSystem.geo.solveDirectProblem(startPoint, direction, e_objects.get(0).geometry.getRadius()).endPoint;
+					if (event.get('type') === 'dragend') {
+						if (a_objects.getLength() >= 2) {
+							a_objects.get(0).geometry.setCoordinates(startPoint);
+							a_objects.get(1).geometry.setCoordinates(endPoint);
+						}
+						update_object_data();
+					}
+				},
+				'Rectangle' : function () {
+					var aux_geometry = object.geometry.getCoordinates();
+					if (a_objects.getLength() >= 2) {
+						a_objects.get(0).geometry.setCoordinates(aux_geometry[0]);
+						a_objects.get(1).geometry.setCoordinates(aux_geometry[1]);
+					}
+				},
+			};
+		undo.push(object.geometry.getCoordinates());
+		undoIterator = undo.length;
+		functions[type]();
 		set_changed();
 	});
+
 	e_objects.options.set({
 		draggable: 1,
 		zIndex: 1001,
@@ -161,18 +156,25 @@ function getObject(geometry, prop, options) {
 
 function place_object() {
 	var geometry,
-		options = ymaps.option.presetStorage.get(normalize_style(prop.attr)),
+		realStyle = normalize_style(prop.attr),
+		options   = ymaps.option.presetStorage.get(realStyle),
 		object;
 	if (prop === undefined) {
-		console.log('Отсутствует блок данных редактируемого объекта');
+		//console.log('Отсутствует блок данных редактируемого объекта');
+		return false;
+	}
+	if (prop.coords < 3) {
+		//console.log('Отсутствует координата');
 		return false;
 	}
 	if (prop.coords === '0') {
 		return false;
 	}
 	switch_panel();
-	geometry = getGeometry(prop.pr, prop.coords);
-	object   = getObject(geometry, prop, options);
+	prop.attr = realStyle;
+	$('#l_attr option[value="' + realStyle + '"]').prop('selected', true);
+	geometry  = getGeometry(prop.pr, prop.coords);
+	object    = getObject(geometry, prop, options);
 	e_objects.add(object);
 	make_environment(object);
 }
@@ -182,7 +184,10 @@ function make_environment(object) {
 		map.setCenter(object.geometry.getCoordinates());
 		update_point_data(object);
 	} else {
-		map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+		if(    (prop.pr === 2 && object.geometry.getCoordinates().length > 1)
+			|| (prop.pr === 3 && object.geometry.getCoordinates()[0].length > 1)) {
+			map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+		}
 	}
 	if (prop.pr === 3 || prop.pr === 2) {
 		object.editor.startEditing();
@@ -199,7 +204,7 @@ function make_environment(object) {
 function set_layers() {
 	var a,
 		tileServerID  = parseInt((Math.random() * (4 - 1) + 1), 10).toString(),
-		tileServerLit = { "0": "a", "1": "b", "2": "c", "3": "d", "4": "e", "5": "f" },
+		tileServerLit = { "0": "a", "1": "b", "2": "c", "3": "c", "4": "b", "5": "a" },
 		layerTypes    = {
 			'google#map' : {
 				func   : function () { return new ymaps.Layer(function (tile, zoom) {return "http://mt" + tileServerID + ".google.com/vt/lyrs=m&hl=" + mp.lang + "&x=" + tile[0] + "&y=" + tile[1] + "&z=" + zoom + "&s=Galileo"; }, { tileTransparent : 1, zIndex : 1000 }); },
@@ -227,17 +232,18 @@ function place_objects(source) {
 		object;
 	for (a in source) {
 		if (source.hasOwnProperty(a)) {
+			//alert(a);
 			coords     = source[a].coords;
-			pr         = parseInt(source[a].pr, 10);
 			properties = {
+				pr          : parseInt(source[a].pr, 10),
 				name        : source[a].description,
 				hintContent : source[a].description,
 				description : source[a].description,
-				ttl         : a
+				ttl         : a  //indexes are STRINGs :(
 			};
-			geometry = getGeometry(pr, coords);
+			geometry = getGeometry(properties.pr, coords);
 			options  = ymaps.option.presetStorage.get(normalize_style(source[a].attributes));
-			object   = getObject(geometry, prop, options);
+			object   = getObject(geometry, properties, options);
 			v_objects.add(object);
 		}
 	}
@@ -283,17 +289,17 @@ function normalize_style(style) {
 	return style;
 }
 
+function setupCollections(){
+	add_collections();
+	setup_editor_collection();
+	setup_virtual_collection();
+	setup_aux_collection();
+}
+
 function init() {
 	var maptypes        = { 3: 'yandex#map', 2: 'yandex#satellite', 1: 'google#map', 4: 'osm#map' },
-		map_center      = prop.map_center,
-		current         = 0,
-		//current         = (typeof current !== 'undefined') ? current : prop.ttl,
 		current_zoom    = (prop.current_zoom !== undefined) ? prop.current_zoom : 15,
 		current_type    = (maptypes[prop.current_type] !== undefined) ? maptypes[prop.current_type] : 'yandex#map',
-		//v_counter       = 0, // счётчик кликов на опорных объектах
-		//count           = 0,
-		lon             = map_center[0],
-		lat             = map_center[1],
 		searchControl   = new ymaps.control.SearchControl({ provider: 'yandex#publicMap', boundedBy: [[40, 65], [42, 64]], strictBounds: 1 }),
 		cursor,
 		genericBalloon = ymaps.templateLayoutFactory.createClass(
@@ -332,24 +338,25 @@ function init() {
 		);
 	set_layers();
 	map = new ymaps.Map("YMapsID", {
-		center:    [lon, lat],		// Центр карты
-		zoom:      current_zoom,	// Коэффициент масштабирования
-		type:      current_type,	// Тип карты
-		behaviors: ["default", "scrollZoom"]
-	}, { projection: ymaps.projection.sphericalMercator });
+		center               : prop.map_center,	// Центр карты
+		zoom                 : current_zoom,	// Коэффициент масштабирования
+		type                 : current_type,	// Тип карты
+		behaviors            : ["default", "scrollZoom"]
+	}, {
+		projection           : ymaps.projection.sphericalMercator,
+		suppressMapOpenBlock : true,
+		yandexMapAutoSwitch  : false
+	});
 	ymaps.layout.storage.add('generic#balloonLayout', genericBalloon);
 	map.controls.add('zoomControl').add('typeSelector').add('mapTools').add(searchControl);
-	add_collections();
-	setup_editor_collection();
-	setup_virtual_collection();
-	setup_aux_collection();
+	setupCollections();
 	set_map_events();
-
+	styleAddToStorage(userstyles);
 	prop.attr = normalize_style(prop.attr);
 	cursor    = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
-	styleAddToStorage(userstyles);
 	place_object();
+	$("#tolerance").keyup();
 	//######################################### выносные функций, чтобы не загромождать код базовых функций
 }
 

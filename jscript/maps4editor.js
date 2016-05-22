@@ -41,7 +41,7 @@ function activate_obj() {
 		$("#olayer").val(object.l);
 		$("#olink").val(object.ln);
 		$("#oct").val(object.ct);
-		$("#oactive").prop("checked", ((object.a === "1") ? true : false));
+		$("#oactive").prop("checked", ((object.a === 1) ? true : false));
 		$("#ostyle").empty().append('<option value="0">Выберите оформление</value>').append(localstyles[object.ct]);
 		$("#sctyle, #ostyle").val(object.st);
 		$("#eobjects").tab('show');
@@ -156,7 +156,7 @@ function unpack_config() {
 			$("#partlist").append(li4ed);
 			for (b in proxy) {
 				if (proxy.hasOwnProperty(b)) {
-					img = (proxy[b].a === "1")
+					img = (proxy[b].a === 1)
 						? '<img src="http://api.korzhevdp.com/images/bullet_blue.png" alt="">'
 						: '<img src="http://api.korzhevdp.com/images/bullet_delete.png" alt="">';
 					switch (proxy[b].ct) {
@@ -306,7 +306,7 @@ function add_user_styles() {
 	var a;
 	localstyles[1].push('<optgroup class="points" label="Пользовательские">');
 	for (a in userstyles) {
-		if (userstyles.hasOwnProperty(a)) {
+		if (userstyles.hasOwnProperty(a) && userstyles[a].type !== 's') {
 			localstyles[userstyles[a].type].push('<option value="' + a + '">' + userstyles[a].title + '</option>');
 		}
 	}
@@ -332,8 +332,9 @@ function list_marker_styles() {
 	localstyles[5].push('</optgroup>');
 }
 
-function set_view_vector() {
+function set_view_vector(rclick) {
 	if (!p_objects.getLength()) {
+		alert(p_objects.getLength());
 		return false;
 	}
 	var start      = p_objects.get(0).geometry.getCoordinates(),
@@ -346,38 +347,7 @@ function set_view_vector() {
 	$("#vector").val(ymaps.geometry.LineString.toEncodedCoordinates(v_objects.get(0).geometry));
 }
 
-function get_collection_data() {
-	var folder = $(this).attr("ref");
-	$("#folder").val(folder);
-	$.ajax({
-		type: "POST",
-		url: "/admin/photos/pics_get",
-		dataType: 'html',
-		data: {
-			folder : folder
-		},
-		success: function (data) {
-			act_photos(data);
-		},
-		error: function (data, stat, err) {
-			console.log([ data, stat, err ].join("\n"));
-		}
-	});
-	$.ajax({
-		type: "POST",
-		url: "/admin/photos/sights_get",
-		dataType: 'script',
-		data: {
-			folder : folder
-		},
-		success: function () {
-			act_objects();
-		},
-		error: function (data, stat, err) {
-			console.log([ data, stat, err ].join("\n"));
-		}
-	});
-}
+
 
 function init() {
 	var a,
@@ -466,6 +436,7 @@ function init() {
 			break;
 		}
 	});
+
 	map.geoObjects.add(p_objects);
 
 	v_objects = new ymaps.GeoObjectArray();
@@ -519,8 +490,47 @@ function init() {
 			p_objects.get(0).options.set(ymaps.option.presetStorage.get($("#cstyle").val()));
 		});
 	});
-	map.events.add("contextmenu", set_view_vector());
-	$(".dirLink").click(get_collection_data());
+
+	map.events.add("contextmenu", function(rclick) {
+		set_view_vector(rclick);
+	});
+
+	$(".dirLink").click(function () {
+		folder = $(this).attr("ref");
+		get_collection_data(folder);
+	});
+
+	function get_collection_data(folder) {
+		$("#folder").val(folder);
+		$.ajax({
+			type: "POST",
+			url: "/admin/photos/pics_get",
+			dataType: 'html',
+			data: {
+				folder : folder
+			},
+			success: function (data) {
+				act_photos(data);
+			},
+			error: function (data, stat, err) {
+				console.log([ data, stat, err ].join("\n"));
+			}
+		});
+		$.ajax({
+			type: "POST",
+			url: "/admin/photos/sights_get",
+			dataType: 'script',
+			data: {
+				folder : folder
+			},
+			success: function () {
+				act_objects();
+			},
+			error: function (data, stat, err) {
+				console.log([ data, stat, err ].join("\n"));
+			}
+		});
+	}
 
 	function act_photos(data) {
 		$("#photolist").html(data);
@@ -566,8 +576,6 @@ function init() {
 			}
 		});
 	}
-
-
 
 	function act_objects(data) {
 		//$("#mapObjects").html(data);
@@ -851,7 +859,7 @@ $("#cct").change(function () {
 
 $("#imageSave").unbind().click(function () {
 	//alert(folder)
-	//	return false;
+	//return false;
 	$.ajax({
 		url: "/admin/photos/pic_save",
 		data: {

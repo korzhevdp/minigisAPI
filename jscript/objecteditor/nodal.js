@@ -54,15 +54,15 @@ function check_vertex_presence_in_geometry(bas_path, currpoint, gtype) {
 
 function setup_virtual_collection() {
 	v_objects.events.add('click', function (item) {
-		var tgeometry = e_objects.get(0).geometry,
-			gtype     = tgeometry.getType(),
+		var tgeometry,
+			gtype,
 			aux_geometry = [],
 			geometry,
 			options   = ymaps.option.presetStorage.get(normalize_style(prop.attr)),
 			m,
 			b,
 			object,
-			currindex = parseInt(item.get('target').properties.get('ttl'), 10),
+			currindex = item.get('target').properties.get('ttl'),
 			currpoint = item.get('target').geometry.getCoordinates(),
 			vFunctions = {
 				'Point': function () {
@@ -91,18 +91,22 @@ function setup_virtual_collection() {
 					}
 				}
 			};
-
+		//alert(currpoint);
 		if (!e_objects.getLength()) {
 			geometry = getNewGeometry(prop.pr, currpoint);
 			object   = getObject(geometry, prop, options);
 			e_objects.add(object);
 			bas_path.push(currpoint);
+			bas_index_array.push(currindex);
 			make_environment(object);
 		}
+		tgeometry = e_objects.get(0).geometry;
+		gtype     = tgeometry.getType();
 
 		b = check_vertex_presence_in_geometry(bas_path, currpoint, gtype);
 		if (!b) {//если по циклу координаты не нашлось
 			bas_index_array.push(currindex);//добавить в конец массива координат.
+			//alert(bas_index_array.join(","));
 			bas_path  = tgeometry.getCoordinates();
 			vFunctions[gtype]();
 			$("#l_coord_y_array").val(bas_path.join(","));
@@ -265,7 +269,7 @@ function convert_to_vertexes() {
 			array,
 			vertexFunctions = {
 				'Point'     : function () { return false; },
-				'LineString': function () { 
+				'LineString': function () {
 					array = item.geometry.getCoordinates();
 					for (a in array) {
 						if (array.hasOwnProperty(a)) {
@@ -278,8 +282,9 @@ function convert_to_vertexes() {
 							i += 1;
 						}
 					}
+					
 				},
-				'Polygon'   : function () { 
+				'Polygon'   : function () {
 					array = item.geometry.getCoordinates();
 					for (a in array) {
 						if (array.hasOwnProperty(a)) {
@@ -301,6 +306,13 @@ function convert_to_vertexes() {
 				'Rectangle' : function () { return false; },
 			};
 		vertexFunctions[gtype]();
+		if (gtype === 2) {
+			item.options.set(ymaps.option.presetStorage.get(normalize_style("routes#thinRedLine")));
+		}
+		if (gtype === 3) {
+			item.options.set(ymaps.option.presetStorage.get(normalize_style("area#thinRedLine")));
+		}
+
 	});
 	place_objects(k);
 }
@@ -333,48 +345,49 @@ function chopPolyline() {
 	}
 }
 
-$(".chopContour").click(function () {
-	// objecteditor/nodal.js
-	chopPolyline();
-});
+function calculateToleranceParameters(digits) {
+	var startPoint = prop.map_center,
+		endPoint   = [prop.map_center[0] + (1 / Math.pow(10, digits)), prop.map_center[1] + (1 / Math.pow(10, digits))];
+	if(!digits.length){
+		return false;
+	}
+	digits = parseInt(digits.replace(/[^0-9]/, ""), 10);
+	digits = (digits <= 8) ? digits : 8;
+	dstX = ymaps.coordSystem.geo.solveInverseProblem(startPoint, endPoint).distance.toFixed(2);
+	$(this).val(digits);
+	$("#sigma").html(dstX);
+}
 
-$(".nodeExport").click(function () {
-	var coords = e_objects.get(0).geometry.getCoordinates(),
-		type   = e_objects.get(0).geometry.getType(),
-		exportFunctions = {
-			'Point'      : function (coords) { return [coords[1].coords[0]]; },
-			'LineString' : function (coords) {
-				var a;
-				for (a in coords) {
-					if (coords.hasOwnProperty(a)) {
-						coords[a] = [ coords[a][1], coords[a][0] ];
-					}
-				}
-				return coords;
-			},
-			'Polygon'    : function (coords) {
-				var m,
-					a,
-					scoords;
-				for (m in coords) {
-					if (coords.hasOwnProperty(m)) {
-						scoords = coords[m];
-						for (a in scoords) {
-							if (scoords.hasOwnProperty(a)) {
-								coords[m][a] = [ scoords[a][1], scoords[a][0] ];
-							}
-						}
-					}
-				}
-				return coords;
-			},
-			'Circle'     : function (coords) { return [[coords[0][1], coords[0][0]], coords[1]]; }
-		};
-	coords = exportFunctions[type]();
-	$("#exportedNodes").html(coords.toSource());
-	$("#nodeExport").modal("show");
-});
-
+function requestTrapping() {
+	var type = $("#typeToTrap").val();
+	if(type === "0") {
+		alert("Выберите тип объектов");
+		return false;
+	}
+	$.ajax({
+		url: "/nodal/get_trapping",
+		data: {
+			geometry  : e_objects.get(0).geometry.getCoordinates(),
+			tolerance : $("#tolerance").val(),
+			types     : type
+		},
+		type: "POST",
+		dataType: 'script',
+		success: function () {
+			bas_index_array = [];
+			$("#trappedPoints").empty();
+			for (a in data) {
+				bas_index_array.push(parseInt(a, 10));
+				$("#trappedPoints").append('<li vertex="' + a + '">' + data[a].tn + ' <strong>'+ data[a].name + '</strong><i class="icon-remove pull-right"></i></li>');
+			}
+			setupTrappedPointsRemove();
+			prop.coords_aux = bas_index_array.join(",");
+		},
+		error: function (data, stat, err) {
+			console.log([data, stat, err].join("\n"));
+		}
+	});
+}
 
 
 // for further devel

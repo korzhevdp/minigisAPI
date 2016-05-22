@@ -1,7 +1,8 @@
-var userstyles = {};
+var userstyles = {},
+	apiURL = "http://api.korzhevdp.com";
 userstyles['free#carWash'] = {
-	iconUrl         : '/gisicons/32/auto1.png',
-	iconImageHref   : '/gisicons/32/auto1.png',
+	iconUrl         : apiURL + '/gisicons/32/auto1.png',
+	iconImageHref   : apiURL + '/gisicons/32/auto1.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -9,8 +10,8 @@ userstyles['free#carWash'] = {
 	type            : 1
 };
 userstyles['paid#carWash'] = {
-	iconUrl         : '/gisicons/48/auto1.png',
-	iconImageHref   : '/gisicons/48/auto1.png',
+	iconUrl         : apiURL + '/gisicons/48/auto1.png',
+	iconImageHref   : apiURL + '/gisicons/48/auto1.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -18,8 +19,8 @@ userstyles['paid#carWash'] = {
 	type            : 1
 };
 userstyles['free#carRental'] = {
-	iconUrl         : '/gisicons/32/auto2.png',
-	iconImageHref   : '/gisicons/32/auto2.png',
+	iconUrl         : apiURL + '/gisicons/32/auto2.png',
+	iconImageHref   : apiURL + '/gisicons/32/auto2.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -27,8 +28,8 @@ userstyles['free#carRental'] = {
 	type            : 1
 };
 userstyles['paid#carRental'] = {
-	iconUrl         : '/gisicons/48/auto2.png',
-	iconImageHref   : '/gisicons/48/auto2.png',
+	iconUrl         : apiURL + '/gisicons/48/auto2.png',
+	iconImageHref   : apiURL + '/gisicons/48/auto2.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -36,8 +37,8 @@ userstyles['paid#carRental'] = {
 	type            : 1
 };
 userstyles['free#repair'] = {
-	iconUrl         : '/gisicons/32/auto3.png',
-	iconImageHref   : '/gisicons/32/auto3.png',
+	iconUrl         : apiURL + '/gisicons/32/auto3.png',
+	iconImageHref   : apiURL + '/gisicons/32/auto3.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -45,8 +46,8 @@ userstyles['free#repair'] = {
 	type            : 1
 };
 userstyles['paid#repair'] = {
-	iconUrl         : '/gisicons/48/auto3.png',
-	iconImageHref   : '/gisicons/48/auto3.png',
+	iconUrl         : apiURL + '/gisicons/48/auto3.png',
+	iconImageHref   : apiURL + '/gisicons/48/auto3.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -54,8 +55,8 @@ userstyles['paid#repair'] = {
 	type            : 1
 };
 userstyles['free#gasStation'] = {
-	iconUrl         : '/gisicons/32/auto4.png',
-	iconImageHref   : '/gisicons/32/auto4.png',
+	iconUrl         : apiURL + '/gisicons/32/auto4.png',
+	iconImageHref   : apiURL + '/gisicons/32/auto4.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -63,8 +64,8 @@ userstyles['free#gasStation'] = {
 	type            : 1
 };
 userstyles['paid#gasStation'] = {
-	iconUrl         : '/gisicons/48/auto4.png',
-	iconImageHref   : '/gisicons/48/auto4.png',
+	iconUrl         : apiURL + '/gisicons/48/auto4.png',
+	iconImageHref   : apiURL + '/gisicons/48/auto4.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -72,8 +73,8 @@ userstyles['paid#gasStation'] = {
 	type            : 1
 };
 userstyles['free#trucking'] = {
-	iconUrl         : '/gisicons/32/auto5.png',
-	iconImageHref   : '/gisicons/32/auto5.png',
+	iconUrl         : apiURL + '/gisicons/32/auto5.png',
+	iconImageHref   : apiURL + '/gisicons/32/auto5.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -81,8 +82,8 @@ userstyles['free#trucking'] = {
 	type            : 1
 };
 userstyles['paid#trucking'] = {
-	iconUrl         : '/gisicons/48/auto5.png',
-	iconImageHref   : '/gisicons/48/auto5.png',
+	iconUrl         : apiURL + '/gisicons/48/auto5.png',
+	iconImageHref   : apiURL + '/gisicons/48/auto5.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -90,8 +91,8 @@ userstyles['paid#trucking'] = {
 	type            : 1
 };
 userstyles['free#parking'] = {
-	iconUrl         : '/gisicons/32/auto6.png',
-	iconImageHref   : '/gisicons/32/auto6.png',
+	iconUrl         : apiURL + '/gisicons/32/auto6.png',
+	iconImageHref   : apiURL + '/gisicons/32/auto6.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -99,8 +100,8 @@ userstyles['free#parking'] = {
 	type            : 1
 };
 userstyles['paid#parking'] = {
-	iconUrl         : '/gisicons/48/auto6.png',
-	iconImageHref   : '/gisicons/48/auto6.png',
+	iconUrl         : apiURL + '/gisicons/48/auto6.png',
+	iconImageHref   : apiURL + '/gisicons/48/auto6.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -108,8 +109,8 @@ userstyles['paid#parking'] = {
 	type            : 1
 };
 userstyles['free#hostel'] = {
-	iconUrl         : '/gisicons/32/hotel1.png',
-	iconImageHref   : '/gisicons/32/hotel1.png',
+	iconUrl         : apiURL + '/gisicons/32/hotel1.png',
+	iconImageHref   : apiURL + '/gisicons/32/hotel1.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -117,8 +118,8 @@ userstyles['free#hostel'] = {
 	type            : 1
 };
 userstyles['paid#hostel'] = {
-	iconUrl         : '/gisicons/48/hotel1.png',
-	iconImageHref   : '/gisicons/48/hotel1.png',
+	iconUrl         : apiURL + '/gisicons/48/hotel1.png',
+	iconImageHref   : apiURL + '/gisicons/48/hotel1.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -126,8 +127,8 @@ userstyles['paid#hostel'] = {
 	type            : 1
 };
 userstyles['free#hotel2'] = {
-	iconUrl         : '/gisicons/32/hotel2.png',
-	iconImageHref   : '/gisicons/32/hotel2.png',
+	iconUrl         : apiURL + '/gisicons/32/hotel2.png',
+	iconImageHref   : apiURL + '/gisicons/32/hotel2.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -135,8 +136,8 @@ userstyles['free#hotel2'] = {
 	type            : 1
 };
 userstyles['paid#hotel2'] = {
-	iconUrl         : '/gisicons/48/hotel2.png',
-	iconImageHref   : '/gisicons/48/hotel2.png',
+	iconUrl         : apiURL + '/gisicons/48/hotel2.png',
+	iconImageHref   : apiURL + '/gisicons/48/hotel2.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -144,8 +145,8 @@ userstyles['paid#hotel2'] = {
 	type            : 1
 };
 userstyles['free#hotel3'] = {
-	iconUrl         : '/gisicons/32/hotel3.png',
-	iconImageHref   : '/gisicons/32/hotel3.png',
+	iconUrl         : apiURL + '/gisicons/32/hotel3.png',
+	iconImageHref   : apiURL + '/gisicons/32/hotel3.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -153,8 +154,8 @@ userstyles['free#hotel3'] = {
 	type            : 1
 };
 userstyles['paid#hotel3'] = {
-	iconUrl         : '/gisicons/48/hotel3.png',
-	iconImageHref   : '/gisicons/48/hotel3.png',
+	iconUrl         : apiURL + '/gisicons/48/hotel3.png',
+	iconImageHref   : apiURL + '/gisicons/48/hotel3.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -162,8 +163,8 @@ userstyles['paid#hotel3'] = {
 	type            : 1
 };
 userstyles['free#hotel4'] = {
-	iconUrl         : '/gisicons/32/hotel4.png',
-	iconImageHref   : '/gisicons/32/hotel4.png',
+	iconUrl         : apiURL + '/gisicons/32/hotel4.png',
+	iconImageHref   : apiURL + '/gisicons/32/hotel4.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -171,8 +172,8 @@ userstyles['free#hotel4'] = {
 	type            : 1
 };
 userstyles['paid#hotel4'] = {
-	iconUrl         : '/gisicons/48/hotel4.png',
-	iconImageHref   : '/gisicons/48/hotel4.png',
+	iconUrl         : apiURL + '/gisicons/48/hotel4.png',
+	iconImageHref   : apiURL + '/gisicons/48/hotel4.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -180,8 +181,8 @@ userstyles['paid#hotel4'] = {
 	type            : 1
 };
 userstyles['free#hotel5'] = {
-	iconUrl         : '/gisicons/32/hotel5.png',
-	iconImageHref   : '/gisicons/32/hotel5.png',
+	iconUrl         : apiURL + '/gisicons/32/hotel5.png',
+	iconImageHref   : apiURL + '/gisicons/32/hotel5.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -189,8 +190,8 @@ userstyles['free#hotel5'] = {
 	type            : 1
 };
 userstyles['paid#hotel5'] = {
-	iconUrl         : '/gisicons/48/hotel5.png',
-	iconImageHref   : '/gisicons/48/hotel5.png',
+	iconUrl         : apiURL + '/gisicons/48/hotel5.png',
+	iconImageHref   : apiURL + '/gisicons/48/hotel5.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -198,8 +199,8 @@ userstyles['paid#hotel5'] = {
 	type            : 1
 };
 userstyles['free#motel'] = {
-	iconUrl         : '/gisicons/32/hotel6.png',
-	iconImageHref   : '/gisicons/32/hotel6.png',
+	iconUrl         : apiURL + '/gisicons/32/hotel6.png',
+	iconImageHref   : apiURL + '/gisicons/32/hotel6.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -207,8 +208,8 @@ userstyles['free#motel'] = {
 	type            : 1
 };
 userstyles['paid#motel'] = {
-	iconUrl         : '/gisicons/48/hotel6.png',
-	iconImageHref   : '/gisicons/48/hotel6.png',
+	iconUrl         : apiURL + '/gisicons/48/hotel6.png',
+	iconImageHref   : apiURL + '/gisicons/48/hotel6.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -216,8 +217,8 @@ userstyles['paid#motel'] = {
 	type            : 1
 };
 userstyles['free#history'] = {
-	iconUrl         : '/gisicons/32/attractions1.png',
-	iconImageHref   : '/gisicons/32/attractions1.png',
+	iconUrl         : apiURL + '/gisicons/32/attractions1.png',
+	iconImageHref   : apiURL + '/gisicons/32/attractions1.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -225,8 +226,8 @@ userstyles['free#history'] = {
 	type            : 1
 };
 userstyles['paid#history'] = {
-	iconUrl         : '/gisicons/48/attractions1.png',
-	iconImageHref   : '/gisicons/48/attractions1.png',
+	iconUrl         : apiURL + '/gisicons/48/attractions1.png',
+	iconImageHref   : apiURL + '/gisicons/48/attractions1.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -234,8 +235,8 @@ userstyles['paid#history'] = {
 	type            : 1
 };
 userstyles['free#cult'] = {
-	iconUrl         : '/gisicons/32/attractions2.png',
-	iconImageHref   : '/gisicons/32/attractions2.png',
+	iconUrl         : apiURL + '/gisicons/32/attractions2.png',
+	iconImageHref   : apiURL + '/gisicons/32/attractions2.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -243,8 +244,8 @@ userstyles['free#cult'] = {
 	type            : 1
 };
 userstyles['paid#cult'] = {
-	iconUrl         : '/gisicons/48/attractions2.png',
-	iconImageHref   : '/gisicons/48/attractions2.png',
+	iconUrl         : apiURL + '/gisicons/48/attractions2.png',
+	iconImageHref   : apiURL + '/gisicons/48/attractions2.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -252,8 +253,8 @@ userstyles['paid#cult'] = {
 	type            : 1
 };
 userstyles['free#museum'] = {
-	iconUrl         : '/gisicons/32/attractions3.png',
-	iconImageHref   : '/gisicons/32/attractions3.png',
+	iconUrl         : apiURL + '/gisicons/32/attractions3.png',
+	iconImageHref   : apiURL + '/gisicons/32/attractions3.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -261,8 +262,8 @@ userstyles['free#museum'] = {
 	type            : 1
 };
 userstyles['paid#museum'] = {
-	iconUrl         : '/gisicons/48/attractions3.png',
-	iconImageHref   : '/gisicons/48/attractions3.png',
+	iconUrl         : apiURL + '/gisicons/48/attractions3.png',
+	iconImageHref   : apiURL + '/gisicons/48/attractions3.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -270,8 +271,8 @@ userstyles['paid#museum'] = {
 	type            : 1
 };
 userstyles['free#park'] = {
-	iconUrl         : '/gisicons/32/attractions4.png',
-	iconImageHref   : '/gisicons/32/attractions4.png',
+	iconUrl         : apiURL + '/gisicons/32/attractions4.png',
+	iconImageHref   : apiURL + '/gisicons/32/attractions4.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -279,8 +280,8 @@ userstyles['free#park'] = {
 	type            : 1
 };
 userstyles['paid#park'] = {
-	iconUrl         : '/gisicons/48/attractions4.png',
-	iconImageHref   : '/gisicons/48/attractions4.png',
+	iconUrl         : apiURL + '/gisicons/48/attractions4.png',
+	iconImageHref   : apiURL + '/gisicons/48/attractions4.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -288,8 +289,8 @@ userstyles['paid#park'] = {
 	type            : 1
 };
 userstyles['free#foodDelivery'] = {
-	iconUrl         : '/gisicons/32/foods1.png',
-	iconImageHref   : '/gisicons/32/foods1.png',
+	iconUrl         : apiURL + '/gisicons/32/foods1.png',
+	iconImageHref   : apiURL + '/gisicons/32/foods1.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -297,8 +298,8 @@ userstyles['free#foodDelivery'] = {
 	type            : 1
 };
 userstyles['paid#foodDelivery'] = {
-	iconUrl         : '/gisicons/48/foods1.png',
-	iconImageHref   : '/gisicons/48/foods1.png',
+	iconUrl         : apiURL + '/gisicons/48/foods1.png',
+	iconImageHref   : apiURL + '/gisicons/48/foods1.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -306,8 +307,8 @@ userstyles['paid#foodDelivery'] = {
 	type            : 1
 };
 userstyles['free#cafeterium'] = {
-	iconUrl         : '/gisicons/32/foods2.png',
-	iconImageHref   : '/gisicons/32/foods2.png',
+	iconUrl         : apiURL + '/gisicons/32/foods2.png',
+	iconImageHref   : apiURL + '/gisicons/32/foods2.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -315,8 +316,8 @@ userstyles['free#cafeterium'] = {
 	type            : 1
 };
 userstyles['paid#cafeterium'] = {
-	iconUrl         : '/gisicons/48/foods2.png',
-	iconImageHref   : '/gisicons/48/foods2.png',
+	iconUrl         : apiURL + '/gisicons/48/foods2.png',
+	iconImageHref   : apiURL + '/gisicons/48/foods2.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -324,8 +325,8 @@ userstyles['paid#cafeterium'] = {
 	type            : 1
 };
 userstyles['free#coffee'] = {
-	iconUrl         : '/gisicons/32/foods3.png',
-	iconImageHref   : '/gisicons/32/foods3.png',
+	iconUrl         : apiURL + '/gisicons/32/foods3.png',
+	iconImageHref   : apiURL + '/gisicons/32/foods3.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -333,8 +334,8 @@ userstyles['free#coffee'] = {
 	type            : 1
 };
 userstyles['paid#coffee'] = {
-	iconUrl         : '/gisicons/48/foods3.png',
-	iconImageHref   : '/gisicons/48/foods3.png',
+	iconUrl         : apiURL + '/gisicons/48/foods3.png',
+	iconImageHref   : apiURL + '/gisicons/48/foods3.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -342,8 +343,8 @@ userstyles['paid#coffee'] = {
 	type            : 1
 };
 userstyles['free#restaurant'] = {
-	iconUrl         : '/gisicons/32/foods4.png',
-	iconImageHref   : '/gisicons/32/foods4.png',
+	iconUrl         : apiURL + '/gisicons/32/foods4.png',
+	iconImageHref   : apiURL + '/gisicons/32/foods4.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -351,8 +352,8 @@ userstyles['free#restaurant'] = {
 	type            : 1
 };
 userstyles['paid#restaurant'] = {
-	iconUrl         : '/gisicons/48/foods4.png',
-	iconImageHref   : '/gisicons/48/foods4.png',
+	iconUrl         : apiURL + '/gisicons/48/foods4.png',
+	iconImageHref   : apiURL + '/gisicons/48/foods4.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -360,8 +361,8 @@ userstyles['paid#restaurant'] = {
 	type            : 1
 };
 userstyles['free#canteen'] = {
-	iconUrl         : '/gisicons/32/foods5.png',
-	iconImageHref   : '/gisicons/32/foods5.png',
+	iconUrl         : apiURL + '/gisicons/32/foods5.png',
+	iconImageHref   : apiURL + '/gisicons/32/foods5.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -369,8 +370,8 @@ userstyles['free#canteen'] = {
 	type            : 1
 };
 userstyles['paid#canteen'] = {
-	iconUrl         : '/gisicons/48/foods5.png',
-	iconImageHref   : '/gisicons/48/foods5.png',
+	iconUrl         : apiURL + '/gisicons/48/foods5.png',
+	iconImageHref   : apiURL + '/gisicons/48/foods5.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -378,8 +379,8 @@ userstyles['paid#canteen'] = {
 	type            : 1
 };
 userstyles['free#fastFood'] = {
-	iconUrl         : '/gisicons/32/foods6.png',
-	iconImageHref   : '/gisicons/32/foods6.png',
+	iconUrl         : apiURL + '/gisicons/32/foods6.png',
+	iconImageHref   : apiURL + '/gisicons/32/foods6.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -387,8 +388,8 @@ userstyles['free#fastFood'] = {
 	type            : 1
 };
 userstyles['paid#fastFood'] = {
-	iconUrl         : '/gisicons/48/foods6.png',
-	iconImageHref   : '/gisicons/48/foods6.png',
+	iconUrl         : apiURL + '/gisicons/48/foods6.png',
+	iconImageHref   : apiURL + '/gisicons/48/foods6.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -396,8 +397,8 @@ userstyles['paid#fastFood'] = {
 	type            : 1
 };
 userstyles['free#appliances'] = {
-	iconUrl         : '/gisicons/32/shopping1.png',
-	iconImageHref   : '/gisicons/32/shopping1.png',
+	iconUrl         : apiURL + '/gisicons/32/shopping1.png',
+	iconImageHref   : apiURL + '/gisicons/32/shopping1.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -405,8 +406,8 @@ userstyles['free#appliances'] = {
 	type            : 1
 };
 userstyles['paid#appliances'] = {
-	iconUrl         : '/gisicons/48/shopping1.png',
-	iconImageHref   : '/gisicons/48/shopping1.png',
+	iconUrl         : apiURL + '/gisicons/48/shopping1.png',
+	iconImageHref   : apiURL + '/gisicons/48/shopping1.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -414,8 +415,8 @@ userstyles['paid#appliances'] = {
 	type            : 1
 };
 userstyles['free#haberdashery'] = {
-	iconUrl         : '/gisicons/32/shopping2.png',
-	iconImageHref   : '/gisicons/32/shopping2.png',
+	iconUrl         : apiURL + '/gisicons/32/shopping2.png',
+	iconImageHref   : apiURL + '/gisicons/32/shopping2.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -423,8 +424,8 @@ userstyles['free#haberdashery'] = {
 	type            : 1
 };
 userstyles['paid#haberdashery'] = {
-	iconUrl         : '/gisicons/48/shopping2.png',
-	iconImageHref   : '/gisicons/48/shopping2.png',
+	iconUrl         : apiURL + '/gisicons/48/shopping2.png',
+	iconImageHref   : apiURL + '/gisicons/48/shopping2.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -432,8 +433,8 @@ userstyles['paid#haberdashery'] = {
 	type            : 1
 };
 userstyles['free#clothing'] = {
-	iconUrl         : '/gisicons/32/shopping3.png',
-	iconImageHref   : '/gisicons/32/shopping3.png',
+	iconUrl         : apiURL + '/gisicons/32/shopping3.png',
+	iconImageHref   : apiURL + '/gisicons/32/shopping3.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -441,8 +442,8 @@ userstyles['free#clothing'] = {
 	type            : 1
 };
 userstyles['paid#clothing'] = {
-	iconUrl         : '/gisicons/48/shopping3.png',
-	iconImageHref   : '/gisicons/48/shopping3.png',
+	iconUrl         : apiURL + '/gisicons/48/shopping3.png',
+	iconImageHref   : apiURL + '/gisicons/48/shopping3.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -450,8 +451,8 @@ userstyles['paid#clothing'] = {
 	type            : 1
 };
 userstyles['free#nourishment'] = {
-	iconUrl         : '/gisicons/32/shopping4.png',
-	iconImageHref   : '/gisicons/32/shopping4.png',
+	iconUrl         : apiURL + '/gisicons/32/shopping4.png',
+	iconImageHref   : apiURL + '/gisicons/32/shopping4.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -459,8 +460,8 @@ userstyles['free#nourishment'] = {
 	type            : 1
 };
 userstyles['paid#nourishment'] = {
-	iconUrl         : '/gisicons/48/shopping4.png',
-	iconImageHref   : '/gisicons/48/shopping4.png',
+	iconUrl         : apiURL + '/gisicons/48/shopping4.png',
+	iconImageHref   : apiURL + '/gisicons/48/shopping4.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -468,8 +469,8 @@ userstyles['paid#nourishment'] = {
 	type            : 1
 };
 userstyles['free#mall'] = {
-	iconUrl         : '/gisicons/32/shopping5.png',
-	iconImageHref   : '/gisicons/32/shopping5.png',
+	iconUrl         : apiURL + '/gisicons/32/shopping5.png',
+	iconImageHref   : apiURL + '/gisicons/32/shopping5.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -477,8 +478,8 @@ userstyles['free#mall'] = {
 	type            : 1
 };
 userstyles['paid#mall'] = {
-	iconUrl         : '/gisicons/48/shopping5.png',
-	iconImageHref   : '/gisicons/48/shopping5.png',
+	iconUrl         : apiURL + '/gisicons/48/shopping5.png',
+	iconImageHref   : apiURL + '/gisicons/48/shopping5.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -486,8 +487,8 @@ userstyles['paid#mall'] = {
 	type            : 1
 };
 userstyles['free#household'] = {
-	iconUrl         : '/gisicons/32/shopping6.png',
-	iconImageHref   : '/gisicons/32/shopping6.png',
+	iconUrl         : apiURL + '/gisicons/32/shopping6.png',
+	iconImageHref   : apiURL + '/gisicons/32/shopping6.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -495,8 +496,8 @@ userstyles['free#household'] = {
 	type            : 1
 };
 userstyles['paid#household'] = {
-	iconUrl         : '/gisicons/48/shopping6.png',
-	iconImageHref   : '/gisicons/48/shopping6.png',
+	iconUrl         : apiURL + '/gisicons/48/shopping6.png',
+	iconImageHref   : apiURL + '/gisicons/48/shopping6.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -504,8 +505,8 @@ userstyles['paid#household'] = {
 	type            : 1
 };
 userstyles['free#gadgets'] = {
-	iconUrl         : '/gisicons/32/shopping7.png',
-	iconImageHref   : '/gisicons/32/shopping7.png',
+	iconUrl         : apiURL + '/gisicons/32/shopping7.png',
+	iconImageHref   : apiURL + '/gisicons/32/shopping7.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -513,8 +514,8 @@ userstyles['free#gadgets'] = {
 	type            : 1
 };
 userstyles['paid#gadgets'] = {
-	iconUrl         : '/gisicons/48/shopping7.png',
-	iconImageHref   : '/gisicons/48/shopping7.png',
+	iconUrl         : apiURL + '/gisicons/48/shopping7.png',
+	iconImageHref   : apiURL + '/gisicons/48/shopping7.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -522,8 +523,8 @@ userstyles['paid#gadgets'] = {
 	type            : 1
 };
 userstyles['free#drugStore'] = {
-	iconUrl         : '/gisicons/32/help1.png',
-	iconImageHref   : '/gisicons/32/help1.png',
+	iconUrl         : apiURL + '/gisicons/32/help1.png',
+	iconImageHref   : apiURL + '/gisicons/32/help1.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -531,8 +532,8 @@ userstyles['free#drugStore'] = {
 	type            : 1
 };
 userstyles['paid#drugStore'] = {
-	iconUrl         : '/gisicons/48/help1.png',
-	iconImageHref   : '/gisicons/48/help1.png',
+	iconUrl         : apiURL + '/gisicons/48/help1.png',
+	iconImageHref   : apiURL + '/gisicons/48/help1.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -540,8 +541,8 @@ userstyles['paid#drugStore'] = {
 	type            : 1
 };
 userstyles['free#hospital'] = {
-	iconUrl         : '/gisicons/32/help2.png',
-	iconImageHref   : '/gisicons/32/help2.png',
+	iconUrl         : apiURL + '/gisicons/32/help2.png',
+	iconImageHref   : apiURL + '/gisicons/32/help2.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -549,8 +550,8 @@ userstyles['free#hospital'] = {
 	type            : 1
 };
 userstyles['paid#hospital'] = {
-	iconUrl         : '/gisicons/48/help2.png',
-	iconImageHref   : '/gisicons/48/help2.png',
+	iconUrl         : apiURL + '/gisicons/48/help2.png',
+	iconImageHref   : apiURL + '/gisicons/48/help2.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -558,8 +559,8 @@ userstyles['paid#hospital'] = {
 	type            : 1
 };
 userstyles['free#authority'] = {
-	iconUrl         : '/gisicons/32/help3.png',
-	iconImageHref   : '/gisicons/32/help3.png',
+	iconUrl         : apiURL + '/gisicons/32/help3.png',
+	iconImageHref   : apiURL + '/gisicons/32/help3.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -567,8 +568,8 @@ userstyles['free#authority'] = {
 	type            : 1
 };
 userstyles['paid#authority'] = {
-	iconUrl         : '/gisicons/48/help3.png',
-	iconImageHref   : '/gisicons/48/help3.png',
+	iconUrl         : apiURL + '/gisicons/48/help3.png',
+	iconImageHref   : apiURL + '/gisicons/48/help3.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -576,8 +577,8 @@ userstyles['paid#authority'] = {
 	type            : 1
 };
 userstyles['free#consulate'] = {
-	iconUrl         : '/gisicons/32/help4.png',
-	iconImageHref   : '/gisicons/32/help4.png',
+	iconUrl         : apiURL + '/gisicons/32/help4.png',
+	iconImageHref   : apiURL + '/gisicons/32/help4.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -585,8 +586,8 @@ userstyles['free#consulate'] = {
 	type            : 1
 };
 userstyles['paid#consulate'] = {
-	iconUrl         : '/gisicons/48/help4.png',
-	iconImageHref   : '/gisicons/48/help4.png',
+	iconUrl         : apiURL + '/gisicons/48/help4.png',
+	iconImageHref   : apiURL + '/gisicons/48/help4.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -594,8 +595,8 @@ userstyles['paid#consulate'] = {
 	type            : 1
 };
 userstyles['free#police'] = {
-	iconUrl         : '/gisicons/32/help5.png',
-	iconImageHref   : '/gisicons/32/help5.png',
+	iconUrl         : apiURL + '/gisicons/32/help5.png',
+	iconImageHref   : apiURL + '/gisicons/32/help5.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -603,8 +604,8 @@ userstyles['free#police'] = {
 	type            : 1
 };
 userstyles['paid#police'] = {
-	iconUrl         : '/gisicons/48/help5.png',
-	iconImageHref   : '/gisicons/48/help5.png',
+	iconUrl         : apiURL + '/gisicons/48/help5.png',
+	iconImageHref   : apiURL + '/gisicons/48/help5.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -612,8 +613,8 @@ userstyles['paid#police'] = {
 	type            : 1
 };
 userstyles['free#dentist'] = {
-	iconUrl         : '/gisicons/32/help6.png',
-	iconImageHref   : '/gisicons/32/help6.png',
+	iconUrl         : apiURL + '/gisicons/32/help6.png',
+	iconImageHref   : apiURL + '/gisicons/32/help6.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -621,8 +622,8 @@ userstyles['free#dentist'] = {
 	type            : 1
 };
 userstyles['paid#dentist'] = {
-	iconUrl         : '/gisicons/48/help6.png',
-	iconImageHref   : '/gisicons/48/help6.png',
+	iconUrl         : apiURL + '/gisicons/48/help6.png',
+	iconImageHref   : apiURL + '/gisicons/48/help6.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -630,8 +631,8 @@ userstyles['paid#dentist'] = {
 	type            : 1
 };
 userstyles['free#billiard'] = {
-	iconUrl         : '/gisicons/32/entertainment1.png',
-	iconImageHref   : '/gisicons/32/entertainment1.png',
+	iconUrl         : apiURL + '/gisicons/32/entertainment1.png',
+	iconImageHref   : apiURL + '/gisicons/32/entertainment1.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -639,8 +640,8 @@ userstyles['free#billiard'] = {
 	type            : 1
 };
 userstyles['paid#billiard'] = {
-	iconUrl         : '/gisicons/48/entertainment1.png',
-	iconImageHref   : '/gisicons/48/entertainment1.png',
+	iconUrl         : apiURL + '/gisicons/48/entertainment1.png',
+	iconImageHref   : apiURL + '/gisicons/48/entertainment1.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -648,8 +649,8 @@ userstyles['paid#billiard'] = {
 	type            : 1
 };
 userstyles['free#childRest'] = {
-	iconUrl         : '/gisicons/32/entertainment2.png',
-	iconImageHref   : '/gisicons/32/entertainment2.png',
+	iconUrl         : apiURL + '/gisicons/32/entertainment2.png',
+	iconImageHref   : apiURL + '/gisicons/32/entertainment2.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -657,8 +658,8 @@ userstyles['free#childRest'] = {
 	type            : 1
 };
 userstyles['paid#childRest'] = {
-	iconUrl         : '/gisicons/48/entertainment2.png',
-	iconImageHref   : '/gisicons/48/entertainment2.png',
+	iconUrl         : apiURL + '/gisicons/48/entertainment2.png',
+	iconImageHref   : apiURL + '/gisicons/48/entertainment2.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -666,8 +667,8 @@ userstyles['paid#childRest'] = {
 	type            : 1
 };
 userstyles['free#club'] = {
-	iconUrl         : '/gisicons/32/entertainment3.png',
-	iconImageHref   : '/gisicons/32/entertainment3.png',
+	iconUrl         : apiURL + '/gisicons/32/entertainment3.png',
+	iconImageHref   : apiURL + '/gisicons/32/entertainment3.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -675,8 +676,8 @@ userstyles['free#club'] = {
 	type            : 1
 };
 userstyles['paid#club'] = {
-	iconUrl         : '/gisicons/48/entertainment3.png',
-	iconImageHref   : '/gisicons/48/entertainment3.png',
+	iconUrl         : apiURL + '/gisicons/48/entertainment3.png',
+	iconImageHref   : apiURL + '/gisicons/48/entertainment3.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -684,8 +685,8 @@ userstyles['paid#club'] = {
 	type            : 1
 };
 userstyles['free#equipment'] = {
-	iconUrl         : '/gisicons/32/entertainment4.png',
-	iconImageHref   : '/gisicons/32/entertainment4.png',
+	iconUrl         : apiURL + '/gisicons/32/entertainment4.png',
+	iconImageHref   : apiURL + '/gisicons/32/entertainment4.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -693,8 +694,8 @@ userstyles['free#equipment'] = {
 	type            : 1
 };
 userstyles['paid#equipment'] = {
-	iconUrl         : '/gisicons/48/entertainment4.png',
-	iconImageHref   : '/gisicons/48/entertainment4.png',
+	iconUrl         : apiURL + '/gisicons/48/entertainment4.png',
+	iconImageHref   : apiURL + '/gisicons/48/entertainment4.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -702,8 +703,8 @@ userstyles['paid#equipment'] = {
 	type            : 1
 };
 userstyles['free#sauna'] = {
-	iconUrl         : '/gisicons/32/entertainment5.png',
-	iconImageHref   : '/gisicons/32/entertainment5.png',
+	iconUrl         : apiURL + '/gisicons/32/entertainment5.png',
+	iconImageHref   : apiURL + '/gisicons/32/entertainment5.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -711,8 +712,8 @@ userstyles['free#sauna'] = {
 	type            : 1
 };
 userstyles['paid#sauna'] = {
-	iconUrl         : '/gisicons/48/entertainment5.png',
-	iconImageHref   : '/gisicons/48/entertainment5.png',
+	iconUrl         : apiURL + '/gisicons/48/entertainment5.png',
+	iconImageHref   : apiURL + '/gisicons/48/entertainment5.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -720,8 +721,8 @@ userstyles['paid#sauna'] = {
 	type            : 1
 };
 userstyles['free#sport'] = {
-	iconUrl         : '/gisicons/32/entertainment6.png',
-	iconImageHref   : '/gisicons/32/entertainment6.png',
+	iconUrl         : apiURL + '/gisicons/32/entertainment6.png',
+	iconImageHref   : apiURL + '/gisicons/32/entertainment6.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -729,8 +730,8 @@ userstyles['free#sport'] = {
 	type            : 1
 };
 userstyles['paid#sport'] = {
-	iconUrl         : '/gisicons/48/entertainment6.png',
-	iconImageHref   : '/gisicons/48/entertainment6.png',
+	iconUrl         : apiURL + '/gisicons/48/entertainment6.png',
+	iconImageHref   : apiURL + '/gisicons/48/entertainment6.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -738,8 +739,8 @@ userstyles['paid#sport'] = {
 	type            : 1
 };
 userstyles['free#solarium'] = {
-	iconUrl         : '/gisicons/32/entertainment7.png',
-	iconImageHref   : '/gisicons/32/entertainment7.png',
+	iconUrl         : apiURL + '/gisicons/32/entertainment7.png',
+	iconImageHref   : apiURL + '/gisicons/32/entertainment7.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -747,8 +748,8 @@ userstyles['free#solarium'] = {
 	type            : 1
 };
 userstyles['paid#solarium'] = {
-	iconUrl         : '/gisicons/48/entertainment7.png',
-	iconImageHref   : '/gisicons/48/entertainment7.png',
+	iconUrl         : apiURL + '/gisicons/48/entertainment7.png',
+	iconImageHref   : apiURL + '/gisicons/48/entertainment7.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -756,8 +757,8 @@ userstyles['paid#solarium'] = {
 	type            : 1
 };
 userstyles['free#guide'] = {
-	iconUrl         : '/gisicons/32/services1.png',
-	iconImageHref   : '/gisicons/32/services1.png',
+	iconUrl         : apiURL + '/gisicons/32/services1.png',
+	iconImageHref   : apiURL + '/gisicons/32/services1.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -765,8 +766,8 @@ userstyles['free#guide'] = {
 	type            : 1
 };
 userstyles['paid#guide'] = {
-	iconUrl         : '/gisicons/48/services1.png',
-	iconImageHref   : '/gisicons/48/services1.png',
+	iconUrl         : apiURL + '/gisicons/48/services1.png',
+	iconImageHref   : apiURL + '/gisicons/48/services1.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -774,8 +775,8 @@ userstyles['paid#guide'] = {
 	type            : 1
 };
 userstyles['free#delivery'] = {
-	iconUrl         : '/gisicons/32/services2.png',
-	iconImageHref   : '/gisicons/32/services2.png',
+	iconUrl         : apiURL + '/gisicons/32/services2.png',
+	iconImageHref   : apiURL + '/gisicons/32/services2.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -783,8 +784,8 @@ userstyles['free#delivery'] = {
 	type            : 1
 };
 userstyles['paid#delivery'] = {
-	iconUrl         : '/gisicons/48/services2.png',
-	iconImageHref   : '/gisicons/48/services2.png',
+	iconUrl         : apiURL + '/gisicons/48/services2.png',
+	iconImageHref   : apiURL + '/gisicons/48/services2.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -792,8 +793,8 @@ userstyles['paid#delivery'] = {
 	type            : 1
 };
 userstyles['free#haircut'] = {
-	iconUrl         : '/gisicons/32/services3.png',
-	iconImageHref   : '/gisicons/32/services3.png',
+	iconUrl         : apiURL + '/gisicons/32/services3.png',
+	iconImageHref   : apiURL + '/gisicons/32/services3.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -801,8 +802,8 @@ userstyles['free#haircut'] = {
 	type            : 1
 };
 userstyles['paid#haircut'] = {
-	iconUrl         : '/gisicons/48/services3.png',
-	iconImageHref   : '/gisicons/48/services3.png',
+	iconUrl         : apiURL + '/gisicons/48/services3.png',
+	iconImageHref   : apiURL + '/gisicons/48/services3.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -810,8 +811,8 @@ userstyles['paid#haircut'] = {
 	type            : 1
 };
 userstyles['free#translate'] = {
-	iconUrl         : '/gisicons/32/services4.png',
-	iconImageHref   : '/gisicons/32/services4.png',
+	iconUrl         : apiURL + '/gisicons/32/services4.png',
+	iconImageHref   : apiURL + '/gisicons/32/services4.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -819,8 +820,8 @@ userstyles['free#translate'] = {
 	type            : 1
 };
 userstyles['paid#translate'] = {
-	iconUrl         : '/gisicons/48/services4.png',
-	iconImageHref   : '/gisicons/48/services4.png',
+	iconUrl         : apiURL + '/gisicons/48/services4.png',
+	iconImageHref   : apiURL + '/gisicons/48/services4.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -828,8 +829,8 @@ userstyles['paid#translate'] = {
 	type            : 1
 };
 userstyles['free#beauty'] = {
-	iconUrl         : '/gisicons/32/services5.png',
-	iconImageHref   : '/gisicons/32/services5.png',
+	iconUrl         : apiURL + '/gisicons/32/services5.png',
+	iconImageHref   : apiURL + '/gisicons/32/services5.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -837,8 +838,8 @@ userstyles['free#beauty'] = {
 	type            : 1
 };
 userstyles['paid#beauty'] = {
-	iconUrl         : '/gisicons/48/services5.png',
-	iconImageHref   : '/gisicons/48/services5.png',
+	iconUrl         : apiURL + '/gisicons/48/services5.png',
+	iconImageHref   : apiURL + '/gisicons/48/services5.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -846,8 +847,8 @@ userstyles['paid#beauty'] = {
 	type            : 1
 };
 userstyles['free#tourism'] = {
-	iconUrl         : '/gisicons/32/services6.png',
-	iconImageHref   : '/gisicons/32/services6.png',
+	iconUrl         : apiURL + '/gisicons/32/services6.png',
+	iconImageHref   : apiURL + '/gisicons/32/services6.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -855,8 +856,8 @@ userstyles['free#tourism'] = {
 	type            : 1
 };
 userstyles['paid#tourism'] = {
-	iconUrl         : '/gisicons/48/services6.png',
-	iconImageHref   : '/gisicons/48/services6.png',
+	iconUrl         : apiURL + '/gisicons/48/services6.png',
+	iconImageHref   : apiURL + '/gisicons/48/services6.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -864,8 +865,8 @@ userstyles['paid#tourism'] = {
 	type            : 1
 };
 userstyles['free#tourism2'] = {
-	iconUrl         : '/gisicons/32/services7.png',
-	iconImageHref   : '/gisicons/32/services7.png',
+	iconUrl         : apiURL + '/gisicons/32/services7.png',
+	iconImageHref   : apiURL + '/gisicons/32/services7.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -873,8 +874,8 @@ userstyles['free#tourism2'] = {
 	type            : 1
 };
 userstyles['paid#tourism2'] = {
-	iconUrl         : '/gisicons/48/services7.png',
-	iconImageHref   : '/gisicons/48/services7.png',
+	iconUrl         : apiURL + '/gisicons/48/services7.png',
+	iconImageHref   : apiURL + '/gisicons/48/services7.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -882,8 +883,8 @@ userstyles['paid#tourism2'] = {
 	type            : 1
 };
 userstyles['free#bank'] = {
-	iconUrl         : '/gisicons/32/finances1.png',
-	iconImageHref   : '/gisicons/32/finances1.png',
+	iconUrl         : apiURL + '/gisicons/32/finances1.png',
+	iconImageHref   : apiURL + '/gisicons/32/finances1.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -891,8 +892,8 @@ userstyles['free#bank'] = {
 	type            : 1
 };
 userstyles['paid#bank'] = {
-	iconUrl         : '/gisicons/48/finances1.png',
-	iconImageHref   : '/gisicons/48/finances1.png',
+	iconUrl         : apiURL + '/gisicons/48/finances1.png',
+	iconImageHref   : apiURL + '/gisicons/48/finances1.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -900,8 +901,8 @@ userstyles['paid#bank'] = {
 	type            : 1
 };
 userstyles['free#atm'] = {
-	iconUrl         : '/gisicons/32/finances2.png',
-	iconImageHref   : '/gisicons/32/finances2.png',
+	iconUrl         : apiURL + '/gisicons/32/finances2.png',
+	iconImageHref   : apiURL + '/gisicons/32/finances2.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -909,8 +910,8 @@ userstyles['free#atm'] = {
 	type            : 1
 };
 userstyles['paid#atm'] = {
-	iconUrl         : '/gisicons/48/finances2.png',
-	iconImageHref   : '/gisicons/48/finances2.png',
+	iconUrl         : apiURL + '/gisicons/48/finances2.png',
+	iconImageHref   : apiURL + '/gisicons/48/finances2.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -918,8 +919,8 @@ userstyles['paid#atm'] = {
 	type            : 1
 };
 userstyles['free#payments'] = {
-	iconUrl         : '/gisicons/32/finances3.png',
-	iconImageHref   : '/gisicons/32/finances3.png',
+	iconUrl         : apiURL + '/gisicons/32/finances3.png',
+	iconImageHref   : apiURL + '/gisicons/32/finances3.png',
 	iconSize        : [26, 32],
 	iconImageSize   : [26, 32],
 	iconImageOffset : [-13, -32],
@@ -927,8 +928,8 @@ userstyles['free#payments'] = {
 	type            : 1
 };
 userstyles['paid#payments'] = {
-	iconUrl         : '/gisicons/48/finances3.png',
-	iconImageHref   : '/gisicons/48/finances3.png',
+	iconUrl         : apiURL + '/gisicons/48/finances3.png',
+	iconImageHref   : apiURL + '/gisicons/48/finances3.png',
 	iconSize        : [39, 48],
 	iconImageSize   : [39, 48],
 	iconImageOffset : [-19, -48],
@@ -938,8 +939,8 @@ userstyles['paid#payments'] = {
 
 
 userstyles['user#here'] = {
-	iconUrl         : '/gisicons/userstyles/redarrowdown.png',
-	iconImageHref   : '/gisicons/userstyles/redarrowdown.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/redarrowdown.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/redarrowdown.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -947,8 +948,8 @@ userstyles['user#here'] = {
 	type            : 1
 };
 userstyles['user#here'] = {
-	iconUrl         : '/gisicons/userstyles/redarrowdown.png',
-	iconImageHref   : '/gisicons/userstyles/redarrowdown.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/redarrowdown.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/redarrowdown.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -956,8 +957,8 @@ userstyles['user#here'] = {
 	type            : 1
 };
 userstyles['user#citypark'] = {
-	iconUrl         : '/gisicons/userstyles/park2.png',
-	iconImageHref   : '/gisicons/userstyles/park2.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/park2.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/park2.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -965,8 +966,8 @@ userstyles['user#citypark'] = {
 	type            : 1
 };
 userstyles['user#citypark'] = {
-	iconUrl         : '/gisicons/userstyles/park2.png',
-	iconImageHref   : '/gisicons/userstyles/park2.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/park2.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/park2.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -974,8 +975,8 @@ userstyles['user#citypark'] = {
 	type            : 1
 };
 userstyles['user#disability25'] = {
-	iconUrl         : '/gisicons/userstyles/disability25.png',
-	iconImageHref   : '/gisicons/userstyles/disability25.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/disability25.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/disability25.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -983,8 +984,8 @@ userstyles['user#disability25'] = {
 	type            : 1
 };
 userstyles['user#disability25'] = {
-	iconUrl         : '/gisicons/userstyles/disability25.png',
-	iconImageHref   : '/gisicons/userstyles/disability25.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/disability25.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/disability25.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -992,8 +993,8 @@ userstyles['user#disability25'] = {
 	type            : 1
 };
 userstyles['user#disability50'] = {
-	iconUrl         : '/gisicons/userstyles/disability50.png',
-	iconImageHref   : '/gisicons/userstyles/disability50.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/disability50.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/disability50.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -1001,8 +1002,8 @@ userstyles['user#disability50'] = {
 	type            : 1
 };
 userstyles['user#disability50'] = {
-	iconUrl         : '/gisicons/userstyles/disability50.png',
-	iconImageHref   : '/gisicons/userstyles/disability50.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/disability50.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/disability50.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -1010,8 +1011,8 @@ userstyles['user#disability50'] = {
 	type            : 1
 };
 userstyles['user#disability75'] = {
-	iconUrl         : '/gisicons/userstyles/disability75.png',
-	iconImageHref   : '/gisicons/userstyles/disability75.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/disability75.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/disability75.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -1019,8 +1020,8 @@ userstyles['user#disability75'] = {
 	type            : 1
 };
 userstyles['user#disability75'] = {
-	iconUrl         : '/gisicons/userstyles/disability75.png',
-	iconImageHref   : '/gisicons/userstyles/disability75.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/disability75.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/disability75.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -1028,8 +1029,8 @@ userstyles['user#disability75'] = {
 	type            : 1
 };
 userstyles['user#disability100'] = {
-	iconUrl         : '/gisicons/userstyles/disability100.png',
-	iconImageHref   : '/gisicons/userstyles/disability100.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/disability100.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/disability100.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -1037,8 +1038,8 @@ userstyles['user#disability100'] = {
 	type            : 1
 };
 userstyles['user#disability100'] = {
-	iconUrl         : '/gisicons/userstyles/disability100.png',
-	iconImageHref   : '/gisicons/userstyles/disability100.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/disability100.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/disability100.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-12,-24],
@@ -1046,8 +1047,8 @@ userstyles['user#disability100'] = {
 	type            : 1
 };
 userstyles['user#aquarium'] = {
-	iconUrl         : '/gisicons/userstyles/aquarium.png',
-	iconImageHref   : '/gisicons/userstyles/aquarium.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/aquarium.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/aquarium.png',
 	iconSize        : [32,37],
 	iconImageSize   : [32,37],
 	iconImageOffset : [-16,-37],
@@ -1055,8 +1056,8 @@ userstyles['user#aquarium'] = {
 	type            : 1
 };
 userstyles['user#aquarium'] = {
-	iconUrl         : '/gisicons/userstyles/aquarium.png',
-	iconImageHref   : '/gisicons/userstyles/aquarium.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/aquarium.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/aquarium.png',
 	iconSize        : [32,37],
 	iconImageSize   : [32,37],
 	iconImageOffset : [-16,-37],
@@ -1064,8 +1065,8 @@ userstyles['user#aquarium'] = {
 	type            : 1
 };
 userstyles['airshow#rus'] = {
-	iconUrl         : '/gisicons/userstyles/rus_avia.png',
-	iconImageHref   : '/gisicons/userstyles/rus_avia.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/rus_avia.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/rus_avia.png',
 	iconSize        : [32,28],
 	iconImageSize   : [32,28],
 	iconImageOffset : [-16,-14],
@@ -1073,8 +1074,8 @@ userstyles['airshow#rus'] = {
 	type            : 1
 };
 userstyles['airshow#rus'] = {
-	iconUrl         : '/gisicons/userstyles/rus_avia.png',
-	iconImageHref   : '/gisicons/userstyles/rus_avia.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/rus_avia.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/rus_avia.png',
 	iconSize        : [32,28],
 	iconImageSize   : [32,28],
 	iconImageOffset : [-16,-14],
@@ -1082,8 +1083,8 @@ userstyles['airshow#rus'] = {
 	type            : 1
 };
 userstyles['user#dsm'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1091,8 +1092,8 @@ userstyles['user#dsm'] = {
 	type            : 1
 };
 userstyles['user#dsm'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1100,8 +1101,8 @@ userstyles['user#dsm'] = {
 	type            : 1
 };
 userstyles['user#dsm'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1109,8 +1110,8 @@ userstyles['user#dsm'] = {
 	type            : 1
 };
 userstyles['user#dsm'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1118,8 +1119,8 @@ userstyles['user#dsm'] = {
 	type            : 1
 };
 userstyles['user#dsm'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1127,8 +1128,8 @@ userstyles['user#dsm'] = {
 	type            : 1
 };
 userstyles['user#dsm'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1136,8 +1137,8 @@ userstyles['user#dsm'] = {
 	type            : 1
 };
 userstyles['user#artsschool'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1145,8 +1146,8 @@ userstyles['user#artsschool'] = {
 	type            : 1
 };
 userstyles['user#artsschool'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1154,8 +1155,8 @@ userstyles['user#artsschool'] = {
 	type            : 1
 };
 userstyles['user#сschool'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1163,8 +1164,8 @@ userstyles['user#сschool'] = {
 	type            : 1
 };
 userstyles['user#сschool'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1172,8 +1173,8 @@ userstyles['user#сschool'] = {
 	type            : 1
 };
 userstyles['user#sportsschool'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1181,8 +1182,8 @@ userstyles['user#sportsschool'] = {
 	type            : 1
 };
 userstyles['user#sportsschool'] = {
-	iconUrl         : '/gisicons/userstyles/ds.png',
-	iconImageHref   : '/gisicons/userstyles/ds.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/ds.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/ds.png',
 	iconSize        : [26,24],
 	iconImageSize   : [26,24],
 	iconImageOffset : [-13,-24],
@@ -1190,8 +1191,8 @@ userstyles['user#sportsschool'] = {
 	type            : 1
 };
 userstyles['system#arrowldn'] = {
-	iconUrl         : '/gisicons/userstyles/layer_aspect_arrow.png',
-	iconImageHref   : '/gisicons/userstyles/layer_aspect_arrow.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/layer_aspect_arrow.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/layer_aspect_arrow.png',
 	iconSize        : [16,16],
 	iconImageSize   : [16,16],
 	iconImageOffset : [0,-16],
@@ -1199,8 +1200,8 @@ userstyles['system#arrowldn'] = {
 	type            : 's'
 };
 userstyles['system#arrowrup'] = {
-	iconUrl         : '/gisicons/userstyles/layer_aspect_arrow2.png',
-	iconImageHref   : '/gisicons/userstyles/layer_aspect_arrow2.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/layer_aspect_arrow2.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/layer_aspect_arrow2.png',
 	iconSize        : [16,16],
 	iconImageSize   : [16,16],
 	iconImageOffset : [-16,0],
@@ -1208,8 +1209,8 @@ userstyles['system#arrowrup'] = {
 	type            : 's'
 };
 userstyles['system#redflag'] = { //mk. 2
-	iconUrl         : '/gisicons/userstyles/flag_3.png',
-	iconImageHref   : '/gisicons/userstyles/flag_3.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/flag_3.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/flag_3.png',
 	iconSize        : [16,16],
 	iconImageSize   : [16,16],
 	iconAnchor      : [2,16],
@@ -1218,8 +1219,8 @@ userstyles['system#redflag'] = { //mk. 2
 	type            : 1
 };
 userstyles['system#blueflag'] = { //FatCow Icon Set
-	iconUrl         : '/gisicons/userstyles/flag_2.png',
-	iconImageHref   : '/gisicons/userstyles/flag_2.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/flag_2.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/flag_2.png',
 	iconSize        : [16,16],
 	iconImageSize   : [16,16],
 	iconAnchor      : [2,16],
@@ -1228,8 +1229,8 @@ userstyles['system#blueflag'] = { //FatCow Icon Set
 	type            : 1
 };
 userstyles['system#greenflag'] = { //FatCow Icon Set
-	iconUrl         : '/gisicons/userstyles/flag_1.png',
-	iconImageHref   : '/gisicons/userstyles/flag_1.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/flag_1.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/flag_1.png',
 	iconSize        : [16,16],
 	iconImageSize   : [16,16],
 	iconImageOffset : [-3,-16],
@@ -1238,8 +1239,8 @@ userstyles['system#greenflag'] = { //FatCow Icon Set
 	type            : 1
 };
 userstyles['system#arrowcen'] = { //FatCow Icon Set
-	iconUrl         : '/gisicons/userstyles/arrow_in.png',
-	iconImageHref   : '/gisicons/userstyles/arrow_in.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/arrow_in.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/arrow_in.png',
 	iconSize        : [32,32],
 	iconImageSize   : [32,32],
 	iconImageOffset : [-16,-16],
@@ -1247,8 +1248,8 @@ userstyles['system#arrowcen'] = { //FatCow Icon Set
 	type            : 's'
 };
 userstyles['system#arrowrad'] = { //FatCow Icon Set
-	iconUrl         : '/gisicons/userstyles/arrow_right.png',
-	iconImageHref   : '/gisicons/userstyles/arrow_right.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/arrow_right.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/arrow_right.png',
 	iconSize        : [32,32],
 	iconImageSize   : [32,32],
 	iconImageOffset : [-32,-16],
@@ -1256,8 +1257,8 @@ userstyles['system#arrowrad'] = { //FatCow Icon Set
 	type            : 's'
 };
 userstyles['alert#fire'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/fire.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/fire.png',
 	iconSize        : [32,32],
 	iconImageSize   : [32,32],
 	iconImageOffset : [-16,-32],
@@ -1265,8 +1266,8 @@ userstyles['alert#fire'] = {
 	type            : 1
 };
 userstyles['alert#water'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/fire.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/fire.png',
 	iconSize        : [32,32],
 	iconImageSize   : [32,32],
 	iconImageOffset : [-16,-32],
@@ -1274,8 +1275,8 @@ userstyles['alert#water'] = {
 	type            : 1
 };
 userstyles['alert#gas'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/fire.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/fire.png',
 	iconSize        : [32,32],
 	iconImageSize   : [32,32],
 	iconImageOffset : [-16,-32],
@@ -1283,8 +1284,8 @@ userstyles['alert#gas'] = {
 	type            : 1
 };
 userstyles['alert#btu'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/fire.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/fire.png',
 	iconSize        : [32,32],
 	iconImageSize   : [32,32],
 	iconImageOffset : [-16,-32],
@@ -1292,8 +1293,8 @@ userstyles['alert#btu'] = {
 	type            : 1
 };
 userstyles['nodal#b737'] = {
-	iconUrl         : '/gisicons/nodal.life/b737N.png',
-	iconImageHref   : '/gisicons/nodal.life/b737N.png',
+	iconUrl         : apiURL + '/gisicons/nodal.life/b737N.png',
+	iconImageHref   : apiURL + '/gisicons/nodal.life/b737N.png',
 	iconSize        : [32,32],
 	iconImageSize   : [32,32],
 	iconImageOffset : [-16,-16],
@@ -1301,8 +1302,8 @@ userstyles['nodal#b737'] = {
 	type            : 1
 };
 userstyles['user#fire'] = {
-	iconUrl         : '/gisicons/userstyles/fire.png',
-	iconImageHref   : '/gisicons/userstyles/fire.png',
+	iconUrl         : apiURL + '/gisicons/userstyles/fire.png',
+	iconImageHref   : apiURL + '/gisicons/userstyles/fire.png',
 	iconSize        : [32,32],
 	iconImageSize   : [32,32],
 	iconImageOffset : [-16,-32],
@@ -1310,8 +1311,8 @@ userstyles['user#fire'] = {
 	type            : 1
 };
 userstyles['user#anchor'] = {
-	iconUrl         : '/gisicons/luftmaps/anchor.png',
-	iconImageHref   : '/gisicons/luftmaps/anchor.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/anchor.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/anchor.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1319,8 +1320,8 @@ userstyles['user#anchor'] = {
 	type            : 1
 };
 userstyles['user#church'] = {
-	iconUrl         : '/gisicons/luftmaps/church.png',
-	iconImageHref   : '/gisicons/luftmaps/church.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/church.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/church.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1328,8 +1329,8 @@ userstyles['user#church'] = {
 	type            : 1
 };
 userstyles['user#jews'] = {
-	iconUrl         : '/gisicons/luftmaps/jew.png',
-	iconImageHref   : '/gisicons/luftmaps/jew.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/jew.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/jew.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1337,8 +1338,8 @@ userstyles['user#jews'] = {
 	type            : 1
 };
 userstyles['user#maid'] = {
-	iconUrl         : '/gisicons/luftmaps/maid.png',
-	iconImageHref   : '/gisicons/luftmaps/maid.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/maid.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/maid.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1346,8 +1347,8 @@ userstyles['user#maid'] = {
 	type            : 1
 };
 userstyles['user#police'] = {
-	iconUrl         : '/gisicons/luftmaps/policeman.png',
-	iconImageHref   : '/gisicons/luftmaps/policeman.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/policeman.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/policeman.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1355,8 +1356,8 @@ userstyles['user#police'] = {
 	type            : 1
 };
 userstyles['user#soldier'] = {
-	iconUrl         : '/gisicons/luftmaps/soldier.png',
-	iconImageHref   : '/gisicons/luftmaps/soldier.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/soldier.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/soldier.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1364,8 +1365,8 @@ userstyles['user#soldier'] = {
 	type            : 1
 };
 userstyles['user#student'] = {
-	iconUrl         : '/gisicons/luftmaps/student.png',
-	iconImageHref   : '/gisicons/luftmaps/student.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/student.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/student.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1373,8 +1374,8 @@ userstyles['user#student'] = {
 	type            : 1
 };
 userstyles['user#studentf'] = {
-	iconUrl         : '/gisicons/luftmaps/studentf.png',
-	iconImageHref   : '/gisicons/luftmaps/studentf.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/studentf.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/studentf.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1382,8 +1383,8 @@ userstyles['user#studentf'] = {
 	type            : 1
 };
 userstyles['user#tower'] = {
-	iconUrl         : '/gisicons/luftmaps/tower.png',
-	iconImageHref   : '/gisicons/luftmaps/tower.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/tower.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/tower.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1391,8 +1392,8 @@ userstyles['user#tower'] = {
 	type            : 1
 };
 userstyles['user#transmit'] = {
-	iconUrl         : '/gisicons/luftmaps/transmit.png',
-	iconImageHref   : '/gisicons/luftmaps/transmit.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/transmit.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/transmit.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1400,8 +1401,8 @@ userstyles['user#transmit'] = {
 	type            : 1
 };
 userstyles['user#wall'] = {
-	iconUrl         : '/gisicons/luftmaps/wall.png',
-	iconImageHref   : '/gisicons/luftmaps/wall.png',
+	iconUrl         : apiURL + '/gisicons/luftmaps/wall.png',
+	iconImageHref   : apiURL + '/gisicons/luftmaps/wall.png',
 	iconSize        : [21,28],
 	iconImageSize   : [21,28],
 	iconImageOffset : [-11,-28],
@@ -1574,6 +1575,76 @@ userstyles['routes#current'] = {
 	lineJoin    : 'round',
 	opacity     : .9,
 	title       : 'Текущий маршрут',
+	type        : 2
+};
+userstyles['routes#vols16'] = {
+	stroke      : true,
+	color       : '#33cc33',
+	strokeColor : '33cc33CC',
+	weight      : '3',
+	strokeWidth : '3',
+	dashArray   : '1',
+	strokeStyle : { style: 'solid' },
+	lineCap     : 'round',
+	lineJoin    : 'round',
+	opacity     : .9,
+	title       : 'ВОЛС 16 волокон',
+	type        : 2
+};
+userstyles['routes#vols4'] = {
+	stroke      : true,
+	color       : '#660000',
+	strokeColor : '660000CC',
+	weight      : '3',
+	strokeWidth : '3',
+	dashArray   : '1',
+	strokeStyle : { style: 'solid' },
+	lineCap     : 'round',
+	lineJoin    : 'round',
+	opacity     : .9,
+	title       : 'ВОЛС 4 волокон',
+	type        : 2
+};
+userstyles['routes#vols8'] = {
+	stroke      : true,
+	color       : '#333399',
+	strokeColor : '333399CC',
+	weight      : '3',
+	strokeWidth : '3',
+	dashArray   : '1',
+	strokeStyle : { style: 'solid' },
+	lineCap     : 'round',
+	lineJoin    : 'round',
+	opacity     : .9,
+	title       : 'ВОЛС 8 волокон',
+	type        : 2
+};
+userstyles['routes#volsc'] = {
+	stroke      : true,
+	color       : '#777777',
+	strokeColor : '777777CC',
+	weight      : '3',
+	strokeWidth : '3',
+	dashArray   : '3, 3, 3',
+	strokeStyle : { style: 'dash' },
+	lineCap     : 'round',
+	lineJoin    : 'round',
+	opacity     : .9,
+	title       : 'Перспективная ВОЛС',
+	type        : 2
+};
+userstyles['routes#volsp'] = {
+	stroke      : true,
+	color       : '#777777',
+	strokeColor : '777777CC',
+	weight      : '3',
+	strokeWidth : '3',
+	dashArray   : '3, 3, 3',
+	strokeStyle : { style: 'dash' },
+	lineCap     : 'round',
+	lineJoin    : 'round',
+	opacity     : .9,
+	title       : 'Перспективная ВОЛС',
 	type        : 2
 };
 userstyles['metro#grey'   ] = {

@@ -8,7 +8,9 @@ function update_point_data() { // передаётся объект целико
 		lat = parseFloat(src[1]);
 	$("#m_lat").val(lat);
 	$("#m_lon").val(lon);
-	prop.coords = prop.coords_array = prop.coords_aux = src.join(",");
+	prop.coords = src.join(",");
+	prop.coords_array = "[" + src.join(",") + "]";
+	prop.coords_aux = bas_index_array.join(",");
 	if ($("#traceAddress").prop("checked")) {
 		request_geocode_toPointObject(src);
 	}
@@ -21,13 +23,15 @@ function update_line_data() { // передаётся объект целико�
 		coordarray  = src.getCoordinates(),
 		coordstring = [],
 		a;
-		prop.coords = coords;
+
 	for (a in coordarray) {
 		if (coordarray.hasOwnProperty(a)) {
-			coordstring.push("[" + coordarray[a].join(",") + "]");
+			coordstring.push(coordarray[a].join(","));
 		}
 	}
-	prop.coords_array = coordarray.join(",");
+	prop.coords = coords;
+	prop.coords_array = coordstring.join(";");
+	prop.coords_aux = bas_index_array.join(",");
 	length_calc(src);
 	//console.log(prop.toSource());
 }
@@ -46,14 +50,15 @@ function update_polygon_data() { // передаётся объект целик
 			coordcontour = [];
 			for (a in coordarray[c]) {
 				if (coordarray[c].hasOwnProperty(a)) {
-					coordcontour.push("[" + coordarray[c][a].join(",") + "]");
+					coordcontour.push(coordarray[c][a].join(","));
 				}
 			}
-			coordstring.push("[" + coordcontour.join(",") + "]");
+			coordstring.push(coordcontour.join(""));
 		}
 	}
 	prop.coords = coords;
-	prop.coords_array = "[" + coordstring.join(",") + "]";
+	prop.coords_array = coordstring.join(";");
+	prop.coords_aux = bas_index_array.join(",");
 	perimeter_calc(src);
 	//console.log(coordstring.join(","));
 }
@@ -143,9 +148,9 @@ function addPropertyPagesAction() {
 			type     : "POST",
 			dataType : 'html',
 			success  : function (data) {
-				$("#propPage, .propPage").html(data);
+				$("#propPage").html(data);
+				$(".mainPage, #schedule, #commutes").css('display', 'none');
 				$("#propPage").css('display', 'block');
-				$(".mainPage, #schedule").css('display', 'none');
 				listenDependencyCalcCalls();
 			},
 			error: function (data, stat, err) {
@@ -158,7 +163,7 @@ function addPropertyPagesAction() {
 function addMapPageAction() {
 	$(".displayMain").unbind().click(function () {
 		saveType = "properties";
-		$("#propPage, #schedule").css('display', 'none');
+		$(".propPage, #schedule, #commutes").css('display', 'none');
 		$("#mainPage").css('display', 'block');
 	});
 }
@@ -185,6 +190,7 @@ function listen_page_caller() {
 	addSchedulePageAction();
 	addPublishLocationAction();
 	addCommentLocationAction();
+	addCommutesPageAction();
 }
 
 function addSchedulePageAction() {
@@ -192,8 +198,18 @@ function addSchedulePageAction() {
 	$(".schedule").unbind().click(function () {
 		saveType = "schedule";
 		get_schedule();
-		$("#propPage").css('display', 'none');
+		$(".propPage, #commutes").css('display', 'none');
 		$("#schedule").css('display', 'block');
+	});
+}
+
+function addCommutesPageAction() {
+	// здесь будет выводиться улавливание
+	var state = (prop.pr === 2 || prop.pr === 3) ? 'block' : 'none';
+	$(".commutes").css('display', state);
+	$(".commutes").unbind().click(function () {
+		$(".propPage, #schedule").css('display', 'none');
+		$("#commutes").css('display', 'block');
 	});
 }
 
@@ -294,12 +310,51 @@ $("#cir_setter").click(function () {
 	e_objects.get(0).geometry.setRadius(radius);
 });
 
+$(".nodeExport").click(function(){
+	nodeExport();
+});
+
+function nodeExport() {
+	var coords = e_objects.get(0).geometry.getCoordinates(),
+		type   = e_objects.get(0).geometry.getType(),
+		exportFunctions = {
+			'Point'      : function (coords) { return [coords[1].coords[0]]; },
+			'LineString' : function (coords) {
+				var a;
+				for (a in coords) {
+					if (coords.hasOwnProperty(a)) {
+						coords[a] = [ coords[a][1], coords[a][0] ];
+					}
+				}
+				return coords;
+			},
+			'Polygon'    : function (coords) {
+				var m,
+					a,
+					scoords;
+				for (m in coords) {
+					if (coords.hasOwnProperty(m)) {
+						scoords = coords[m];
+						for (a in scoords) {
+							if (scoords.hasOwnProperty(a)) {
+								coords[m][a] = [ scoords[a][1], scoords[a][0] ];
+							}
+						}
+					}
+				}
+				return coords;
+			},
+			'Circle'     : function (coords) { return [[coords[0][1], coords[0][0]], coords[1]]; }
+		};
+	coords = exportFunctions[type]();
+	$("#exportedNodes").html(coords.toSource());
+	$("#nodeExport").modal("show");
+}
+
 $("#type").change(function () {
 	var ref = parseInt($("#type option:selected").attr('ref'), 10);
-
-
 	if (ref !== prop.pr) {
-		if (confirm("Такая смена типа объекта при сохранении приведёт к потере координат и необходимости нарисовать объект заново.\nВы желаете продолжить?")) {
+		if (confirm("Cмена типа объекта приведёт к потере координат и необходимости нарисовать объект заново.\nВы желаете продолжить?")) {
 			prop.pr         = ref;
 			prop.decription = $("#type option:selected").html();
 			prop.attr       = normalize_style($("#type option:selected").attr('apply'));
@@ -321,6 +376,10 @@ $("#type").change(function () {
 
 $("#loadImage").click(function (){
 	$("#imageLoader").modal('show');
+});
+
+$("#tolerance").keyup(function() {
+	calculateToleranceParameters($(this).val());
 });
 
 $("#saveBtn").click(function () {
@@ -364,7 +423,8 @@ $("#loadSelectedObjects").unbind().click(function () {
 		url: "/nodal/get_objects_by_type",
 		data: {
 			points  : arr,
-			ids     : arr2
+			ids     : arr2,
+			ttl     : prop.ttl
 		},
 		type: "POST",
 		dataType: 'script',
@@ -409,8 +469,28 @@ $("#toGeometry").click(function () { // конверсия опорных точ
 	// не сделано. Пустая функция.
 	convert_to_geometry();
 });
+// запрос улавливание
+$("#requestTrapping").click(function(){
+	// objecteditor/nodal.js
+	requestTrapping();
+});
 
+function setupTrappedPointsRemove() {
+	$("#trappedPoints li i.icon-remove").click(function(){
+		$(this).parent().remove();
+		for (a in bas_index_array) {
+			if (bas_index_array.hasOwnProperty(a) && bas_index_array[a] === parseInt($(this).parent().attr("vertex"), 10)) {
+				bas_index_array.splice(a, 1);
+			}
+		}
+		//alert(bas_index_array.toSource());
+	});
+}
 
+$(".chopContour").click(function () {
+	// objecteditor/nodal.js
+	chopPolyline();
+});
 
 listen_page_caller();
 composeStyleDropdowns(prop.pr, prop.attr);
