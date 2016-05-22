@@ -1,6 +1,6 @@
 /* jshint -W100 */
 /* jshint undef: true, unused: true */
-/* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
+/* globals ymaps, confirm, config, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
 ymaps.ready(init);
 
 var sights,
@@ -13,8 +13,8 @@ var sights,
 	folder,
 	objlayer      = 0,
 	localstyles   = {},
-	tileServerID = parseInt(Math.random() * (4-1) + 1).toString(),
-	tileServerLit= { "0": "a","1": "b","2": "c","3": "d","4": "e","5": "f" },
+	tileServerID = parseInt((Math.random() * (4-1) + 1), 10).toString(),
+	tileServerLit= { "0": "a","1": "b","2": "c","3": "c","4": "b","5": "a" },
 	vectoropts    = { strokeColor: 'FF220099', strokeWidth: 2, strokeStyle: { style: 'solid' } },
 	simplemarker  = { iconImageHref: 'http://api.korzhevdp.com/images/marker.png', iconImageSize: [16, 16], iconImageOffset: [-8, -16] },
 	trustedmarker = { iconImageHref: 'http://api.korzhevdp.com/images/markery.png', iconImageSize: [16, 16], iconImageOffset: [-8, -16] },
@@ -26,7 +26,7 @@ function init() {
 
 	// определения
 	// начальная конфигурация
-	config = {
+	var config = {
 			// tech-info
 			mcenter       : [40.537471, 64.543004],
 			maxZoom       : 17,
@@ -272,51 +272,64 @@ function init() {
 			}
 		};
 	// конец начальной конфигурации
-		var dX = [],
+	var dX = [],
 		searchControl = new ymaps.control.SearchControl({ provider: 'yandex#publicMap', boundedBy: [[40, 65], [42, 64]], strictBounds: 1 }),
 		typeSelector  = new ymaps.control.TypeSelector(),
 		layerTypes    = config.layerTypes,
 		revLayerTypes = {},
 		cMapType      = 0,
 		lc            = 0,
-		uploadPics    = [];
+		uploadPics    = []
+		a,
+		maxZoom = 20;
 	//определение механизма пересчёта стандартной сетки тайлов в сетку тайлов Яндекс-карт
-	for (var a=10; a < 21; a++){ dX[a] = Math.pow(2, a) - 1; }
-	for(a in config.layerTypes){
-		ymaps.layer.storage.add(config.layerTypes[a].label, config.layerTypes[a].func);
-		ymaps.mapType.storage.add(config.layerTypes[a].label, new ymaps.MapType(
-			config.layerTypes[a].name, config.layerTypes[a].layers
-		));
-		typeSelector.addMapType(config.layerTypes[a].label, a);
-		$("#typeSelector").append('<option value="' + config.layerTypes[a].label + '">' + config.layerTypes[a].name + '</option>');
-		revLayerTypes[layerTypes[a].label] = layerTypes[a].localLayerID;
+	for (a = 1; a <= maxZoom; a++) {
+		dX[a] = Math.pow(2, a) - 1;
+	}
+	for (a in config.layerTypes) {
+		if (config.layerTypes.hasOwnProperty(a)) {
+			ymaps.layer.storage.add(config.layerTypes[a].label, config.layerTypes[a].func);
+			ymaps.mapType.storage.add(config.layerTypes[a].label, new ymaps.MapType(
+				config.layerTypes[a].name, config.layerTypes[a].layers
+			));
+			typeSelector.addMapType(config.layerTypes[a].label, a);
+			$("#typeSelector").append('<option value="' + config.layerTypes[a].label + '">' + config.layerTypes[a].name + '</option>');
+			revLayerTypes[layerTypes[a].label] = layerTypes[a].localLayerID;
+		}
 	}
 	$("#typeSelector").append('<option value="yandex#map">Схема</option><option value="yandex#satellite">Спутник</option>');
 	//#################### поддержка основных стилей Minigis.NET ########################
 	//###################################################################################
-	function styleAddToStorage(src){
-		for (a in src){
-			ymaps.option.presetStorage.add(a, src[a]);
+	function styleAddToStorage(src) {
+		for (a in src) {
+			if (src.hasOwnProperty(a)) {
+				ymaps.option.presetStorage.add(a, src[a]);
+			}
 		}
 	}
-	
+
 	styleAddToStorage(userstyles);
 	list_marker_styles();
-	function list_marker_styles(){
+
+	function list_marker_styles() {
 		//alert(1)
 		$("#ostyle, #cstyle").append('<option value="0">Выберите стиль</option>');
 		localstyles["1"] = [];
 		localstyles["1"].push('<optgroup label="Объекты">');
-		for (a in yandex_styles){
-			localstyles["1"].push(yandex_styles[a]);
+		for (a in yandex_styles) {
+			if (yandex_styles.hasOwnProperty(a)) {
+				localstyles["1"].push(yandex_styles[a]);
+			}
 		}
 		localstyles["1"].push('</optgroup>');
 		localstyles["1"].push('<optgroup label="Маркеры">');
-		for (a in yandex_markers){
-			localstyles["1"].push(yandex_markers[a]);
+		for (a in yandex_markers) {
+			if (yandex_markers.hasOwnProperty(a)) {
+				localstyles["1"].push(yandex_markers[a]);
+			}
 		}
 		localstyles["1"].push('</optgroup>');
-		
+
 		localstyles["1"].push('<optgroup class="points" label="Пользовательские">');
 		/*
 		for (a in style_src){
@@ -360,16 +373,16 @@ function init() {
 	// Процессор карты
 	//###################################################################################
 
-	map = new ymaps.Map("YMapsID", 
+	map = new ymaps.Map("YMapsID",
 		{center: config.mcenter, zoom: config.initZoom, type: config.layerTypes[0].label, behaviors: ["scrollZoom", "drag", "dblClickZoom"]},
-		{projection: config.proj, maxZoom: config.maxZoom, minZoom: config.minZoom },
+		{projection: config.proj, maxZoom: config.maxZoom, minZoom: config.minZoom, suppressMapOpenBlock: true, yandexMapAutoSwitch: false },
 		{}
 	);
 
 	cursor = map.cursors.push('crosshair', 'arrow');
 	cursor.setKey('arrow');
 
-	map.controls.add('zoomControl').add('mapTools').add('scaleLine')//.add(typeSelector)
+	map.controls.add('zoomControl').add('mapTools').add('scaleLine');//.add(typeSelector)
 	//typeSelector.removeMapType('yandex#publicMapHybrid');
 	//typeSelector.removeMapType('yandex#hybrid');
 	//typeSelector.removeMapType('yandex#publicMap');
@@ -381,11 +394,11 @@ function init() {
 	m_objects = new ymaps.GeoObjectArray();
 	m_objects.options.set({ hasBalloon: 0, hasHint: 1, hintContent: "Отметка", draggable: 0 });
 	map.geoObjects.add(m_objects);
-	// задаём особенности поведения. Двойной клик убирает отметку 
+	// задаём особенности поведения. Двойной клик убирает отметку
 	m_objects.events.add('dblclick', function (){
 		m_objects.removeAll();
 	});
-	
+
 	/* вызывает странное залипание карты... отключено
 	m_objects.events.add('dragend', function (e){
 		coords = e.get("target").geometry.getCoordinates();
@@ -408,36 +421,39 @@ function init() {
 
 	/* установка параметров коллекции */
 	p_objects = new ymaps.GeoObjectArray();
-	p_objects.options.set({ 
-		hasBalloon: 0, 
+	p_objects.options.set({
+		hasBalloon: 0,
 		hasHint: 1,
 		hintContent: "datum EPSG:4328",
 		draggable: 1
 	});
 	map.geoObjects.add(p_objects);
-	
+
 	p_objects.events.add('dragend', function (action){
 		v = action.get('target');
-		p_objects.get(point_id).properties.set("adr", get_address(v.geometry.getCoordinates()));
+		p_objects.get(point_id).properties.set("addr", get_address(v.geometry.getCoordinates()));
 
 	});
 
 	function save_point(){
-		var vd, addr, tr, act;
-		p_objects.each(function(item){
-			if(parseInt(item.properties.get("id")) == point_id){
-				vd = item.geometry.getCoordinates();
-				adr = item.properties.get("adr");
+		var vd,
+			addr,
+			tr,
+			act;
+		p_objects.each(function(item) {
+			if (parseInt(item.properties.get("id"), 10) === point_id) {
+				vd  = item.geometry.getCoordinates();
+				addr = item.properties.get("addr");
 			}
 		});
 		$.ajax({
 			type      : "POST",
 			url       : "/admin/points/point_save",
-			data      : { 
+			data      : {
 				coords: vd,
 				id    : point_id,
 				desc  : $("#desc").val(),
-				addr  : adr,
+				addr  : addr,
 				act   : $("#act").prop("checked"),
 				tr    : $("#trusted").prop("checked")
 			},
@@ -450,119 +466,111 @@ function init() {
 		});
 	}
 
-	$("#pointSaver").click(function(){
-		save_point()
+	$("#pointSaver").click(function() {
+		save_point();
 	});
 
-	function get_address(coords){
-		address = "";
+	function get_address(coords) {
+		var address = "";
 		ymaps.geocode(coords, { kind: ['house'] }).then(function(res){
 			var names = [];
 			res.geoObjects.each(function(obj){
 				names.push(obj.properties.get('name'));
 			});
-			address = (names[0] != "undefined") ? [names[0]].join(', ') : "Нет адреса"; [names[0]].join(', ');
-			
+			address = (names[0] === undefined) ? "Нет адреса" : [names[0]].join(', ');
 		});
 		$("#address").val(address);
 		return address;
 	}
 
 	p_objects.events.add('click', function (action){
-		v = action.get('target');
-		crds = v.geometry.getCoordinates();
+		var v        = action.get('target');
+			crds     = v.geometry.getCoordinates();
+			point_id = parseInt(v.properties.get("id"), 10);
 		$("#plon").val(crds[0]);
 		$("#plat").val(crds[1]);
-		point_id = parseInt(v.properties.get("id"));
-		//alert(typeof point_id + "\n" + point_id);
 		$("#desc").val(v.properties.get("desc"));
-		(v.properties.get("act") == 1) ? $("#act").prop("checked", true)     : $("#act").prop("checked", false);
-		(v.properties.get("tr") == 1)  ? $("#trusted").prop("checked", true) : $("#trusted").prop("checked", false);
+		(v.properties.get("act") === 1) ? $("#act").prop("checked", true)     : $("#act").prop("checked", false);
+		(v.properties.get("tr")  === 1) ? $("#trusted").prop("checked", true) : $("#trusted").prop("checked", false);
 		//$("#trusted").val(v.properties.get("desc"));
-		//if (!v.properties.get("adr").trim().length){
+		//if (!v.properties.get("addr").trim().length){
 		//alert(1);
 		ymaps.geocode(crds, { kind: ['house'] }).then(function(res){
-		//alert(1);
 			var names = [];
-			res.geoObjects.each(function(obj){
+			res.geoObjects.each(function(obj) {
 				names.push(obj.properties.get('name'));
 			});
-			address = (names[0] != "undefined") ? [names[0]].join(', ') : "Нет адреса"; [names[0]].join(', ');
-			
-			$("#address").val(address);
-
+			address = (names[0] === undefined) ? "Нет адреса" : [names[0]].join(', ') ;
 			p_objects.each(function(item){
-				if(parseInt(item.properties.get('id')) == point_id){
-					item.properties.set( { adr: address} );
+				if(parseInt(item.properties.get('id'), 10) === point_id) {
+					item.properties.set( { addr: address} );
 				}
 			});
-			//alert(address)
-			//alert();
+			$("#address").val(address);
 		});
-		//}else{
-		//	$("#address").val(v.properties.get("adr"));
-		//}
 	});
 
-	$("#tab2 .pointfiles").change(function(){
-		p_objects.removeAll();
-		output = [];
-		if(!$("#tab2 .pointfiles:checked").length){
+	$("#tab2 .pointfiles").change(function() {
+		var output = [];
+
+		if (!$("#tab2 .pointfiles:checked").length) {
 			return false;
 		}
-		$("#tab2 .pointfiles:checked").each(function(){
+		p_objects.removeAll();
+		$("#tab2 .pointfiles:checked").each(function() {
 			output.push($(this).val());
 		});
 		$.ajax({
 			type     : "POST",
 			url      : "/admin/points/points_get",
 			data     : {
-				file: "'" + output.join("','") + "'"
+				file : "'" + output.join("','") + "'"
 			},
 			dataType : 'script',
-			success  : function(){
-				for(a in points){
-					b = parseInt(a);
-					var geometry   = { type: "Point", coordinates: [ parseFloat(points[b].lon), parseFloat(points[b].lat) ] },
-						properties = { id: b, adr: points[b].adr, desc: points[b].desc,  tr: points[b].tr, act: points[b].act },
-						options    = (points[b].tr == 1) ? trustedmarker : simplemarker ,
-						options    = (points[b].p == 1 ) ? options : noimagedata ;
-						object     = new ymaps.Placemark(geometry, properties, options);
-					p_objects.add(object, b);
+			success  : function() {
+				var a;
+				for (a in points) {
+					if (points.hasOwnProperty(a)) {
+						var geometry   = { type: "Point", coordinates: [ parseFloat(points[a].lon), parseFloat(points[a].lat) ] },
+							properties = { id: parseInt(a, 10), addr: points[a].adr, desc: points[a].desc,  tr: points[a].tr, act: points[a].act },
+							options    = (points[a].tr === 1) ? trustedmarker : simplemarker ,
+							options    = (points[a].p  === 1) ? options       : noimagedata ;
+							object     = new ymaps.Placemark(geometry, properties, options);
+						p_objects.add(object, a);
+					}
 				}
 				$("#trusted, #act").prop("checked", false);
 				$("#address, #desc").val("");
 			},
-			error: function(data,stat,err){
+			error: function(data,stat,err) {
 				alert([data,stat,err].join("\n"));
 			}
 		});
 	});
 
-	$("#trusted").click(function(){
-		bool = $(this).prop("checked");
-		//alert(bool)
-		p_objects.each(function(item){
-			if(parseInt(item.properties.get('id')) == point_id){
+	$("#trusted").click(function() {
+		var bool = $(this).prop("checked");
+		p_objects.each(function(item) {
+			if (parseInt(item.properties.get('id'), 10) === point_id) {
 				(bool) ? item.options.set( trustedmarker ) : item.options.set( simplemarker );
 			}
 		});
-	}); 
+	});
 }
 
-$("#sendData").click(function(){
+$("#sendData").click(function() {
 	$.ajax({
-		type: "POST",
-		url: "/admin/points/points_add",
-		dataType: 'text',
-		data: { 
+		type     : "POST",
+		url      : "/admin/points/points_add",
+		dataType : 'text',
+		data     : {
 			file   : $("#gcpName").val(),
 			points : $("#pointsSrc").val()
 		},
-		success: function(data){
+		success  : function(data) {
 			alert(data);
 		},
-		error: function(data,stat,err){
+		error    : function(data,stat,err) {
 			alert([data,stat,err].join("\n"));
 		}
 	});
@@ -570,34 +578,34 @@ $("#sendData").click(function(){
 
 $('.modal').modal({ show: 0 });
 
-$("#chooseFile").click(function(){
+$("#chooseFile").click(function() {
 	$("#fileChooser").modal("show");
 });
 
-$("#eraseFile").click(function(){
+$("#eraseFile").click(function() {
 	$("#fileToErase").html($("#gcpName").val());
 	$("#confirmErase").modal("show");
 });
 
-$("#eraseConfirmed").click(function(){
+$("#eraseConfirmed").click(function() {
 	$.ajax({
-		type: "POST",
-		url: "/admin/points/file_erase",
-		dataType: 'script',
-		data: { 
-			file   : $("#gcpName").val()
+		type     : "POST",
+		url      : "/admin/points/file_erase",
+		dataType : 'script',
+		data     : {
+			file : $("#gcpName").val()
 		},
-		success: function(data){
+		success  : function(data){
 			$("#fileList").append(list[1]);
 			$("#pointsfile2").append(list[2]);
 		},
-		error: function(data,stat,err){
+		error    : function(data,stat,err) {
 			alert([data,stat,err].join("\n"));
 		}
 	});
 });
 
-$("#fileChooser li").click(function(){
+$("#fileChooser li").click(function() {
 	$("#gcpName").val($(this).text());
 	$("#fileChooser").modal("hide");
 });
