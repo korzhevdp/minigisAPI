@@ -84,26 +84,30 @@ var sights = [],
 			data     : {
 				picpath : config.url
 			},
-			success  : function (data) {
+			success  : function (photos) {
+				var dir,
+					a,
 				p_objects.removeAll();
-				if (data === "0") {
+				if (photos === "0") {
 					console.log("Фотографий не найдено");
 					return false;
 				}
 				for (a in imgs) {
-					cs = a.split(",");
-					wgeometry = [parseFloat(cs[0]), parseFloat(cs[1])];
-					for (b in imgs[a] ) {
-						if (imgs[a].hasOwnProperty(b)) {
-							var data   = imgs[a][b],
-								geometry   = { type: "Point", coordinates: wgeometry },
-								properties = { dir: cs, fname: data.fn, uploadedby: data.load, description: data.desc, hintContent: data.desc, hasBalloon: 0, clickable: 1 },
-								options    = photoStyle,
-								object     = new ymaps.Placemark(geometry, properties, options);
-								vector     = new ymaps.Polyline(ymaps.geometry.LineString.fromEncodedCoordinates(data.vector), { hasHint: 1, hintContent: "Направление съёмки", clickable: 0 }, vectoropts);
-							// помещается в контейнер вспомогательных объектов
-							p_objects.add(object);
-							p_objects.add(vector);
+					if (imgs.hasOwnProperty(a)) {
+						cs = a.split(",");
+						wgeometry = [parseFloat(cs[0]), parseFloat(cs[1])];
+						for (b in imgs[a] ) {
+							if (imgs[a].hasOwnProperty(b)) {
+								var data       = imgs[a][b],
+									geometry   = { type: "Point", coordinates: wgeometry },
+									properties = { dir: cs, fname: data.fn, uploadedby: data.load, description: data.desc, hintContent: data.desc, hasBalloon: 0, clickable: 1 },
+									options    = photoStyle,
+									object     = new ymaps.Placemark(geometry, properties, options);
+									vector     = new ymaps.Polyline(ymaps.geometry.LineString.fromEncodedCoordinates(data.vector), { hasHint: 1, hintContent: "Направление съёмки", clickable: 0 }, vectoropts);
+								// помещается в контейнер вспомогательных объектов
+								p_objects.add(object);
+								p_objects.add(vector);
+							}
 						}
 					}
 				}
@@ -498,50 +502,43 @@ function init_nav() {
 				if (isDemoStopped) {
 					return false;
 				}
-				// алгоритм бескластерный
-				//console.log("DC " + demoCounter);
-				/*
-				console.log( [config.showClusters, typeof clusters , clusters.toSource() ] );
-				if (config.showClusters && typeof clusters != 'undefined') {
-					console.log('cluster mod')
-					console.log(cl4show.toSource())
-				} else {
-					*/
-					//console.log('freehunt mod')
-					len = t_objects.getLength();
-					if (demoCounter < len) {
-						object   = t_objects.get(demoCounter);
-						gt       = object.geometry.getType();
-						distance = ymaps.coordSystem.geo.getDistance(map.getCenter(), fx[gt]());
-						//console.log(distance);
+				len = t_objects.getLength();
+				if (demoCounter < len) {
+					object   = t_objects.get(demoCounter);
+					gt       = object.geometry.getType();
+					distance = ymaps.coordSystem.geo.getDistance(map.getCenter(), fx[gt]());
+					if (distance < 2500){
 						if (gt === "Point") {
-							(distance < 2500)
-								? map.setCenter(object.geometry.getCoordinates(), 16, { duration: 4000 } )
-								: map.setCenter(object.geometry.getCoordinates(), 16, { duration: 0 } );
+							map.setCenter(object.geometry.getCoordinates(), 16, { duration: 4000 } );
 						}
-						if (gt !== "Point") {
-							(distance < 2500)
-								? map.setBounds(object.geometry.getBounds(), { duration: 4000, zoomMargin: 200 })
-								: map.setBounds(object.geometry.getBounds(), { duration: 0, zoomMargin: 200 });
+						if(gt !== "Point"){
+							map.setBounds(object.geometry.getBounds(), { duration: 4000, zoomMargin: 200 });
 						}
-						function openB() {
-							clearInterval(openTimer);
-							object.balloon.open();
-							function closeB() {
-								clearInterval(closeTimer);
-								map.balloon.close();
-								return false;
-							}
-							closeTimer = setTimeout(closeB, 26000);
+					}
+					if (distance > 2500){
+						if (gt === "Point") {
+							map.setCenter(object.geometry.getCoordinates(), 16, { duration: 0 } );
+						}
+						if(gt !== "Point"){
+							map.setBounds(object.geometry.getBounds(), { duration: 0, zoomMargin: 200 });
+						}
+					}
+					function openB() {
+						clearInterval(openTimer);
+						object.balloon.open();
+						function closeB() {
+							clearInterval(closeTimer);
+							map.balloon.close();
 							return false;
 						}
-						openTimer = setTimeout(openB, 6000);
-						demoCounter++;
-						return true
+						closeTimer = setTimeout(closeB, 26000);
+						return false;
 					}
-					demoCounter = 0;
-				/*}*/
-				//алгоритм кластеров
+					openTimer = setTimeout(openB, 6000);
+					demoCounter++;
+					return true
+				}
+				demoCounter = 0;
 				lilCycle = setTimeout(centerOnObject, 30000);
 			}
 
@@ -610,30 +607,34 @@ function init_nav() {
 
 	//mark clusters
 	function mark_clusters() {
-		//console.log($(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).length);
-
-		(labelmode) //console.log("off")
-			? $(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).prop("checked", false)
-			: $(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).removeClass(activeness); //console.log("on")
-
-		//console.log(config.selectors.systemClusterClass + config.selectors.systemActiveFlag)
+		if (labelmode) {
+			$(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).prop("checked", false)
+		}
+		if (!labelmode) {
+			$(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).removeClass(activeness);
+		}
 		len = $(config.selectors.systemClusterClass +  config.selectors.systemActiveFlag).length;
-		//console.log($(config.selectors.systemClusterClass + config.selectors.systemActiveFlag).length)
 
 		if (!len && config.showObjectsOS) {
-			//console.log("mk clust11");
-			(labelmode)
-				? $(config.selectors.systemObjectClass).prop("checked", true)
-				: $(config.selectors.systemObjectClass).addClass(activeness);
-		} else {
-			//console.log("mk clust22");
+			if (labelmode) {
+				$(config.selectors.systemObjectClass).prop("checked", true);
+			}
+			if (!labelmode) {
+				$(config.selectors.systemObjectClass).addClass(activeness);
+			}
+		}
+		if ( len ) {
 			$(config.selectors.systemClusterClass + config.selectors.systemActiveFlag).each(function () {
 				ref = parseInt($(this).attr("ref"), 10);
 				for (a in clusters[ref].content) {
-					//console.log("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a])
-					(labelmode)
-						? $("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a]).prop("checked", true)
-						: $("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a]).addClass(activeness);
+					if (clusters[ref].content.hasOwnProperty(a)) {
+						if (labelmode) {
+							$("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a]).prop("checked", true);
+						}
+						if (!labelmode) {
+							$("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a]).addClass(activeness);
+						}
+					}
 				}
 			});
 		}
@@ -743,23 +744,23 @@ function init_nav() {
 				}
 
 				for (a in sights) {
-					// в навигатор. Список групп.
-					$(config.selectors.systemObjectsContainer).append('<strong>' + sights[a].label + '</strong><br>');
-					label = sights[a].label;
-					proxy = sights[a].content;
-					//i = 0;
-					for ( b in proxy ) {
-						if (proxy.hasOwnProperty(b)) {
-							// фильтр пустых полей
-							if (!proxy[b].a) { continue; }
-							// в таблицу примечательных мест
-							$("#sList").append('<tr><td>' + proxy[b].d + '</td><td><a href="#" class="btn btn-mini btn-inverse sightsV" packet="' + a + '" ref="' + b + '">Показать</a></td></tr>');
-							// в навигатор
-							//console.log(1)
-							navitem = (labelmode)
-								? '<label for="' + config.selectors.systemObjectIdPrefix + b + '"><input type="checkbox" class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</label>'
-								: '<span class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</span>';
-							$(config.selectors.systemObjectsContainer).append(navitem + "\n");
+					if (sights.hasOwnProperty(a)) {
+						// в навигатор. Список групп.
+						$(config.selectors.systemObjectsContainer).append('<strong>' + sights[a].label + '</strong><br>');
+						label = sights[a].label;
+						proxy = sights[a].content;
+						for ( b in proxy ) {
+							if (proxy.hasOwnProperty(b)) {
+								// фильтр пустых полей
+								if (!proxy[b].a) { continue; }
+								// в таблицу примечательных мест
+								$("#sList").append('<tr><td>' + proxy[b].d + '</td><td><a href="#" class="btn btn-mini btn-inverse sightsV" packet="' + a + '" ref="' + b + '">Показать</a></td></tr>');
+								// в навигатор
+								navitem = (labelmode)
+									? '<label for="' + config.selectors.systemObjectIdPrefix + b + '"><input type="checkbox" class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</label>'
+									: '<span class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</span>';
+								$(config.selectors.systemObjectsContainer).append(navitem + "\n");
+							}
 						}
 					}
 				}
