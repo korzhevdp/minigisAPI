@@ -126,38 +126,39 @@ function checkPointsInclusion(data, id) {
 	var c,
 		d,
 		src_geometry = e_objects.get(0).geometry.getCoordinates(),
-		polygon = new ymaps.Polygon(new ymaps.geometry.Polygon.fromEncodedCoordinates(data));
-
-	nePolygons.add(polygon);
-	if (prop.pr === 1) {
-		if (polygon.geometry.contains(src_geometry)) {
-			$("#p" + id).prop('checked', true);
-		}
-	}
-
-	if (prop.pr === 2) {
-		for (c in src_geometry) {
-			if (src_geometry.hasOwnProperty(c)) {
-				if (polygon.geometry.contains(src_geometry[c])) {
-					$("#p" + id).prop('checked', true);
-				}
-			}
-		}
-	}
-
-	if (prop.pr === 3) {
-		for (c in src_geometry) {
-			if (src_geometry.hasOwnProperty(c)) {
-				for (d in src_geometry[c]){
-					if (src_geometry[c].hasOwnProperty(d)) {
-						if (polygon.geometry.contains(src_geometry[c][d])) {
-							$("#p" + id).prop('checked', true);
+		polygon = new ymaps.Polygon(new ymaps.geometry.Polygon.fromEncodedCoordinates(data)),
+		functions = {
+			1 : function () {
+					if (polygon.geometry.contains(src_geometry)) {
+						$("#p" + id).prop('checked', true);
+					}
+				},
+			2 : function () {
+					for (c in src_geometry) {
+						if (src_geometry.hasOwnProperty(c)) {
+							if (polygon.geometry.contains(src_geometry[c])) {
+								$("#p" + id).prop('checked', true);
+							}
+						}
+					}
+				},
+			3 : function () {
+					for (c in src_geometry) {
+						if (src_geometry.hasOwnProperty(c)) {
+							for (d in src_geometry[c]){
+								if (src_geometry[c].hasOwnProperty(d)) {
+									if (polygon.geometry.contains(src_geometry[c][d])) {
+										$("#p" + id).prop('checked', true);
+									}
+								}
+							}
 						}
 					}
 				}
 			}
-		}
-	}
+		};
+	nePolygons.add(polygon);
+	functions[prop.pr]();
 }
 
 // Nodal 2.0 Section
@@ -282,7 +283,7 @@ function convert_to_vertexes() {
 							i += 1;
 						}
 					}
-					
+
 				},
 				'Polygon'   : function () {
 					array = item.geometry.getCoordinates();
@@ -303,16 +304,14 @@ function convert_to_vertexes() {
 					}
 				},
 				'Circle'    : function () { return false; },
-				'Rectangle' : function () { return false; },
+				'Rectangle' : function () { return false; }
+			},
+			supportItemStyles = {
+				2 : "routes#thinRedLine",
+				3 : "area#thinRedLine"
 			};
 		vertexFunctions[gtype]();
-		if (gtype === 2) {
-			item.options.set(ymaps.option.presetStorage.get(normalize_style("routes#thinRedLine")));
-		}
-		if (gtype === 3) {
-			item.options.set(ymaps.option.presetStorage.get(normalize_style("area#thinRedLine")));
-		}
-
+		item.options.set(ymaps.option.presetStorage.get(normalize_style(supportItemStyles[gtype])))
 	});
 	place_objects(k);
 }
@@ -361,7 +360,7 @@ function calculateToleranceParameters(digits) {
 function requestTrapping() {
 	var type = $("#typeToTrap").val();
 	if(type === "0") {
-		alert("Выберите тип объектов");
+		console.log("Выберите тип объектов");
 		return false;
 	}
 	$.ajax({
