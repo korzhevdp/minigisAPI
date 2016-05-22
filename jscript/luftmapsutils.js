@@ -586,13 +586,13 @@ function init_nav() {
 		var packet = parseInt($(item).attr("packet"), 10),
 			ref    = parseInt($(item).attr("ref"), 10),
 			data   = sights[packet].content[ref],
-			htext  = data.d;
+			htext  = data.d,
 			geometries = {
 				1 : function (coords) { return new ymaps.geometry.Point(coords) },
 				2 : function (coords) { return new ymaps.geometry.LineString.fromEncodedCoordinates(coords) },
 				3 : function (coords) { return new ymaps.geometry.Polygon.fromEncodedCoordinates(coords) },
 				4 : function (coords) { return new ymaps.geometry.Circle([parseFloat(coords[0]), parseFloat(coords[1])], parseInt(coords[2], 10)) }
-			}
+			},
 			staticPics = {
 				1 : function (coords) { return 'pt=' + coords.join(",") + ",flag"; },
 				2 : function (coords) { return 'pl=c:ec473f99,f:00FF0033,w:3,' + coords; },
@@ -793,20 +793,20 @@ function init_nav() {
 					options      = (data.st.length > 3) ? ymaps.option.presetStorage.get(data.st) : defaultStyle,		// установка стиля
 					fx = {
 						1: function () {
-								geometry      = { type: "Point", coordinates: data.c };
-								return object = new ymaps.Placemark(geometry, properties, options);
+								geometry = { type: "Point", coordinates: data.c };
+								return new ymaps.Placemark(geometry, properties, options);
 							},
 						2: function () {
-								geometry      = ymaps.geometry.LineString.fromEncodedCoordinates(data.c);
-								return object = new ymaps.Polyline(geometry, properties, options);
+								geometry = ymaps.geometry.LineString.fromEncodedCoordinates(data.c);
+								return new ymaps.Polyline(geometry, properties, options);
 							},
 						3: function () {
-								geometry      = ymaps.geometry.Polygon.fromEncodedCoordinates(data.c);
-								return object = new ymaps.Polygon(geometry, properties, options);
+								geometry = ymaps.geometry.Polygon.fromEncodedCoordinates(data.c);
+								return new ymaps.Polygon(geometry, properties, options);
 							},
 						4: function () {
-								geometry      = ymaps.geometry.Circle(data.c, data.rad);
-								return object = new ymaps.Polygon(geometry, properties, options);
+								geometry = ymaps.geometry.Circle(data.c, data.rad);
+								return new ymaps.Polygon(geometry, properties, options);
 							}
 					};
 				a_objects.removeAll();															// очищается коллекция

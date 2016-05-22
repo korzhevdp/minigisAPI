@@ -1,10 +1,13 @@
 .DS_Store
 
+gisicons/*
 bootstrap/*
 ckeditor/*
 images/*
 jqueryui/*
 user_guide/*
 jscript/maps_frontend3.js
+jscript/mapconfig.js
+jscript/jquery.js
 jscript/styles.js
 jscript/styles2.js
