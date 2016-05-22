@@ -25,6 +25,10 @@ function add_collections() {
 	map.geoObjects.add(nePolygons);
 }
 
+function getPointOnCircleArc(center, direction, radius){
+	return ymaps.coordSystem.geo.solveDirectProblem(center, direction, radius).endPoint;
+}
+
 function setup_editor_collection() {
 	e_objects.events.add(['dragend', 'pixelgeometrychange'], function (event) {
 		var object    = e_objects.get(0),
@@ -36,7 +40,7 @@ function setup_editor_collection() {
 				'Polygon'   : function () { update_object_data(); },
 				'Circle'    : function () {
 					var startPoint = e_objects.get(0).geometry.getCoordinates(),
-						endPoint   = ymaps.coordSystem.geo.solveDirectProblem(startPoint, direction, e_objects.get(0).geometry.getRadius()).endPoint;
+						endPoint   = getPointOnCircleArc(startPoint, direction, e_objects.get(0).geometry.getRadius());
 					if (event.get('type') === 'dragend') {
 						if (a_objects.getLength() >= 2) {
 							a_objects.get(0).geometry.setCoordinates(startPoint);
@@ -51,7 +55,7 @@ function setup_editor_collection() {
 						a_objects.get(0).geometry.setCoordinates(aux_geometry[0]);
 						a_objects.get(1).geometry.setCoordinates(aux_geometry[1]);
 					}
-				},
+				}
 			};
 		undo.push(object.geometry.getCoordinates());
 		undoIterator = undo.length;
@@ -111,7 +115,7 @@ function place_aux_rct_points() {
 function place_aux_circle_points() {
 	var startPoint    = e_objects.get(0).geometry.getCoordinates(),
 		direction     = [1, 0],
-		endPoint      = ymaps.coordSystem.geo.solveDirectProblem(startPoint, direction, e_objects.get(0).geometry.getRadius()).endPoint,
+		endPoint      = getPointOnCircleArc(startPoint, direction, e_objects.get(0).geometry.getRadius()),
 		aux_geometry1 = {type: "Point", coordinates: startPoint},
 		aux_geometry2 = {type: "Point", coordinates: endPoint},
 		aux_options1  = ymaps.option.presetStorage.get(normalize_style("system#arrowcen")),
@@ -180,25 +184,33 @@ function place_object() {
 }
 
 function make_environment(object) {
-	if (prop.pr === 1) {
-		map.setCenter(object.geometry.getCoordinates());
-		update_point_data(object);
-	} else {
-		if(    (prop.pr === 2 && object.geometry.getCoordinates().length > 1)
-			|| (prop.pr === 3 && object.geometry.getCoordinates()[0].length > 1)) {
-			map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+	var fx = {
+		1: function() {
+			map.setCenter(object.geometry.getCoordinates());
+			update_point_data(object);
+		},
+		2: function () {
+			object.editor.startEditing();
+			perimeter_calc(object.geometry);
+			if (object.geometry.getCoordinates().length > 1) {
+				map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+			}
+		},
+		3: function () {
+			object.editor.startEditing();
+			perimeter_calc(object.geometry);
+			if (object.geometry.getCoordinates()[0].length > 1) {
+				map.setBounds(object.geometry.getBounds(), {checkZoomRange: 1, duration: 1000, zoomMargin: 20});
+			}
+		},
+		4: function () {
+			place_aux_circle_points();
+		},
+		5: function () {
+			place_aux_rct_points();
 		}
 	}
-	if (prop.pr === 3 || prop.pr === 2) {
-		object.editor.startEditing();
-		perimeter_calc(object.geometry);
-	}
-	if (prop.pr === 4) {
-		place_aux_circle_points();
-	}
-	if (prop.pr === 5) {
-		place_aux_rct_points();
-	}
+	fx[prop.pr]();
 }
 
 function set_layers() {
