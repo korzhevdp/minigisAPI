@@ -113,6 +113,10 @@ function makeSelect(type) {
 			}
 		}
 	}
+	listYandexMarkers();
+}
+
+function listYandexMarkers() {
 	if (yandex_styles !== undefined) {
 		$(".styles").append(yandex_styles.join("\n"));
 	}
@@ -199,12 +203,15 @@ function addSchedulePageAction() {
 
 function addCommutesPageAction() {
 	// здесь будет выводиться улавливание
-	var state = (prop.pr === 2 || prop.pr === 3) ? 1 : 0;
-	(state) ? $(".commutes").removeClass("hide") : $(".commutes").addClass("hide");
-	$(".commutes").unbind().click(function () {
-		$(".propPage, #schedule").addClass("hide");
-		$("#commutes").removeClass("hide");
-	});
+	if (prop.pr === 2 || prop.pr === 3) {
+		$(".commutes").removeClass("hide");
+		$(".commutes").unbind().click(function () {
+			$(".propPage, #schedule").addClass("hide");
+			$("#commutes").removeClass("hide");
+		});
+		return true;
+	}
+	$(".commutes").addClass("hide");
 }
 
 function switch_panel() {
