@@ -257,8 +257,10 @@ function init_nav() {
 		de  = props.get('description');
 		$("#picsOfLoc, #picOfLoc").empty();
 		for (a in imgs[dir]) {
-			data = imgs[dir][a];
-			$("#picsOfLoc").append('<img src="' + config.url + 'upload/' + dir + "/32/" + fn + '" big="' + config.url + 'upload/' + dir + "/600/" + fn + '" postedby="' + data.load + '" comment="' + data.desc + '" alt="">');
+			if (imgs[dir].hasOwnProperty(a)) {
+				data = imgs[dir][a];
+				$("#picsOfLoc").append('<img src="' + config.url + 'upload/' + dir + "/32/" + fn + '" big="' + config.url + 'upload/' + dir + "/600/" + fn + '" postedby="' + data.load + '" comment="' + data.desc + '" alt="">');
+			}
 		}
 		$("#picOfLoc").append('<img src="'+ config.url + 'upload/' + dir + "/600/" + fn + '" style="border:0" alt="">');
 		$("#picOfLoc img").css("display", 'none');
@@ -668,7 +670,11 @@ function init_nav() {
 				group = $(this).attr("gid");
 				if (state) {
 					$(config.selectors.systemObjectClass + "[gid=" + group + " ]").each(function () {
-						(labelmode) ? $(this).prop("checked", state) : $(this).addClass(activeness);
+						if (labelmode) {
+							$(this).prop("checked", state);
+							return true;
+						}
+						$(this).addClass(activeness);
 					});
 				}
 			});
@@ -760,9 +766,12 @@ function init_nav() {
 								// в таблицу примечательных мест
 								$("#sList").append('<tr><td>' + proxy[b].d + '</td><td><a href="#" class="btn btn-mini btn-inverse sightsV" packet="' + a + '" ref="' + b + '">Показать</a></td></tr>');
 								// в навигатор
-								navitem = (labelmode)
-									? '<label for="' + config.selectors.systemObjectIdPrefix + b + '"><input type="checkbox" class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</label>'
-									: '<span class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</span>';
+								if (labelmode) {
+									navitem = '<label for="' + config.selectors.systemObjectIdPrefix + b + '"><input type="checkbox" class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</label>';
+								}
+								if (!labelmode) {
+									navitem = '<span class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</span>';
+								}
 								$(config.selectors.systemObjectsContainer).append(navitem + "\n");
 							}
 						}
@@ -859,20 +868,29 @@ function init_nav() {
 			// отображение кластеров
 
 			if ( config.showClustersOS !== undefined && config.showClustersOS === 1 ) {
-				(labelmode)
-					? $(config.selectors.systemClusterClass).prop("checked", true)
-					: $(config.selectors.systemClusterClass).addClass(activeness);
+				if (labelmode) {
+					$(config.selectors.systemClusterClass).prop("checked", true);
+				}
+				if (!labelmode) {
+					$(config.selectors.systemClusterClass).addClass(activeness);
+				}
 				mark_clusters();
 			}
 			if ( config.showGroupsOS !== undefined && config.showGroupsOS === 1 ) {
-				(labelmode)
-					? $(config.selectors.systemGroupClass).prop("checked", true)
-					: $(config.selectors.systemGroupClass).addClass(activeness);
+				if (labelmode) {
+					$(config.selectors.systemGroupClass).prop("checked", true);
+				}
+				if (!labelmode) {
+					$(config.selectors.systemGroupClass).addClass(activeness);
+				}
 			}
 			if ( config.showObjectsOS !== undefined && config.showObjectsOS === 1 ) {
-				(labelmode)
-					? $(config.selectors.systemObjectClass).prop("checked", true)
-					: $(config.selectors.systemObjectClass).addClass(activeness);
+				if (labelmode) {
+					$(config.selectors.systemObjectClass).prop("checked", true);
+				}
+				if (!labelmode) {
+					$(config.selectors.systemObjectClass).addClass(activeness);
+				}
 				check_nav();
 			}
 			if (config.objectSearch) {
