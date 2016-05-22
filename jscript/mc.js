@@ -52,8 +52,7 @@ function disable_layers() {
 }
 
 function trace_layers(){
-	$(".b_layers").prop("checked", false).prop("disabled", false).parent().parent().removeClass('inactive');
-	$(".b_types").prop("checked", false).prop("disabled", false).parent().parent().removeClass('inactive');
+	$(".b_layers, .b_types").prop("checked", false).prop("disabled", false).parent().parent().removeClass('inactive');
 	$(".a_layers").each(function () {
 		var ref = $(this).attr("ref");
 		if ($(this).prop("checked")) {
@@ -62,12 +61,13 @@ function trace_layers(){
 			$("#atab" + ref).addClass('inactive');
 			$("#btab" + ref + " :checkbox").prop("checked", false).prop("disabled", true);
 			$("#btab" + ref).addClass('inactive');
-		} else {
-			$("#atab" + ref + " :checkbox").prop("checked", false).prop("disabled", false);
-			$("#atab" + ref).removeClass('inactive');
-			$("#btab" + ref + " :checkbox").prop("checked", false).prop("disabled", false);
-			$("#atab" + ref).removeClass('inactive');
+			disable_layers();
+			return false;
 		}
+		$("#atab" + ref + " :checkbox").prop("checked", false).prop("disabled", false);
+		$("#atab" + ref).removeClass('inactive');
+		$("#btab" + ref + " :checkbox").prop("checked", false).prop("disabled", false);
+		$("#atab" + ref).removeClass('inactive');
 		disable_layers();
 	});
 }

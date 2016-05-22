@@ -7,7 +7,7 @@
 #SContainer{
 	display: none;
 	opacity:0;
-	padding: 0px;
+	padding: 0;
 	height:400px;
 	width: 227px;
 	z-index: 100;
@@ -23,21 +23,14 @@
 }
 
 #SContainer .head{
-	font-size:10pt;
-	height:22px;
-	padding:0px;
-	margin:0px;
-	width: 223px;
-	color: #FFFFCC;
-	background-color:#3366CC;
-	cursor: move;
+	font-size:10pt; height:22px; padding:0; margin:0; width: 223px; color: #FFFFCC; background-color:#3366CC; cursor: move;
 }
 
 #SContainer .head{
 	font-size:10pt;
 	height:22px;
-	padding:0px;
-	margin:0px;
+	padding:0;
+	margin:0;
 	width: 225px;
 	color: #FFFFCC;
 	background-color:#3366CC;
@@ -48,12 +41,12 @@
 }
 
 .main_page_body{
-	border-spacing:0px;
-	padding:0px;
+	border-spacing:0;
+	padding:0;
 	height:600px;
 	width:100%;
-	margin-top:0px;
-	margin-bottom:0px;
+	margin-top:0;
+	margin-bottom:0;
 }
 
 .map_name{
@@ -113,8 +106,8 @@
 
 
 .groupcontainer ul, #resultBody{
-	margin:0px;
-	padding:0px;
+	margin:0;
+	padding:0;
 }
 
 #resultBody li {
@@ -157,7 +150,7 @@
 }
 
 #navigator{
-	padding: 0px;
+	padding: 0;
 	height:330px;
 	overflow:auto;
 	width: 223px;
@@ -167,7 +160,7 @@
 	margin-bottom:5px;
 }
 
-#resultBody li.active {
+#resultBody .active {
 	border: 1px solid red;
 	color: red;
 }
@@ -179,7 +172,7 @@
 .langMark {
 	width:32px;
 	height:32px;
-	border:0px;
+	border:0;
 	margin-top:8px;
 	cursor:pointer;
 }
@@ -201,10 +194,10 @@ div.stdView {
 	height:128px;
 	overflow: hidden;
 }
-div.stdView span.coord1{
-	margin-left:0px;
+div.stdView .coord1{
+	margin-left:0;
 }
-div.stdView span.coord2{
+div.stdView .coord2{
 	margin-left:24px;
 }
 div.stdView img {
@@ -220,19 +213,12 @@ div.stdViewContent {
 	max-width:724px;
 	padding-left: 20px;
 	margin-bottom: 90px;
-}
-div.stdViewContent h1,
-div.stdViewContent h2,
-div.stdViewContent h3,
-div.stdViewContent h4,
-div.stdViewContent h5,
-div.stdViewContent h6 {
 	color: #999;
 }
-.control-group{
+.control-group {
 	display:block;
 }
-.control-group textarea{
+.control-group textarea {
 	width: 349px;
 	height: 50px;
 }
@@ -240,7 +226,7 @@ div.stdViewContent h6 {
 	width:200px !important;
 }
 
-label.add-on{
+.add-on {
 	font-size:12px !important;
 	display:inline-block !important;
 	width:120px !important;
@@ -250,7 +236,7 @@ label.add-on{
 }
 
 .input-prepend {
-	margin-bottom:0px;
+	margin-bottom:0;
 	line-height:16px;
 }
 .input-prepend input[type=checkbox]{
@@ -295,13 +281,13 @@ div.ymaps_big_balloon #sm_src_pic{
 	display:block;
 }
 
-div.ymaps_big_balloon span.tlabel{
+div.ymaps_big_balloon .tlabel{
 	font-weight: bold;
 	color: #888888;
 }
-div.ymaps_big_balloon span.addr
-div.ymaps_big_balloon span.name
-div.ymaps_big_balloon span.cont{
+div.ymaps_big_balloon .addr,
+div.ymaps_big_balloon .name,
+div.ymaps_big_balloon .cont {
 	color: #000000;
 }
 

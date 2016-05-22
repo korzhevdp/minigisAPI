@@ -1,6 +1,6 @@
 body{
-	padding:0px;
-	margin:0px;
+	padding:0;
+	margin:0;
 }
 .navTable{
 	border:none;
@@ -14,13 +14,13 @@ a.brand img{
 	height:24px;
 	border:none;
 }
-td.menu_col{
+.menu_col{
 	vertical-align:top;
 	width:218px;
 }
 #operations_menu li{
 	width: 170px;
-	margin-left:0px;
+	margin-left:0;
 	font-size:12px;
 	line-height:16px;
 }
@@ -37,7 +37,7 @@ td.content {
 	vertical-align:top;
 }
 
-label.add-on{
+.add-on{
 	font-size:12px !important;
 	display:inline-block !important;
 	width:120px !important;
@@ -47,7 +47,7 @@ label.add-on{
 }
 
 .input-prepend {
-	margin-bottom:0px;
+	margin-bottom:0;
 	line-height:16px;
 }
 .input-prepend input[type=checkbox]{
@@ -140,7 +140,7 @@ option.lang_es{
 	width : 70px !important;
 }
 ul.accessgroups {
-	margin-left          : 0px;
+	margin-left          : 0;
 	display: block;
 	clear: both;
 }
@@ -164,7 +164,7 @@ ul.accessgroups li label input[type=checkbox]{
 .langMark {
 	width:32px;
 	height:32px;
-	border:0px;
+	border:0;
 	margin-top:8px;
 	cursor:pointer;
 }
@@ -193,8 +193,8 @@ div.semanticsManager h3,
 div.semanticsManager h4,
 div.semanticsManager h5,
 div.semanticsManager h6 {
-	margin-left: 0px;
-	padding-left: 0px;
+	margin-left: 0;
+	padding-left: 0;
 }
 
 #tabs1, #tabs2, #tabs3 {
@@ -202,11 +202,11 @@ div.semanticsManager h6 {
 	overflow:auto;
 }
 
-div.semanticsManager input.short {
+.semanticsManager input.short {
 	width: 100px;
 }
 
-div.semanticControls{
+.semanticControls{
 	display:block;
 	clear:both;
 }
@@ -216,7 +216,7 @@ div.semanticControls{
 	display:block;
 	clear:both;
 	width:550px;
-	margin:0px;
+	margin:0;
 }
 .groupBindings li {
 	float  : left;
@@ -230,7 +230,7 @@ div.semanticControls{
 }
 
 .groupBindings li label {
-	margin:0px;
+	margin:0;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
@@ -239,7 +239,7 @@ div.semanticControls{
 }
 #payTable input,
 #payTable select{
-	margin:0px;
+	margin:0;
 }
 #payTable input,
 #payTable select option{
@@ -283,7 +283,7 @@ div.semanticControls{
 	font-size: .5rem;
 }
 
-div.commentEntry{
+.commentEntry{
 	width: 600px;
 	font-size: .75rem;
 	margin-left: 15px;
