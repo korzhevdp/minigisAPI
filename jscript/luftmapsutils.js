@@ -86,7 +86,7 @@ var sights = [],
 			},
 			success  : function (photos) {
 				var dir,
-					a,
+					a;
 				p_objects.removeAll();
 				if (photos === "0") {
 					console.log("Фотографий не найдено");
@@ -248,7 +248,7 @@ function init_nav() {
 	p_objects.events.add('click', function (e) {
 		props = e.get('target').properties;
 		/* не отрабатывать при щелчке по линии вектора */
-		if (props.get('clickable') == 0) { return false; }
+		if (props.get('clickable') === 0) { return false; }
 		e.stopPropagation();
 		map.balloon.close();
 		dir = props.get('dir');
@@ -298,16 +298,17 @@ function init_nav() {
 			coords = e.get('coordPosition');
 			// запрос адреса к геокодеру
 			ymaps.geocode(coords, { kind: ['house'] }).then(function (res) {
-				var names = [];
+				var names = [],
+					address;
 				res.geoObjects.each(function (obj) {
 					names.push(obj.properties.get('name'));
 				});
-				valtz = (names[0] === undefined) ? "Нет адреса" : [names[0]].join(', ') ;
+				address = (names[0] === undefined) ? "Нет адреса" : [names[0]].join(', ') ;
 				// открытие баллончика
 				map.balloon.open(coords, {
 					content: '<small class="muted cHead"><img src="http://api.korzhevdp.com/images/marker.png" alt="координаты">&nbsp;&nbsp;'+
 					[ coords[0].toPrecision(config.precision), coords[1].toPrecision(config.precision)].join(', ') +
-					'&nbsp;&nbsp;&nbsp;&nbsp;<img src="http://api.korzhevdp.com/images/mail_box.png" alt="адрес">&nbsp;&nbsp;' + valtz + '</small>' +
+					'&nbsp;&nbsp;&nbsp;&nbsp;<img src="http://api.korzhevdp.com/images/mail_box.png" alt="адрес">&nbsp;&nbsp;' + address + '</small>' +
 					'<div class="cBody"><input id="coordPart" type="text" class="hide" value="' + [ coords[0].toPrecision(config.precision), coords[1].toPrecision(config.precision)].join(',') + '">' +
 					'Описание: <textarea id="desc" rows="4" cols="10" placeholder="Здесь находится... (но не более 400 символов, пожалуйста)"></textarea>' +
 					'<div id="photos">&nbsp;</div>' +
@@ -368,7 +369,8 @@ function init_nav() {
 				'<input type="hidden" name="path" id="path" value="' + config.url + '">' +
 				'</form>';
 			$("#superframe").after(form6);
-			// координаты загрубляются до длины используемой в системе хранения изображений. Фиксированно 6 разрядов, изменение параметра на уже работающей системе приведёт к неработоспособности!.
+			// координаты загрубляются до длины используемой в системе хранения изображений.
+			//Фиксированно 6 разрядов, изменение параметра на уже работающей системе приведёт к неработоспособности!.
 			$("#coord").val([coords[0].toFixed(6), coords[1].toFixed(6)].join(","));
 			// кнопка загрузки на сервер.
 			$("#leaveTicket").unbind().click(function () {
@@ -410,7 +412,9 @@ function init_nav() {
 	*/
 	function styleAddToStorage(src) {
 		for (a in src) {
-			ymaps.option.presetStorage.add(a, src[a]);
+			if (src.hasOwnProperty(a)) {
+				ymaps.option.presetStorage.add(a, src[a]);
+			}
 		}
 	}
 	styleAddToStorage(userstyles);
