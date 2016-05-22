@@ -518,7 +518,6 @@ function init_nav() {
 							(distance < 2500)
 								? map.setCenter(object.geometry.getCoordinates(), 16, { duration: 4000 } )
 								: map.setCenter(object.geometry.getCoordinates(), 16, { duration: 0 } );
-							}
 						}
 						if (gt !== "Point") {
 							(distance < 2500)
@@ -638,7 +637,6 @@ function init_nav() {
 				}
 			});
 		}
-
 		check_nav();
 		//map.setZoom(14);
 	}
@@ -702,6 +700,7 @@ function init_nav() {
 	получение данных для интерактивного справочника объектов карты. С некоторых пор - универсальное хранилище
 	config.url "прозрачно" берётся ymaps.js.
 	*/
+
 	$.ajax({
 		type     : "POST",
 		url      : "http://luft.korzhevdp.com/getsights.php",
@@ -712,7 +711,7 @@ function init_nav() {
 		success  : function (data) {
 			if (groups !== undefined) {
 				sc = config.selectors.systemGroupClass.replace(/^(\.|:)/, '');
-				for(a in groups) {
+				for (a in groups) {
 					if (groups.hasOwnProperty(a)) {
 						navitem = (labelmode)
 							? '<label for="' + config.selectors.systemGroupIdPrefix + a + '"><input type="checkbox" class="' + sc + '" id="' + config.selectors.systemGroupIdPrefix + a + '" gid="' + a + '">' + groups[a].g + '</label>'
@@ -736,7 +735,6 @@ function init_nav() {
 					}
 				}
 			}
-
 			// заполнение списков объектов
 			if (sights !== undefined) {
 				sc = config.selectors.systemObjectClass.replace(/^(\.|:)/, '');
@@ -751,7 +749,7 @@ function init_nav() {
 					proxy = sights[a].content;
 					//i = 0;
 					for ( b in proxy ) {
-						if (proxy.hasOwnProperty(b)){
+						if (proxy.hasOwnProperty(b)) {
 							// фильтр пустых полей
 							if (!proxy[b].a) { continue; }
 							// в таблицу примечательных мест
@@ -889,7 +887,7 @@ function init_nav() {
 					$(config.selectors.systemObjectClass).each(function () {
 						if ($(this).parent().html().indexOf(str) === -1) {
 							$(this).addClass("hide").removeClass(activeness);
-							return true
+							return true;
 						}
 						$(this).removeClass("hide");
 					});
@@ -899,14 +897,15 @@ function init_nav() {
 			if (config.hasNav && !config.demoMode) {
 				map.geoObjects.add(t_objects);
 				$(config.selectors.systemNavigatorClass).removeClass("hide");
-				return true;
+			} else {
+				$(config.selectors.systemNavigatorClass).addClass("hide");
 			}
-			$(config.selectors.systemNavigatorClass).addClass("hide");
 		},
 		error: function (data,stat,err) {
 			console.log([data,stat,err].join("\n"));
 		}
 	});
+
 }
 
 function get_user() {
