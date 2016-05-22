@@ -2,12 +2,10 @@
 /* jshint undef: true, unused: true */
 /* globals ymaps, confirm, style_src, usermap, style_paths, yandex_styles, yandex_markers, style_circles, style_polygons, styleAddToStorage */
 var a;
-$('#operation-menu li a').each(function(){
+$('#operation-menu li a').each(function() {
 	//alert(window.location.toString() + '   ' + $(this).attr('href'));
-	if(window.location.toString() == '' + ($(this).attr('href'))) {
+	if(window.location.toString() === $(this).attr('href')) {
 		$(this).parent().parent().addClass('active');
-	}else{
-		//alert('no');
 	}
 });
 
@@ -76,45 +74,28 @@ function trace_layers(){
 
 function trace_types(item){
 	var ref = item.attr("ref");
+	disable_layers();
 	if (item.prop("checked")) {
 		$("#btype" + ref).prop("checked", false).prop("disabled", true);
-	} else {
-		$("#btype" + ref).prop("checked", false).prop("disabled", false);
+		return true;
 	}
-	disable_layers();
+	$("#btype" + ref).prop("checked", false).prop("disabled", false);
 }
 
-/*
-		a_types   = [64],
-		b_layers  = [0],
-		b_types   = [63],
-*/
-
-
-for (a in a_layers){
-	if (a_layers.hasOwnProperty(a)) {
-		$("#a_layer" + a_layers[a]).prop("checked", true).prop("disabled", false);
+function setCheckboxes(source, selector) {
+	for (a in source){
+		if (source.hasOwnProperty(a)) {
+			$(selector + source[a]).prop("checked", true).prop("disabled", false);
+			if (selector === "#atype") {
+				trace_types($(selector + source[a]));
+			}
+		}
 	}
 }
 
+setCheckboxes(a_layers, "#a_layer");
 trace_layers();
-
-for (a in b_layers){
-	if (b_layers.hasOwnProperty(a)) {
-		$("#blayer" + b_layers[a]).prop("checked", true).prop("disabled", false);
-	}
-}
-
-for (a in b_types){
-	if (b_types.hasOwnProperty(a)) {
-		$("#btype" + b_types[a]).prop("checked", true).prop("disabled", false);
-	}
-}
-
-for (a in a_types){
-	if (a_types.hasOwnProperty(a)) {
-		$("#atype" + a_types[a]).prop("checked", true).prop("disabled", false);
-		trace_types($("#atype" + a_types[a]));
-	}
-}
+setCheckboxes(b_layers, "#blayer");
+setCheckboxes(b_types, "#btype");
+setCheckboxes(a_types, "#atype");
 disable_layers();
