@@ -489,9 +489,9 @@ function init_nav() {
 				var openTimer,
 					closeTimer;
 					fx = {
-						"Point"      : function(object) { return object.geometry.getCoordinates() }
-						"LineString" : function(object) { return object.geometry.getCoordinates()[0] }
-						"Polygon"    : function(object) { return object.geometry.getCoordinates()[0][0] }
+						"Point"      : function(object) { return object.geometry.getCoordinates() },
+						"LineString" : function(object) { return object.geometry.getCoordinates()[0] },
+						"Polygon"    : function(object) { return object.geometry.getCoordinates()[0][0] },
 						"Circle"     : function(object) { return object.geometry.getCenter() }
 					}
 				clearTimeout(lilCycle);
