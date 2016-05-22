@@ -38,7 +38,7 @@ var sights = [],
 				$("#loginM").modal('show');
 			},
 			error: function (data,stat,err) {
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	});
@@ -53,66 +53,64 @@ var sights = [],
 				$(".modal").modal("hide");
 			},
 			error: function (data,stat,err) {
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	});
 	// поисковая форма
 	$("#searchFormToggle").click(function () {
-		a = map.controls.indexOf(searchControl);
-		//alert(a)
-		if (a < 0) {
+		if (map.controls.indexOf(searchControl) === -1) {
 			map.controls.add(searchControl);
-		} else {
-			map.controls.remove(searchControl);
+			return true;
 		}
+		map.controls.remove(searchControl);
 	});
 	// "интерактивный справочник"
 	$(".toggleNav").click(function () {
 		if ($("#objNavigator").hasClass("hide")) {
 			$("#objNavigator").removeClass("hide");
 			return false;
-		} else {
-			$("#objNavigator").addClass("hide");
-			return false;
 		}
+		$("#objNavigator").addClass("hide");
+		return false;
 	});
 	// поведение пункта меню "показать фотографии"
 	$(".sphotos").click(function () {
 		$(this).prop("src", "http://api.korzhevdp.com/images/loading.gif")
 		$.ajax({
-			type: "POST",
-			url: "/getphotos.php",
-			dataType: 'script',
-			data: {
-				picpath: config.url
+			type     : "POST",
+			url      : "/getphotos.php",
+			dataType : 'script',
+			data     : {
+				picpath : config.url
 			},
-			success: function (data) {
+			success  : function (data) {
 				p_objects.removeAll();
-				if (data == "0") {
-					alert("Фотографий не найдено");
+				if (data === "0") {
+					console.log("Фотографий не найдено");
 					return false;
 				}
 				for (a in imgs) {
 					cs = a.split(",");
 					wgeometry = [parseFloat(cs[0]), parseFloat(cs[1])];
 					for (b in imgs[a] ) {
-						data = imgs[a][b];
-						geometry   = { type: "Point", coordinates: wgeometry },
-						properties = { dir: cs, fname: data.fn, uploadedby: data.load, description: data.desc, hintContent: data.desc, hasBalloon: 0, clickable: 1 },
-						options    = photoStyle,
-						object     = new ymaps.Placemark(geometry, properties, options);
-						vector     = new ymaps.Polyline(ymaps.geometry.LineString.fromEncodedCoordinates(data.vector), { hasHint: 1, hintContent: "Направление съёмки", clickable: 0 }, vectoropts);
-
-						// помещается в контейнер вспомогательных объектов
-						p_objects.add(object);
-						p_objects.add(vector);
+						if (imgs[a].hasOwnProperty(b)) {
+							var data   = imgs[a][b],
+								geometry   = { type: "Point", coordinates: wgeometry },
+								properties = { dir: cs, fname: data.fn, uploadedby: data.load, description: data.desc, hintContent: data.desc, hasBalloon: 0, clickable: 1 },
+								options    = photoStyle,
+								object     = new ymaps.Placemark(geometry, properties, options);
+								vector     = new ymaps.Polyline(ymaps.geometry.LineString.fromEncodedCoordinates(data.vector), { hasHint: 1, hintContent: "Направление съёмки", clickable: 0 }, vectoropts);
+							// помещается в контейнер вспомогательных объектов
+							p_objects.add(object);
+							p_objects.add(vector);
+						}
 					}
 				}
 				return true;
 			},
 			error: function (data,stat,err) {
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 		// замена пунктов меню
@@ -150,11 +148,11 @@ var sights = [],
 			url: "/leavemessage.php",
 			dataType: 'text',
 			success: function (data) {
-				alert(data);
+				console.log(data);
 				$(".modal").modal("hide");
 			},
 			error: function (data,stat,err) {
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	});
@@ -177,39 +175,36 @@ var sights = [],
 			},
 			dataType: 'text',
 			success : function (data) {
-				if (data.length == 32) {
+				var typeCounter = 0,
 					out = [];
-					if ($("#navinclude").prop('checked')) {
-						out.push("nav=1");
-					} else {
-						out.push("nav=0");
-					}
-					if ($("#autodemo").prop('checked')) {
-						out.push("&demo=1");
-					} else {
-						out.push("&demo=0");
-					}
-					content = '&obj=none';
+				if (data.length === 32) {
+					($("#navinclude").prop('checked')) ? out.push("nav=1")   : out.push("nav=0");
+					($("#autodemo").prop('checked'))   ? out.push("&demo=1") : out.push("&demo=0");
 					if ($("#objinclude").prop('checked')) {
-						content = "&obj=obj";
+						out.push("&obj=obj");
+						typeCounter += 1;
 					}
 					if ($("#photoinclude").prop('checked')) {
-						content = "&obj=photo";
+						out.push("&obj=photo");
+						typeCounter += 1;
 					}
 					if ($("#objinclude").prop('checked') && $("#photoinclude").prop('checked')) {
-						content = "&obj=both";
+						out.push("&obj=both");
+						typeCounter += 1;
 					}
-					out.push(content);
+					if (!typeCounter) {
+						out.push('&obj=none');
+					}
 					out.push('&folder=' + config.url);
 					out.push('&uid=' + data);
 					string = '<iframe name="st" src="http://luft.korzhevdp.com/iframe.php?' + out.join("") + '" width="600" height="600"></iframe>';
 					$("#iframesrc").val(string);
-				} else {
-					$("#iframesrc").val(data);
+					return true;
 				}
+				$("#iframesrc").val(data);
 			},
 			error: function (data,stat,err) {
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	});
@@ -303,7 +298,7 @@ function init_nav() {
 				res.geoObjects.each(function (obj) {
 					names.push(obj.properties.get('name'));
 				});
-				valtz = (names[0] != "undefined") ? [names[0]].join(', ') : "Нет адреса";
+				valtz = (names[0] === undefined) ? "Нет адреса" : [names[0]].join(', ') ;
 				// открытие баллончика
 				map.balloon.open(coords, {
 					content: '<small class="muted cHead"><img src="http://api.korzhevdp.com/images/marker.png" alt="координаты">&nbsp;&nbsp;'+
@@ -312,7 +307,7 @@ function init_nav() {
 					'<div class="cBody"><input id="coordPart" type="text" class="hide" value="' + [ coords[0].toPrecision(config.precision), coords[1].toPrecision(config.precision)].join(',') + '">' +
 					'Описание: <textarea id="desc" rows="4" cols="10" placeholder="Здесь находится... (но не более 400 символов, пожалуйста)"></textarea>' +
 					'<div id="photos">&nbsp;</div>' +
-					'<div id="errors" class="alert alert-error hide">&nbsp;</div>' +
+					'<div id="errors" class="console.log console.log-error hide">&nbsp;</div>' +
 					'<button type="button" id="photoUp" class="btn btn-mini">Добавить фото</button><span id="picList"></span></div><hr>' +
 					'<button class="btn btn-mini btn-info" id="linkGetter">Получить ссылку</button>' +
 					'<button class="btn btn-mini btn-primary pull-right" id="leaveTicket" disabled="disabled">Загрузить на сервер</button>'
@@ -338,17 +333,13 @@ function init_nav() {
 					});
 					$("#picList").html(uploadPics.join(", "));
 					// разрешаем/запрещаем нажатие кнопки загрузки
-					if (uploadPics.length) {
-						$("#leaveTicket").removeAttr('disabled');
-					} else {
-						$("#leaveTicket").attr('disabled', 'disabled');
-					}
+					$("#leaveTicket").prop('disabled', !uploadPics.length);
 				});
 			});
 			// обработка пришедших по итогам загрузки картинок данных. Считывается информация из iframe
 			$("#superframe").load(function () {
 				text = $(this).contents().text();
-				$("#errors").removeClass("alert-error").addClass("alert-success").html(text).fadeIn(700, function () {
+				$("#errors").removeClass("console.log-error").addClass("console.log-success").html(text).fadeIn(700, function () {
 					$("#errors").delay(5000).fadeOut(700, function () {
 						map.balloon.close();
 					});
@@ -360,8 +351,8 @@ function init_nav() {
 				var coord = $("#coordPart").val().replace(/\,/, "%2C").replace(/\./, "%2E"),
 					mType = cMapType,
 					desc  = ( $("#desc").val().length ) ? $("#desc").val().replace(" ", "%20") : "Без%20описания";
-				//alert(coord);
-				$("#photos").html('<input type="text" value="' + 'http://luft.korzhevdp.com' + config.url + '%23' + [ coord , mType, desc ].join("%7C") + '">');
+				//console.log(coord);
+				$("#photos").html('<input type="text" value="http://luft.korzhevdp.com' + config.url + '%23' + [ coord , mType, desc ].join("%7C") + '">');
 				//map.balloon.close();
 				//$("#yourLink").modal("show");
 			});
@@ -428,7 +419,7 @@ function init_nav() {
 	hash = window.location.hash;
 	if (hash.length > 7) {
 		var arr = hash.substr(1).split("|");					// удаляется "#", конверсия строки в массив
-		if (arr.length == 3) {									// если количество переданных элементов верно
+		if (arr.length === 3) {									// если количество переданных элементов верно
 			// создаём типовой объект
 			var geometry   = { type: "Point", coordinates: arr[0].split(",") },
 				properties = { description: arr[2], hintContent: arr[2], name: arr[2], hasBalloon: 1 },
@@ -438,9 +429,9 @@ function init_nav() {
 			map.setCenter(arr[0].split(","));					// центровка карты по объекту
 			map.setType(layerTypes[arr[1]].label);				// установка слоя карты
 			$("#clearMap").removeClass("hide");					// показываем кнопку очистки карты
-		} else {
-			// ошибка "Недостаточно данных"
-			alert("Ссылка некорректна. Объект не может быть отображён");
+		}
+		if (arr.length !== 3) {
+			console.log("Ссылка некорректна. Объект не может быть отображён");
 		}
 	}
 
@@ -470,10 +461,12 @@ function init_nav() {
 			//console.log("E is started");
 			clearTimeout(bigCycle);
 			//console.log("big cycle, demo stop:" + isDemoStopped);
-			
-			if (objectType == "Point" || objectType == "Circle") {
+
+			if (objectType === "Point" || objectType === "Circle") {
 				map.setCenter(t_objects.get(0).geometry.getCoordinates(), 15);
-			} else {
+			}
+
+			if (objectType !== "Point" && objectType !== "Circle") {
 				map.setBounds(t_objects.get(0).geometry.getBounds());
 			}
 
@@ -495,6 +488,12 @@ function init_nav() {
 			function centerOnObject() {
 				var openTimer,
 					closeTimer;
+					fx = {
+						"Point"      : function(object) { return object.geometry.getCoordinates() }
+						"LineString" : function(object) { return object.geometry.getCoordinates()[0] }
+						"Polygon"    : function(object) { return object.geometry.getCoordinates()[0][0] }
+						"Circle"     : function(object) { return object.geometry.getCenter() }
+					}
 				clearTimeout(lilCycle);
 				if (isDemoStopped) {
 					return false;
@@ -511,35 +510,20 @@ function init_nav() {
 					//console.log('freehunt mod')
 					len = t_objects.getLength();
 					if (demoCounter < len) {
-						object = t_objects.get(demoCounter);
-						gt     = object.geometry.getType();
-						switch (gt) {
-						case "Point":
-							distance = ymaps.coordSystem.geo.getDistance(map.getCenter(), object.geometry.getCoordinates());
-							break;
-						case "LineString":
-							distance = ymaps.coordSystem.geo.getDistance(map.getCenter(), object.geometry.getCoordinates()[0]);
-							break;
-						case "Polygon":
-							distance = ymaps.coordSystem.geo.getDistance(map.getCenter(), object.geometry.getCoordinates()[0][0]);
-							break;
-						case "Circle":
-							distance = ymaps.coordSystem.geo.getDistance(map.getCenter(), object.geometry.getCenter());
-							break;
-						}
+						object   = t_objects.get(demoCounter);
+						gt       = object.geometry.getType();
+						distance = ymaps.coordSystem.geo.getDistance(map.getCenter(), fx[gt]());
 						//console.log(distance);
-						if (gt == "Point") {
-							if (distance < 2500) {
-								map.setCenter(object.geometry.getCoordinates(), 16, { duration: 4000 } );
-							} else {
-								map.setCenter(object.geometry.getCoordinates(), 16, { duration: 0 } );
+						if (gt === "Point") {
+							(distance < 2500)
+								? map.setCenter(object.geometry.getCoordinates(), 16, { duration: 4000 } )
+								: map.setCenter(object.geometry.getCoordinates(), 16, { duration: 0 } );
 							}
-						} else {
-							if (distance < 2500) {
-								map.setBounds(object.geometry.getBounds(), { duration: 4000, zoomMargin: 200 });
-							} else {
-								map.setBounds(object.geometry.getBounds(), { duration: 0, zoomMargin: 200 });
-							}
+						}
+						if (gt !== "Point") {
+							(distance < 2500)
+								? map.setBounds(object.geometry.getBounds(), { duration: 4000, zoomMargin: 200 })
+								: map.setBounds(object.geometry.getBounds(), { duration: 0, zoomMargin: 200 });
 						}
 						function openB() {
 							clearInterval(openTimer);
@@ -554,9 +538,9 @@ function init_nav() {
 						}
 						openTimer = setTimeout(openB, 6000);
 						demoCounter++;
-					} else {
-						demoCounter = 0;
+						return true
 					}
+					demoCounter = 0;
 				/*}*/
 				//алгоритм кластеров
 				lilCycle = setTimeout(centerOnObject, 30000);
@@ -600,43 +584,27 @@ function init_nav() {
 	}
 
 	function placeObject(item) {
-		var packet = parseInt($(item).attr("packet")),
-			ref    = parseInt($(item).attr("ref")),
+		var packet = parseInt($(item).attr("packet"), 10),
+			ref    = parseInt($(item).attr("ref"), 10),
 			data   = sights[packet].content[ref],
 			htext  = data.d;
-		switch(data.ct) {
-			case 1 :
-				cds = new ymaps.geometry.Point(data.c);
-			break;
-			case 2 :
-				cds = new ymaps.geometry.LineString.fromEncodedCoordinates(data.c);
-			break;
-			case 3 :
-				cds = new ymaps.geometry.Polygon.fromEncodedCoordinates(data.c);
-			break;
-			case 4 :
-				cds = new ymaps.geometry.Circle([parseFloat(data.c[0]), parseFloat(data.c[1])], parseInt(data.c[2]));
-			break;
-		}
-		var geometry   = cds,
-			properties = { description: htext, hintContent: htext, name: htext, link: data.ln },
+			geometries = {
+				1 : function (coords) { return new ymaps.geometry.Point(coords) },
+				2 : function (coords) { return new ymaps.geometry.LineString.fromEncodedCoordinates(coords) },
+				3 : function (coords) { return new ymaps.geometry.Polygon.fromEncodedCoordinates(coords) },
+				4 : function (coords) { return new ymaps.geometry.Circle([parseFloat(coords[0]), parseFloat(coords[1])], parseInt(coords[2], 10)) }
+			}
+			staticPics = {
+				1 : function (coords) { return 'pt=' + coords.join(",") + ",flag"; },
+				2 : function (coords) { return 'pl=c:ec473f99,f:00FF0033,w:3,' + coords; },
+				3 : function (coords) { return 'pl=c:ec473f99,f:00FF0033,w:3,' + coords; },
+				4 : function (coords) { return 'pt=' + [coords[0],coords[0]].join(",") + ",flag"; }
+			},
+			geometry   = geometries[data.ct](data.c),
+			properties = { description: htext, hintContent: htext, name: htext, link: data.ln, cnt: staticPics[data.ct](data.c) },
 			options    = (data.st.length > 3) ? ymaps.option.presetStorage.get(data.st) : defaultStyle,
 			object     = new ymaps.Placemark(geometry, properties, options);
 		// помещается в контейнер вспомогательных объектов
-		gt     = object.geometry.getType();
-		if (gt == "Point") {
-			object.properties.set( { cnt: 'pt=' + object.geometry.getCoordinates().join(",") + ",flag" } );
-		} else {
-			if (gt == "LineString") {
-				object.properties.set( { cnt: 'pl=c:ec473f99,f:00FF0033,w:3,' + ymaps.geometry.LineString.toEncodedCoordinates(object.geometry) } );
-			}
-			if (gt == "Polygon") {
-				object.properties.set( { cnt: 'pl=c:ec473f99,f:00FF0033,w:3,' + ymaps.geometry.Polygon.toEncodedCoordinates(object.geometry) } );
-			}
-			if (gt == "Circle") {
-				object.properties.set( { cnt: 'pt=' + object.geometry.getCenter() + ",flag" } );
-			}
-		}
 		t_objects.add(object);
 		wlayer = data.l;
 	}
@@ -645,13 +613,9 @@ function init_nav() {
 	function mark_clusters() {
 		//console.log($(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).length);
 
-		if (labelmode) {
-			//console.log("off")
-			$(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).prop("checked", false);
-		} else {
-			//console.log("on")
-			$(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).removeClass(activeness);
-		}
+		(labelmode) //console.log("off")
+			? $(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).prop("checked", false)
+			: $(config.selectors.systemObjectClass + ", " + config.selectors.systemGroupClass).removeClass(activeness); //console.log("on")
 
 		//console.log(config.selectors.systemClusterClass + config.selectors.systemActiveFlag)
 		len = $(config.selectors.systemClusterClass +  config.selectors.systemActiveFlag).length;
@@ -659,22 +623,18 @@ function init_nav() {
 
 		if (!len && config.showObjectsOS) {
 			//console.log("mk clust11");
-			if (labelmode) {
-				$(config.selectors.systemObjectClass).prop("checked", true);
-			} else {
-				$(config.selectors.systemObjectClass).addClass(activeness);
-			}
+			(labelmode)
+				? $(config.selectors.systemObjectClass).prop("checked", true)
+				: $(config.selectors.systemObjectClass).addClass(activeness);
 		} else {
 			//console.log("mk clust22");
 			$(config.selectors.systemClusterClass + config.selectors.systemActiveFlag).each(function () {
-				ref = parseInt($(this).attr("ref"));
+				ref = parseInt($(this).attr("ref"), 10);
 				for (a in clusters[ref].content) {
 					//console.log("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a])
-					if (labelmode) {
-						$("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a]).prop("checked", true);
-					} else {
-						$("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a]).addClass(activeness);
-					}
+					(labelmode)
+						? $("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a]).prop("checked", true)
+						: $("#" + config.selectors.systemObjectIdPrefix + clusters[ref].content[a]).addClass(activeness);
 				}
 			});
 		}
@@ -686,24 +646,18 @@ function init_nav() {
 	/* установка отметок в навигаторе на основе выбранных групп. И последующее отображение самих объектов */
 	function mark_gr() {
 		//console.log("mk group");
-		if (labelmode) {
-			//console.log("off 1");
-			$(config.selectors.systemObjectClass + ", " + config.selectors.systemClusterClass).prop("checked", false);
-		} else {
-			//console.log("off 2");
-			$(config.selectors.systemObjectClass + ", " + config.selectors.systemClusterClass).removeClass(activeness);
-		}
+		(labelmode)
+			? $(config.selectors.systemObjectClass + ", " + config.selectors.systemClusterClass).prop("checked", false)
+			: $(config.selectors.systemObjectClass + ", " + config.selectors.systemClusterClass).removeClass(activeness);
 
 		len = $(config.selectors.systemGroupClass + config.selectors.systemActiveFlag).length;
 		//console.log(config.selectors.systemClusterClass + config.selectors.systemActiveFlag)
 		//console.log(len);
 		if (!len && config.showObjectsOS) {
 			//console.log("no longer");
-			if (labelmode) {
-				$(config.selectors.systemObjectClass).prop("checked", true);
-			} else {
-				$(config.selectors.systemObjectClass).addClass(activeness);
-			}
+			(labelmode)
+				? $(config.selectors.systemObjectClass).prop("checked", true)
+				: $(config.selectors.systemObjectClass).addClass(activeness);
 		} else {
 			//console.log("make that");
 			$(config.selectors.systemGroupClass).each(function () {
@@ -730,7 +684,8 @@ function init_nav() {
 	if (config.noExcursion) {
 		config.demoMode = 0;
 		$(".excursion").addClass("hide");
-	} else {
+	}
+	if (!config.noExcursion)  {
 		$(".excursionToggle").removeClass("hide");
 	}
 
@@ -740,7 +695,7 @@ function init_nav() {
 	}
 
 	// из конфигурации - показывать ли фотографии сразу
-	if (config.photosOnStart == 1) {
+	if (config.photosOnStart === 1) {
 		$(".sphotos").first().click();
 	}
 	/*
@@ -748,47 +703,42 @@ function init_nav() {
 	config.url "прозрачно" берётся ymaps.js.
 	*/
 	$.ajax({
-		type: "POST",
-		url: "http://luft.korzhevdp.com/getsights.php",
-		dataType: 'script',
-		data: {
-			dir : config.url
+		type     : "POST",
+		url      : "http://luft.korzhevdp.com/getsights.php",
+		dataType : 'script',
+		data     : {
+			dir  : config.url
 		},
-		success: function (data) {
-			//eval(data);
-			// заполнение списка групп объектов
-			if (typeof groups != 'undefined') {
+		success  : function (data) {
+			if (groups !== undefined) {
 				sc = config.selectors.systemGroupClass.replace(/^(\.|:)/, '');
 				for(a in groups) {
-					if (labelmode) {
-						navitem = '<label for="' + config.selectors.systemGroupIdPrefix + a + '"><input type="checkbox" class="' + sc + '" id="' + config.selectors.systemGroupIdPrefix + a + '" gid="' + a + '">' + groups[a].g + '</label>';
-					} else {
-						navitem = '<span class="' + sc + '" id="' + config.selectors.systemGroupIdPrefix + a + '" gid="' + a + '">' + groups[a].g + '</span>';
+					if (groups.hasOwnProperty(a)) {
+						navitem = (labelmode)
+							? '<label for="' + config.selectors.systemGroupIdPrefix + a + '"><input type="checkbox" class="' + sc + '" id="' + config.selectors.systemGroupIdPrefix + a + '" gid="' + a + '">' + groups[a].g + '</label>'
+							: '<span class="' + sc + '" id="' + config.selectors.systemGroupIdPrefix + a + '" gid="' + a + '">' + groups[a].g + '</span>';
+						// в навигатор
+						$(config.selectors.systemGroupsContainer).append(navitem);
 					}
-					// в навигатор
-					$(config.selectors.systemGroupsContainer).append(navitem);
 				}
 			}
-
 			// заполнение списка кластеров
-			if (typeof clusters != 'undefined') {
+			if (clusters !== undefined) {
 				sc = config.selectors.systemClusterClass.replace(/^(\.|:)/, '');
-				for(a in clusters) {
-					if (labelmode) {
-						navitem = '<label for="' + config.selectors.systemClusterIdPrefix + a + '"><input type="checkbox" class="' + sc + '" ref="' + a + '" id="' + config.selectors.systemClusterIdPrefix + a + '">' + clusters[a].label + '</label>';
-					} else {
-						navitem = '<span class="' + sc + '" ref="' + a + '" id="' + config.selectors.systemClusterIdPrefix + a + '">' + clusters[a].label + '</span>';
-					}
-					// в навигатор
-					$(config.selectors.systemClustersContainer).append(navitem);
-				}
 				for (a in clusters) {
-					cl4show.concat(clusters[a].content);
-				};
+					if (clusters.hasOwnProperty(a)) {
+						navitem = (labelmode)
+							? '<label for="' + config.selectors.systemClusterIdPrefix + a + '"><input type="checkbox" class="' + sc + '" ref="' + a + '" id="' + config.selectors.systemClusterIdPrefix + a + '">' + clusters[a].label + '</label>'
+							: '<span class="' + sc + '" ref="' + a + '" id="' + config.selectors.systemClusterIdPrefix + a + '">' + clusters[a].label + '</span>';
+						// в навигатор
+						$(config.selectors.systemClustersContainer).append(navitem);
+						cl4show.concat(clusters[a].content);
+					}
+				}
 			}
 
 			// заполнение списков объектов
-			if (typeof sights != 'undefined') {
+			if (sights !== undefined) {
 				sc = config.selectors.systemObjectClass.replace(/^(\.|:)/, '');
 				if (config.objectSearch) {
 					$(config.selectors.systemObjectsContainer).append('<input type="text" id="ofilter" placeholder="Отобрать объекты" style="height:20px;width:190px;font-size:10px;padding:2px"><i class="icon-filter" style="margin-top:-4px;margin-left:5px;"></i>');
@@ -801,29 +751,24 @@ function init_nav() {
 					proxy = sights[a].content;
 					//i = 0;
 					for ( b in proxy ) {
-						// фильтр пустых полей
-						if (!proxy[b].a) {
-							continue;
+						if (proxy.hasOwnProperty(b)){
+							// фильтр пустых полей
+							if (!proxy[b].a) { continue; }
+							// в таблицу примечательных мест
+							$("#sList").append('<tr><td>' + proxy[b].d + '</td><td><a href="#" class="btn btn-mini btn-inverse sightsV" packet="' + a + '" ref="' + b + '">Показать</a></td></tr>');
+							// в навигатор
+							//console.log(1)
+							navitem = (labelmode)
+								? '<label for="' + config.selectors.systemObjectIdPrefix + b + '"><input type="checkbox" class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</label>'
+								: '<span class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</span>';
+							$(config.selectors.systemObjectsContainer).append(navitem + "\n");
 						}
-						// в таблицу примечательных мест
-						$("#sList").append('<tr><td>' + proxy[b].d + '</td><td><a href="#" class="btn btn-mini btn-inverse sightsV" packet="' + a + '" ref="' + b + '">Показать</a></td></tr>');
-						// в навигатор
-						//alert(1)
-						if (labelmode) {
-							navitem = '<label for="' + config.selectors.systemObjectIdPrefix + b + '"><input type="checkbox" class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</label>';
-						} else {
-							navitem = '<span class="' + sc + '" id="' + config.selectors.systemObjectIdPrefix + b + '" ref="' + b + '" packet="' + a + '" gid="' + proxy[b].g + '">' + proxy[b].d + '</span>';
-						}
-						$(config.selectors.systemObjectsContainer).append(navitem + "\n");
-						//i++;
 					}
 				}
 				$("#marksRemove").click(function () {
-					if (labelmode) {
-						$(config.selectors.systemObjectClass).prop("checked", false);
-					} else {
-						$(config.selectors.systemObjectClass).removeClass(systemActiveFlag);
-					}
+					(labelmode)
+						? $(config.selectors.systemObjectClass).prop("checked", false)
+						: $(config.selectors.systemObjectClass).removeClass(systemActiveFlag);
 					check_nav();
 				});
 			}
@@ -847,28 +792,28 @@ function init_nav() {
 					packet       = $(this).attr("packet"),							// индекс пакета - тематического раздела справочника объектов
 					data         = sights[packet].content[ref],						// прокси-объект извлекаемый из справочника объектов
 					properties   = { description: data.d, hintContent: data.d, name: data.d, link: data.ln },			// умолчательный набор свойств
-					options      = (data.st.length > 3) ? ymaps.option.presetStorage.get(data.st) : defaultStyle;		// установка стиля
-				switch(parseInt(data.ct)) {											// формирование объектов карты в зависимости от типа геометрии
-					case 1:
-						geometry = { type: "Point", coordinates: data.c };
-						object   = new ymaps.Placemark(geometry, properties, options);
-					break;
-					case 2:
-						geometry = ymaps.geometry.LineString.fromEncodedCoordinates(data.c);
-						object   = new ymaps.Polyline(geometry, properties, options);
-					break;
-					case 3:
-						geometry = ymaps.geometry.Polygon.fromEncodedCoordinates(data.c);
-						object   = new ymaps.Polygon(geometry, properties, options);
-					break;
-					case 4:
-						geometry = ymaps.geometry.Circle(data.c, data.rad);
-						object   = new ymaps.Polygon(geometry, properties, options);
-					break;
-				}
+					options      = (data.st.length > 3) ? ymaps.option.presetStorage.get(data.st) : defaultStyle,		// установка стиля
+					fx = {
+						1: function () {
+								geometry      = { type: "Point", coordinates: data.c };
+								return object = new ymaps.Placemark(geometry, properties, options);
+							},
+						2: function () {
+								geometry      = ymaps.geometry.LineString.fromEncodedCoordinates(data.c);
+								return object = new ymaps.Polyline(geometry, properties, options);
+							},
+						3: function () {
+								geometry      = ymaps.geometry.Polygon.fromEncodedCoordinates(data.c);
+								return object = new ymaps.Polygon(geometry, properties, options);
+							},
+						4: function () {
+								geometry      = ymaps.geometry.Circle(data.c, data.rad);
+								return object = new ymaps.Polygon(geometry, properties, options);
+							}
+					};
 				a_objects.removeAll();															// очищается коллекция
-				a_objects.add(object);															// добавляется объект
-				map.setBounds(a_objects.getBounds(), { zoomMargin: 100, duration: 300 });;		// центровка карты
+				a_objects.add(fx[data.ct]());													// формирование объектов карты в зависимости от типа геометрии
+				map.setBounds(a_objects.getBounds(), { zoomMargin: 100, duration: 300 });		// центровка карты
 				map.setType(config.layerTypes[data.l].label);									// переключение слоя карты
 				$("#clearMap").removeClass("hide");												// отображение кнопки очистки карты
 				$("#sightsList").modal('hide');													// закрытие модального окна
@@ -910,18 +855,18 @@ function init_nav() {
 			// последняя обработка каталога
 			// отображение кластеров
 
-			if ( typeof config.showClustersOS != 'undefined' && config.showClustersOS == 1 ) {
+			if ( config.showClustersOS !== undefined && config.showClustersOS === 1 ) {
 				(labelmode)
 					? $(config.selectors.systemClusterClass).prop("checked", true)
 					: $(config.selectors.systemClusterClass).addClass(activeness);
 				mark_clusters();
 			}
-			if ( typeof config.showGroupsOS != 'undefined' && config.showGroupsOS == 1 ) {
+			if ( config.showGroupsOS !== undefined && config.showGroupsOS === 1 ) {
 				(labelmode)
 					? $(config.selectors.systemGroupClass).prop("checked", true)
 					: $(config.selectors.systemGroupClass).addClass(activeness);
 			}
-			if ( typeof config.showObjectsOS != 'undefined' && config.showObjectsOS == 1 ) {
+			if ( config.showObjectsOS !== undefined && config.showObjectsOS === 1 ) {
 				(labelmode)
 					? $(config.selectors.systemObjectClass).prop("checked", true)
 					: $(config.selectors.systemObjectClass).addClass(activeness);
@@ -930,39 +875,36 @@ function init_nav() {
 			if (config.objectSearch) {
 				$("#ofilter").empty().unbind().keyup(function () {
 					str = $(this).val();
-					//console.log(str);
 					if (labelmode) {
 						$(config.selectors.systemObjectClass).each(function () {
-							if ($(this).parent().html().indexOf(str) == -1) {
+							if ($(this).parent().html().indexOf(str) === -1) {
 								$(this).parent().addClass("hide");
 								$(this).prop("checked", false);
-							} else {
-								$(this).parent().removeClass("hide");
-								//$(this).prop("checked", false);
+								return true;
 							}
+							$(this).parent().removeClass("hide");
 						});
-					} else {
-						$(config.selectors.systemObjectClass).each(function () {
-							if ($(this).parent().html().indexOf(str) == -1) {
-								$(this).addClass("hide").removeClass(activeness);
-							} else {
-								$(this).removeClass("hide");
-								//$(this).addClass(activeness);
-							}
-						});
+						return true;
 					}
+					$(config.selectors.systemObjectClass).each(function () {
+						if ($(this).parent().html().indexOf(str) === -1) {
+							$(this).addClass("hide").removeClass(activeness);
+							return true
+						}
+						$(this).removeClass("hide");
+					});
 					check_nav();
 				});
 			}
 			if (config.hasNav && !config.demoMode) {
 				map.geoObjects.add(t_objects);
 				$(config.selectors.systemNavigatorClass).removeClass("hide");
-			} else {
-				$(config.selectors.systemNavigatorClass).addClass("hide");
+				return true;
 			}
+			$(config.selectors.systemNavigatorClass).addClass("hide");
 		},
 		error: function (data,stat,err) {
-			alert([data,stat,err].join("\n"));
+			console.log([data,stat,err].join("\n"));
 		}
 	});
 }
@@ -976,16 +918,16 @@ function get_user() {
 			data = eval(data);
 			$("#userP").attr('title', data[2]);
 			$("#userP a").html(data[0] + '&nbsp;&nbsp;' + data[1]);
-			if (data[0] == "Гость") {
+			if (data[0] === "Гость") {
 				$(".logIn").removeClass("hide");
 				$(".logOut").addClass("hide");
-			} else {
-				$(".logOut").removeClass("hide");
-				$(".logIn").addClass("hide");
+				return true;
 			}
+			$(".logOut").removeClass("hide");
+			$(".logIn").addClass("hide");
 		},
 		error: function (data,stat,err) {
-			alert([data,stat,err].join("\n"));
+			console.log([data,stat,err].join("\n"));
 		}
 	});
 }
