@@ -113,25 +113,27 @@ function makeSelect(type) {
 			}
 		}
 	}
-	if(yandex_styles !== undefined) {
+	if (yandex_styles !== undefined) {
 		$(".styles").append(yandex_styles.join("\n"));
 	}
-	if(yandex_markers !== undefined) {
+	if (yandex_markers !== undefined) {
 		$(".styles").append(yandex_markers.join("\n"));
 	}
 }
 
 function composeStyleDropdowns(type, style) {
-	// TODO!!!
-	// разобраться с наборами стилей!!!
 	makeSelect(type);
 	$('.styles option[value="' + style + '"]').attr('selected', 'selected'); // повторно пробегаем :(
 	// навешиваем действие
 	$(".styles").change(function () {
 		prop.attr = normalize_style($(this).val());
-		e_objects.get(0).options.set(ymaps.option.presetStorage.get(prop.attr));
+		setOptionsToEditingObject(prop.attr);
 		$('.styles option[value="' + prop.attr + '"]').attr('selected', 'selected');
 	});
+}
+
+function setOptionsToEditingObject(attr){
+	e_objects.get(0).options.set(ymaps.option.presetStorage.get(attr));
 }
 
 function addPropertyPagesAction() {
@@ -149,8 +151,8 @@ function addPropertyPagesAction() {
 			dataType : 'html',
 			success  : function (data) {
 				$("#propPage").html(data);
-				$(".mainPage, #schedule, #commutes").css('display', 'none');
-				$("#propPage").css('display', 'block');
+				$(".mainPage, #schedule, #commutes").addClass("hide");
+				$("#propPage").removeClass("hide");
 				listenDependencyCalcCalls();
 			},
 			error: function (data, stat, err) {
@@ -163,24 +165,16 @@ function addPropertyPagesAction() {
 function addMapPageAction() {
 	$(".displayMain").unbind().click(function () {
 		saveType = "properties";
-		$(".propPage, #schedule, #commutes").css('display', 'none');
-		$("#mainPage").css('display', 'block');
+		$(".propPage, #schedule, #commutes").addClass("hide");
+		$("#mainPage").removeClass("hide");
 	});
 }
 
-function addPublishLocationAction() {
-	$(".l_act").prop('checked', prop.active);
-	$(".l_act").unbind().click(function () {
-		prop.active = $(this).prop('checked') ? 1 : 0 ;
-		$(".l_act").prop('checked', prop.active);
-	});
-}
-
-function addCommentLocationAction() {
-	$(".l_comm").prop('checked', prop.comments);
-	$(".l_comm").unbind().click(function () {
-		prop.comments = $(this).prop('checked') ? 1 : 0 ;
-		$(".l_comm").prop('checked', prop.comments);
+function setPropertyAction(selector, field){
+	$(selector).prop('checked', field);
+	$(selector).unbind().click(function () {
+		field = $(this).prop('checked') ? 1 : 0 ;
+		$(selector).prop('checked', field);
 	});
 }
 
@@ -188,8 +182,8 @@ function listen_page_caller() {
 	addPropertyPagesAction();
 	addMapPageAction();
 	addSchedulePageAction();
-	addPublishLocationAction();
-	addCommentLocationAction();
+	setPropertyAction(".l_act", prop.active);
+	setPropertyAction(".l_comm", prop.comments);
 	addCommutesPageAction();
 }
 
@@ -198,18 +192,18 @@ function addSchedulePageAction() {
 	$(".schedule").unbind().click(function () {
 		saveType = "schedule";
 		get_schedule();
-		$(".propPage, #commutes").css('display', 'none');
-		$("#schedule").css('display', 'block');
+		$(".propPage, #commutes").addClass("hide");
+		$("#schedule").removeClass("hide");
 	});
 }
 
 function addCommutesPageAction() {
 	// здесь будет выводиться улавливание
-	var state = (prop.pr === 2 || prop.pr === 3) ? 'block' : 'none';
-	$(".commutes").css('display', state);
+	var state = (prop.pr === 2 || prop.pr === 3) ? 1 : 0;
+	(state) ? $(".commutes").removeClass("hide") : $(".commutes").addClass("hide");
 	$(".commutes").unbind().click(function () {
-		$(".propPage, #schedule").css('display', 'none');
-		$("#commutes").css('display', 'block');
+		$(".propPage, #schedule").addClass("hide");
+		$("#commutes").removeClass("hide");
 	});
 }
 
@@ -222,28 +216,34 @@ function set_changed() {
 	$("#saveBtn").removeClass("btn-primary").addClass("btn-warning");
 }
 
+function coalesceVals(selector1, selector2) {
+	var value = ($(selector1).val() === undefined) ? $(selector2).val() : $(selector1).val();
+	return value;
+}
+
+function pushToContainer(selector, container) {
+	$(selector).each(function () {
+		container[$(this).attr("ref")] = $(this).val();
+	});
+}
+
 function save_properties() {
 	var cb = [],
 		te = {},
 		se = {},
 		ta = {},
 		senddata;
-	prop.address     = ($("#f_address").val() === undefined) ? $("#l_addr").val() : $("#f_address").val();
-	prop.name        = ($("#f_name").val()    === undefined) ? $("#l_name").val() : $("#f_name").val();
-	prop.attr        = ($("#f_style").val()   === undefined) ? $("#l_attr").val() : $("#f_style").val();
-	prop.contact     = ($("#f_cont").val()    === undefined) ? $("#l_cont").val() : $("#f_cont").val();
+	prop.address = coalesceVals("#f_address", "#l_addr");
+	prop.name    = coalesceVals("#f_name"   , "#l_name");
+	prop.attr    = coalesceVals("#f_style"  , "#l_attr");
+	prop.contact = coalesceVals("#f_cont"   , "#l_cont");
 	$("#propPage input[type=checkbox]:checked").each(function () {
 		cb.push($(this).val());
 	});
-	$("#propPage input[type=text]").each(function () {
-		te[$(this).attr("ref")] = $(this).val();
-	});
-	$("#propPage textarea").each(function () {
-		ta[$(this).attr("ref")] = $(this).val();
-	});
-	$("#propPage select").each(function () {
-		se[$(this).attr("ref")] = $(this).val();
-	});
+	pushToContainer("#propPage input[type=text]", te);
+	pushToContainer("#propPage textarea", ta);
+	pushToContainer("#propPage select", se);
+
 	senddata = prop;
 	senddata.check = cb;
 	senddata.ta    = ta;
@@ -268,17 +268,13 @@ function save_properties() {
 
 // События пользовательского интерфейса и ввода данных
 
-$(".mapsw").click(function (){
-	if ($(this).attr("id") === "toGoogle") {
-		map.setType("google#map");
-		$("#toGoogle").addClass("active");
-		$("#toYandex").removeClass("active");
-	}
-	if ($(this).attr("id") === "toYandex") {
-		map.setType("yandex#map");
-		$("#toYandex").addClass("active");
-		$("#toGoogle").removeClass("active");
-	}
+$(".mapsw").click(function () {
+	var mode = $(this).attr("id"),
+		mapType = (mode === "toGoogle") ? "google#map" : "yandex#map",
+		passive = (mode === "toGoogle") ? "#toYandex"  : "toGoogle";
+	map.setType(mapType);
+	$(mode).addClass("active");
+	$(passive).removeClass("active");
 });
 
 $(".panels").addClass('hide');
@@ -370,7 +366,7 @@ $("#type").change(function () {
 	composeStyleDropdowns(prop.pr, prop.attr);
 	listen_page_caller();
 	if (e_objects.getLength()) {
-		e_objects.get(0).options.set(ymaps.option.presetStorage.get(prop.attr));
+		setOptionsToEditingObject(prop.attr);
 	}
 });
 

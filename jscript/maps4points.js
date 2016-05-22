@@ -279,7 +279,7 @@ function init() {
 		revLayerTypes = {},
 		cMapType      = 0,
 		lc            = 0,
-		uploadPics    = []
+		uploadPics    = [],
 		a,
 		maxZoom = 20;
 	//определение механизма пересчёта стандартной сетки тайлов в сетку тайлов Яндекс-карт
@@ -312,20 +312,13 @@ function init() {
 	list_marker_styles();
 
 	function list_marker_styles() {
-		//alert(1)
+		//console.log(1)
 		$("#ostyle, #cstyle").append('<option value="0">Выберите стиль</option>');
 		localstyles["1"] = [];
-		localstyles["1"].push('<optgroup label="Объекты">');
-		for (a in yandex_styles) {
+		localstyles["1"].push('<optgroup label="Значки Яндекса">');
+		for (a in yandex_styles + yandex_markers) {
 			if (yandex_styles.hasOwnProperty(a)) {
 				localstyles["1"].push(yandex_styles[a]);
-			}
-		}
-		localstyles["1"].push('</optgroup>');
-		localstyles["1"].push('<optgroup label="Маркеры">');
-		for (a in yandex_markers) {
-			if (yandex_markers.hasOwnProperty(a)) {
-				localstyles["1"].push(yandex_markers[a]);
 			}
 		}
 		localstyles["1"].push('</optgroup>');
@@ -431,11 +424,11 @@ function init() {
 
 	p_objects.events.add('dragend', function (action){
 		v = action.get('target');
-		p_objects.get(point_id).properties.set("addr", get_address(v.geometry.getCoordinates()));
+		p_objects.get(point_id).properties.set("addr", getAddress(v.geometry.getCoordinates()));
 
 	});
 
-	function save_point(){
+	function savePoint(){
 		var vd,
 			addr,
 			tr,
@@ -461,53 +454,49 @@ function init() {
 			success   : function(){
 			},
 			error     : function(data,stat,err){
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	}
 
 	$("#pointSaver").click(function() {
-		save_point();
+		savePoint();
 	});
 
-	function get_address(coords) {
-		var address = "";
-		ymaps.geocode(coords, { kind: ['house'] }).then(function(res){
-			var names = [];
-			res.geoObjects.each(function(obj){
-				names.push(obj.properties.get('name'));
+	function runGeoCoding(coords) {
+		var addressArray,
+			decAddr,
+			names = [];
+		return ymaps.geocode(coords, { kind: ['house'] })
+		.then(function (addressComponents) {
+			addressComponents.geoObjects.each(function (object) {
+				names.push(object.properties.get('name'));
 			});
-			address = (names[0] === undefined) ? "Нет адреса" : [names[0]].join(', ');
+			addressArray = names[0];
+			decAddr      = (addressArray === undefined || ![addressArray].join(', ').length) ? "Нет адреса" : [addressArray].join(', ');
+			return decAddr;
 		});
+	}
+
+	function getAddress(coords) {
+		var address = runGeoCoding(coords);
 		$("#address").val(address);
 		return address;
 	}
 
 	p_objects.events.add('click', function (action){
 		var v        = action.get('target');
-			crds     = v.geometry.getCoordinates();
+			coords     = v.geometry.getCoordinates();
 			point_id = parseInt(v.properties.get("id"), 10);
-		$("#plon").val(crds[0]);
-		$("#plat").val(crds[1]);
+		$("#plon").val(coords[0]);
+		$("#plat").val(coords[1]);
 		$("#desc").val(v.properties.get("desc"));
 		(v.properties.get("act") === 1) ? $("#act").prop("checked", true)     : $("#act").prop("checked", false);
 		(v.properties.get("tr")  === 1) ? $("#trusted").prop("checked", true) : $("#trusted").prop("checked", false);
 		//$("#trusted").val(v.properties.get("desc"));
 		//if (!v.properties.get("addr").trim().length){
-		//alert(1);
-		ymaps.geocode(crds, { kind: ['house'] }).then(function(res){
-			var names = [];
-			res.geoObjects.each(function(obj) {
-				names.push(obj.properties.get('name'));
-			});
-			address = (names[0] === undefined) ? "Нет адреса" : [names[0]].join(', ') ;
-			p_objects.each(function(item){
-				if(parseInt(item.properties.get('id'), 10) === point_id) {
-					item.properties.set( { addr: address} );
-				}
-			});
-			$("#address").val(address);
-		});
+		//console.log(1);
+		getAddress(coords)
 	});
 
 	$("#tab2 .pointfiles").change(function() {
@@ -543,7 +532,7 @@ function init() {
 				$("#address, #desc").val("");
 			},
 			error: function(data,stat,err) {
-				alert([data,stat,err].join("\n"));
+				console.log([data,stat,err].join("\n"));
 			}
 		});
 	});
@@ -568,10 +557,10 @@ $("#sendData").click(function() {
 			points : $("#pointsSrc").val()
 		},
 		success  : function(data) {
-			alert(data);
+			console.log(data);
 		},
 		error    : function(data,stat,err) {
-			alert([data,stat,err].join("\n"));
+			console.log([data,stat,err].join("\n"));
 		}
 	});
 });
@@ -600,7 +589,7 @@ $("#eraseConfirmed").click(function() {
 			$("#pointsfile2").append(list[2]);
 		},
 		error    : function(data,stat,err) {
-			alert([data,stat,err].join("\n"));
+			console.log([data,stat,err].join("\n"));
 		}
 	});
 });
